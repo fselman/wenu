@@ -1,5 +1,17 @@
 # Wenu developer documentation
 
+## K4b.06 dated-axis atlas implementation candidate
+
+The accepted #352 scope is selected for implementation after clean main
+`7d0f7425` and confirmed #352/#353 branch cleanup. The selection receipt was
+committed before runtime changes at `37e070900e8d3c6048e88aed528b28b9c1d87110`.
+See the [candidate API](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
+and [atlas usage](../user_guide/atlas.md#mean-axis-atlas-views).
+Native source realization, TT mean-axis geometry, dated references, derived
+layout, reports and serial/spawn identity checks share existing owners.
+Focused candidate checks are distinct from pending Mac actual-cache/visual
+acceptance. Parent K4b.06 stays open; K4b.07/K4b.08 remain separately planned.
+
 ## Planned Earth-bound observers at ancient and future epochs
 
 The separately agreed [K4b.08 milestone](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs)
@@ -25,10 +37,10 @@ single-sheet parity at J2000/J-8000 and visual review. Clean synchronized
 Mac main and branch cleanup are confirmed. See the
 [acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
 for retained evidence, population/counts and workload timings. Serial was faster
-for this two-sheet workload. The next selected task is the
+for this two-sheet workload. The subsequent accepted boundary is the
 [date-oriented atlas as-is review and scope definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope).
 Its concrete integration boundary was accepted with #352 after 36 Mac documentation
-passes in 4.16 s and merged at `8865ae05`; runtime implementation remains pending.
+passes in 4.16 s and merged at `8865ae05`; runtime implementation is now a candidate awaiting Mac/visual acceptance.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
@@ -595,5 +607,6 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
+
 
 

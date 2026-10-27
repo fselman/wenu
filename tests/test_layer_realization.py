@@ -305,3 +305,76 @@ def test_native_epoch_guard_rejects_mismatched_layer_time_before_projection(inst
     else:
         with pytest.raises(ValueError, match='matching barycentric'):
             _draw(sphere, observer=None, realization_context=context)
+
+
+def test_mean_view_is_applied_once_before_guard_prepare_and_render(monkeypatch):
+    from wenu.astrometric_coordinates import LongTermFrame,LONG_TERM_FRAME_POLICY
+    from wenu_kernel.records import TimePoint,TimeSpan
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
+    frame=LongTermFrame(equinox=TimePoint(-1200955,0.,'tt'),
+        validity=TimeSpan(TimePoint(-1200956,0.,'tt'),TimePoint(2451546,0.,'tt')),
+        axes='mean-equator-equinox',model_policy=LONG_TERM_FRAME_POLICY)
+    source=SphericalPoints([12.],[34.],coordinate_spec=ICRS_ASTROMETRIC_SPEC)
+    class Native(SkyLayer):
+        def realize(self,context,observer,**options):return source
+        def spherical_geometry(self,observer):raise AssertionError('No observer fallback')
+    sphere=CelestialSphere(None);layer=sphere.add(Native());seen=[]
+    expected=CoordinateService().orient_geometry(source,frame)
+    def guard(g):
+        seen.append('guard')
+        assert g.coordinate_spec.frame==frame.axes
+        np.testing.assert_allclose(g.lon_deg,expected.lon_deg,atol=1e-12)
+        return g
+    def prepare(g,p):
+        seen.append('prepare');assert g is p
+        return p
+    result=sphere.draw_chart(projection=IdentityProjection(),renderer=RecordingRenderer(),
+        realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC,orientation=frame),
+        project_geometry=guard,layer_options={layer:dict(prepare=prepare)})
+    assert seen==['guard','prepare']
+    assert result.layers[0].spherical is not source
+    assert source.coordinate_spec.frame=='icrs'
+    # An omitted view is visible to the independent guard/preparation contract.
+    monkeypatch.setattr(CoordinateService,'orient_geometry',lambda self,g,f:g)
+    with pytest.raises(AssertionError):
+        sphere.draw_chart(projection=IdentityProjection(),renderer=RecordingRenderer(),
+            realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC,orientation=frame),project_geometry=guard)
+
+
+def test_dated_label_region_preparation_uses_the_common_view_seam(monkeypatch):
+    from types import SimpleNamespace
+    from wenu.astrometric_coordinates import LongTermFrame,LONG_TERM_FRAME_POLICY
+    from wenu_kernel.records import TimePoint,TimeSpan
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
+    from wenu.geometry.spherical import SphericalPolygons
+    from wenu.geometry.projected import ProjectedCurve,ProjectedPoints
+    from wenu.geometry.viewport import Viewport
+    from wenu.projections import StereographicProjection
+    from wenu.charts import constellation_label_placement as placement
+    frame=LongTermFrame(equinox=TimePoint(-1200955,0.,'tt'),
+        validity=TimeSpan(TimePoint(-1200956,0.,'tt'),TimePoint(2451546,0.,'tt')),
+        axes='mean-equator-equinox',model_policy=LONG_TERM_FRAME_POLICY)
+    native=SphericalPolygons(([0.,10.,10.,0.],),([0.,0.,10.,10.],),
+        coordinate_spec=ICRS_ASTROMETRIC_SPEC,names=['ORI'])
+    expected=CoordinateService().orient_geometry(native,frame)
+    class Regions:
+        def realize(self,*args,**kwargs):return native
+    labels=object();sky=SimpleNamespace(constellation_labels=labels,constellation_boundaries=Regions(),observer=None)
+    context=LayerRealizationContext(NATIVE_ICRS_SPEC,orientation=frame)
+    seen=[];project=placement.project_geometry_for_viewport
+    def guarded(g,**kwargs):
+        assert g.coordinate_spec.frame==frame.axes
+        np.testing.assert_allclose(g.lon_deg[0],expected.lon_deg[0],atol=1e-12)
+        seen.append(g)
+        return project(g,**kwargs)
+    monkeypatch.setattr(placement,'project_geometry_for_viewport',guarded)
+    options=placement.apply_visible_constellation_label_anchors({},sky=sky,
+        projection=StereographicProjection(),viewport=Viewport.centered(width=4,height=4),
+        boundary=ProjectedCurve([-2,2,2,-2],[-2,-2,2,2],closed=True),realization_context=context)
+    prepared=options[labels]['prepare'](None,ProjectedPoints([0.],[0.],labels=['ORI']))
+    assert seen and prepared.metadata['visible_region_anchors']
+    import wenu.sky.realization as owner
+    monkeypatch.setattr(owner,'realize_layer_geometry',lambda layer,context,observer,**k:layer.realize(context,observer,**k))
+    with pytest.raises(AssertionError):options[labels]['prepare'](None,ProjectedPoints([0.],[0.],labels=['ORI']))

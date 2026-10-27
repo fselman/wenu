@@ -1,5 +1,15 @@
 # Wenu production source map
 
+The K4b.06 dated-axis candidate extends existing owners: `coordinate_service.py`
+re-expresses spherical geometry; `sky/realization.py` owns the common source-to-view
+seam consumed by the sphere and secondary constellation-label regions.
+`atlas_design.py` retains source ICRS geometry and identifies derived layouts;
+`charts/atlas_sheet.py` owns frame inputs, capture and sheet/report furniture.
+Publication/CLI owners transport/check that identity. Reference grids/points
+construct admitted dated mean references; source-only snapshot schemas remain
+unchanged. The sizing-report owner verifies genuinely empty stellar fields.
+No new module/package or generic-kernel science owner is introduced.
+
 K4b.06's selected native-sheet integration extends existing owners only:
 `stellar_state.py` owns explicit model/event inputs, strict scientific motion-TOML
 loading/source verification, captured data-only worker inputs and the SDK bridge; `cli/chart.py` adapts that input

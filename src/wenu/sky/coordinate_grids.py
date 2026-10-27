@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 from astropy.time import Time
 
-from wenu.coordinate_service import CoordinateService
+from wenu.coordinate_service import CoordinateService, mean_frame_spec
 from wenu.coordinates import (
     CoordinateSpec,
     PositionStatus,
@@ -42,7 +42,30 @@ class CoordinatesGrid(GeometricalObject, ABC):
             raise ValueError("Native grids require an explicit fixed equinox.")
         local = copy(self)
         local.observer, local._native_realization = None, True
-        return local.spherical_geometry(None, **options)
+        if context.orientation is not None and self.coordinate_system in {'equatorial','ecliptic'}:
+            # The dated-view policy constructs new canonical references; it must
+            # not silently reinterpret arbitrary FK5/B1950 or other fixed grids.
+            if (str(self.equinox) not in {'J2000','J2000.0','J2000.000'}
+                    or (self.coordinate_system == 'equatorial' and self.frame != 'icrs')):
+                raise ValueError('Dated atlas references require the canonical source grid policy.')
+            from wenu.coordinate_service import mean_reference_frame
+            local._mean_reference = mean_reference_frame(context.orientation,
+                'mean-equator-equinox' if self.coordinate_system == 'equatorial' else 'mean-ecliptic-equinox')
+        geometry=local.spherical_geometry(None, **options)
+        reference=getattr(local,'_mean_reference',None)
+        if reference is not None:
+            geometry.metadata={**geometry.metadata,
+                'source_reference_equinox':str(self.equinox),
+                'reference_axes':reference.axes,
+                'reference_equinox_tt':mean_frame_spec(reference).equinox,
+                'reference_frame_sha256':reference.model.configuration_digest}
+            for component in geometry.components.values():
+                component.metadata.update(geometry.metadata)
+                component.metadata['equinox']=mean_frame_spec(reference).equinox
+                component.metadata['frame']=reference.axes
+            geometry.metadata['equinox']=mean_frame_spec(reference).equinox
+            geometry.metadata['frame']=reference.axes
+        return geometry
 
     def parallel(
         self,
@@ -167,7 +190,8 @@ class CoordinatesGrid(GeometricalObject, ABC):
         observer=None,
     ) -> SphericalCurves:
         resolved_observer = self._resolve_observer(observer)
-        source_spec = self._native_coordinate_spec()
+        reference = getattr(self, '_mean_reference', None)
+        source_spec = self._native_coordinate_spec() if reference is None else mean_frame_spec(reference)
         target_spec = self._coordinate_spec() if getattr(self, "_native_realization", False) else observer_altaz_spec(
             resolved_observer,
             position_status=self._output_position_status(),
@@ -192,6 +216,8 @@ class CoordinatesGrid(GeometricalObject, ABC):
                 ),
             },
         )
+        if reference is not None:
+            return CoordinateService().orient_geometry(native, reference, inverse=True)
         if source_spec == target_spec:
             return native
         return CoordinateService().transform(
@@ -230,6 +256,10 @@ class CoordinatesGrid(GeometricalObject, ABC):
         )
 
     def _coordinate_spec(self):
+        reference=getattr(self,'_mean_reference',None)
+        if reference is not None:
+            empty=SphericalCurves((),(),coordinate_spec=mean_frame_spec(reference))
+            return CoordinateService().orient_geometry(empty,reference,inverse=True).coordinate_spec
         if getattr(self, "_native_realization", False):
             from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
             return ICRS_ASTROMETRIC_SPEC
@@ -622,7 +652,8 @@ class EclipticGrid(CoordinatesGrid):
             parallel_style=parallel_style,
         )
 
-    def spherical_geometry(self, observer) -> SphericalGrid:
+    def spherical_geometry(self, observer, *, longitude=None, latitude=None,
+                           longitude_ticks=None, latitude_ticks=None) -> SphericalGrid:
         resolved = self._resolve_observer(observer)
         if resolved is not self.observer:
             return type(self)(
@@ -632,12 +663,17 @@ class EclipticGrid(CoordinatesGrid):
                 longitude=self.longitude,
                 latitude=self.latitude,
                 include_ecliptic=self.include_ecliptic,
-            ).spherical_geometry(resolved)
+            ).spherical_geometry(resolved, longitude=longitude, latitude=latitude,
+                                 longitude_ticks=longitude_ticks, latitude_ticks=latitude_ticks)
         geometry = self.grid(
-            longitude=self.longitude,
-            latitude=self.latitude,
+            longitude=self.longitude if longitude is None else longitude,
+            latitude=self.latitude if latitude is None else latitude,
         )
         components = dict(geometry.components)
+        if longitude_ticks is not None:
+            components['tick_meridians'] = self._combine([self.meridian(v) for v in longitude_ticks])
+        if latitude_ticks is not None:
+            components['tick_parallels'] = self._combine([self.parallel(v) for v in latitude_ticks])
         if self.include_ecliptic:
             components["reference"] = self.ecliptic()
         return SphericalGrid(

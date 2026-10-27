@@ -1,5 +1,21 @@
 # Current scientific contracts and paused work
 
+## Dated-axis atlas candidate contract
+
+The selected K4b.06 implementation composes admitted native stellar TCB
+directions with a separate finite TT mean-axis view. It preserves barycentric
+origin, source metadata/membership/model counts and explicit unavailable rows.
+One common orientation precedes projection and also handles label-placement
+region geometry. Geometry re-expression supplies no new SDK state or physical
+error certificate. Canonical dated grids/poles and target-frame furniture
+are bound to the qualified TT policy; Galactic references and static source
+shapes retain their meaning. Captured frame/design bytes and actual backend/
+matrix identity bind workers and reports; incompatible references refuse.
+The [API boundary](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
+and [usage](../user_guide/atlas.md#mean-axis-atlas-views) distinguish pending
+Mac/visual acceptance from implemented candidate behavior. K4b.07 persistence
+and K4b.08 Earth-bound observation remain separate.
+
 ## Planned ancient and future Earth-bound observers
 
 [K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
@@ -17,8 +33,8 @@ Detailed model/domain/product qualification precedes implementation.
 ## Proposed date-oriented atlas boundary
 
 The [K4b.06 proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
-reuses qualified long-term mean-axis orientation; the scope was accepted in #352, while runtime atlas integration remains
-unimplemented. TT equinox/domain and stellar TCB evaluation remain
+reuses qualified long-term mean-axis orientation; the scope was accepted in #352 and its implementation is now a candidate
+awaiting Mac actual-cache and visual acceptance. TT equinox/domain and stellar TCB evaluation remain
 separate scientific inputs. A view transformation adds no physical evolution
 of boundaries/shapes, observer state, Earth orientation or accuracy guarantee.
 Dated grids/poles must use the admitted mean-axis policy, while fixed references
@@ -1265,5 +1281,6 @@ parallax algorithm or physical time-validity guarantee is added.
 ## Globular-cluster baseline lookup
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
-source facts and 
+source facts and
+
 

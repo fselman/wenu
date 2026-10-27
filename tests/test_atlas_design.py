@@ -817,3 +817,19 @@ def test_extra_index_layers_require_astronomical_rendering(overview_example, tmp
     with pytest.raises(ValueError, match="require astronomy"):
         overview_example.plot_overview(tmp_path / "unused.json", tmp_path / "unused", **{option: True})
 
+
+
+
+def test_mean_axis_layout_is_derived_without_relabelling_icrs_design(five_band_atlas):
+    from dataclasses import asdict
+    from wenu.atlas_design import AtlasMeanAxisSheet
+    original=five_band_atlas.to_json();page=five_band_atlas.geometry.page
+    source=five_band_atlas.geometry.sheets[0]
+    view=AtlasMeanAxisSheet(source,'a'*64,'b'*64,'mean-ecliptic-equinox')
+    assert view.sheet_id != source.sheet_id and view.source is source
+    assert view.record()['source_sheet_id']==source.sheet_id
+    assert view.record()['longitude_deg']==source.center_ra_deg
+    assert view.viewport(page)==source.viewport(page)
+    assert view.boundary_samples(page)==source.boundary_samples(page)
+    assert five_band_atlas.to_json()==original
+    with pytest.raises(ValueError):AtlasMeanAxisSheet(source,'wrong','b'*64,'icrs')

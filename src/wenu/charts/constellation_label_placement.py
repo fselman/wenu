@@ -65,9 +65,9 @@ def apply_visible_constellation_label_anchors(
             {"selected": region_selection}
             if retain_partial and region_selection is not None else {}
         )
-        region_spherical = (regions.spherical_geometry(resolved_observer, **region_options)
-            if realization_context is None else
-            regions.realize(realization_context, resolved_observer, **region_options))
+        from wenu.sky.realization import realize_layer_geometry
+        region_spherical = realize_layer_geometry(regions, realization_context,
+            resolved_observer, **region_options)
         if transform_spherical is not None:
             region_spherical = transform_spherical(region_spherical)
         region_projected = project_geometry_for_viewport(

@@ -45,10 +45,15 @@ class LayerRealizationContext:
     evaluation_time_scale: str | None = None
     reference_equinox: str | None = None
     reception: ReceptionContext | None = None
+    orientation: object | None = None
 
     @property
     def is_native_icrs(self):
-        """Native ICRS axes; an explicit epoch may be consumed by admitted layers."""
+        """Native ICRS source phase; an optional mean-axis view follows it.
+
+        product_coordinate_spec retains the layer-routing contract. The
+        orientation is applied once by the sphere after native realization.
+        """
         return (
             self.product_coordinate_spec == NATIVE_ICRS_SPEC
             and self.observation is None
@@ -119,9 +124,45 @@ class LayerRealizationContext:
             ),
         )
 
+        if self.orientation is not None:
+            from wenu.astrometric_coordinates import LongTermFrame
+            if type(self.orientation) is not LongTermFrame or not self.is_native_icrs:
+                raise ValueError('Mean-axis views require native source realization without an observer.')
+
         if self.reception is not None:
             spec, observation = self._reception_fields(self.reception)
             if (self.product_coordinate_spec != spec or self.observation != observation
                     or self.evaluation_instant != self.reception.utc_isot
                     or self.evaluation_time_scale != "utc" or self.reference_equinox is not None):
                 raise ValueError("Reception context, product, site and evaluation event must agree.")
+
+
+def realize_layer_geometry(layer, context, observer, **options):
+    """One source-to-view seam, also for chart-owned secondary geometry.
+
+    Preparation of visible label regions must consume exactly the same axes
+    as the drawn layer. Source providers retain their native realization policy.
+    """
+    if context is None:
+        return layer.spherical_geometry(observer, **options)
+    if not isinstance(context, LayerRealizationContext):
+        raise TypeError('Expected LayerRealizationContext or None.')
+    spherical=layer.realize(context,observer,**options)
+    spec=spherical.coordinate_spec
+    if context.is_native_icrs:
+        if (spec.frame != 'icrs' or spec.origin != 'solar-system-barycenter'
+                or spec.position_status.value != 'astrometric'
+                or (spec.instant is not None and (spec.instant != context.evaluation_instant
+                    or spec.time_scale != context.evaluation_time_scale))):
+            raise ValueError('Native ICRS layers must return matching barycentric astrometry.')
+    if context.reception is not None:
+        expected=context.product_coordinate_spec
+        if (any(getattr(spec,key) != getattr(expected,key) for key in
+                ('frame','origin','position_status','instant','time_scale',
+                 'longitude_unit','latitude_unit','corrections'))
+                or context.reception.identity not in spec.provenance):
+            raise ValueError('Observed layers must return matching reception-bound vacuum geometry.')
+    if context.orientation is not None:
+        from wenu.coordinate_service import CoordinateService
+        spherical=CoordinateService().orient_geometry(spherical,context.orientation)
+    return spherical

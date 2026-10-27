@@ -1,5 +1,38 @@
 # Testing policy and module independence
 
+## Dated-axis atlas candidate gate
+
+The reviewed selection is `python tools/run_test_gate.py atlas-mean-axis-views --run`.
+Run the existing complete documentation and eight tooling checks separately.
+
+Use existing coordinate-service, layer-realization, reference-grid, atlas
+design/CLI and stellar publication owners. Test the common pre-domain view
+(including secondary label regions), both mean axes, independent TT/TCB events,
+canonical reference construction, polar/wrapped layout/furniture, exact source
+design bytes, captured document/backend/matrix identity, immutable sources and
+NaN gaps. Faults that omit a view, drop a worker frame, corrupt a binding or
+claim a missing nonempty stellar SVG must fail. Retain native compatibility,
+counts, CLI/Python PNG parity, serial/spawn cleanup/refusal, PDF order/size and
+completion-last checks. This composition does not repeat unchanged full frame/
+propagation/SDK numerical qualification. New checks belong to the existing
+owners; no new production module or test-collection boundary is introduced.
+
+Local candidate evidence: the reviewed gate passed 155 cases in 171.53 s;
+all five reference-grid cases passed in the final refusal-policy follow-up
+(1.08 s). Five focused documentation checks and 738 links across 38 active
+documents passed. Six isolated tooling unit cases and all 52 selected function
+references were checked; the two repository-wide tooling checks need the full
+Mac checkout. Synthetic dated equatorial/ecliptic ordinary/polar chart/report
+PNGs were inspected; this is not retained-source visual acceptance.
+The final gate log/provenance is in disposable scratch
+`dated-atlas-checks-v1-li0vs_fg`; Mac evidence is still pending.
+
+The focused Mac gate precedes retained-source actual-cache modern/ancient
+single-sheet/serial/spawn specimens for both axes and visual review. Record
+TT equinox and TCB position event separately, source/model limitations and
+static-index frame/date uncertainty. Passing synthetic cases is not acceptance
+of physical ancient positions or Earth-bound observations.
+
 ## Native atlas stellar publication and worker gate
 
 Extend the existing stellar and atlas owner tests for captured-byte transport,
@@ -2417,5 +2450,6 @@ The complete Mac gate collects 25 cases. Available documentation: 31 passed
 in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 38 active-document links/anchors pass against the full repository tree.
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
+
 
 

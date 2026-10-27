@@ -143,3 +143,53 @@ def test_constructed_native_planes_consume_shared_results_and_refusals(monkeypat
     for grid in grids:
         with pytest.raises(RuntimeError, match='service refused'):
             grid.realize(context, None)
+
+
+
+def test_dated_mean_grids_poles_and_cardinals_share_tt_without_mutating_fixed_sources():
+    from dataclasses import replace
+    from wenu.astrometric_coordinates import LongTermFrame,LONG_TERM_FRAME_POLICY
+    from wenu_kernel.records import TimePoint,TimeSpan
+    from wenu.coordinate_service import CoordinateService,mean_reference_frame
+    from wenu.sky.realization import LayerRealizationContext,NATIVE_ICRS_SPEC
+    from wenu.sky.coordinate_grids import EquatorialGrid,EclipticGrid
+    from wenu.sky.points import CelestialPoints
+    from astropy.coordinates import BarycentricMeanEcliptic
+    from astropy.time import Time
+    import pytest
+    f=LongTermFrame(equinox=TimePoint(-1200955,0.,'tt'),
+        validity=TimeSpan(TimePoint(-1200956,0.,'tt'),TimePoint(2451546,0.,'tt')),
+        axes='mean-ecliptic-equinox',model_policy=LONG_TERM_FRAME_POLICY)
+    context=LayerRealizationContext(NATIVE_ICRS_SPEC,orientation=f)
+    service=CoordinateService()
+    for grid,axes,kwargs in (
+        (EquatorialGrid(None,frame='icrs',equinox='J2000',samples=13),
+            'mean-equator-equinox',dict(ra=[0,90],dec=[0,45],ra_ticks=[15],dec_ticks=[10])),
+        (EclipticGrid(None,equinox='J2000',samples=13),'mean-ecliptic-equinox',
+            dict(longitude=[0,90],latitude=[0,45],longitude_ticks=[15],latitude_ticks=[10]))):
+        source=grid.realize(context,None,**kwargs)
+        reference=mean_reference_frame(f,axes)
+        result=service.orient_geometry(source,reference)
+        np.testing.assert_allclose((result['meridians'].lon_deg[0][1:-1]+180)%360-180,0,atol=1e-11)
+        np.testing.assert_allclose(result['parallels'].lat_deg[0],0,atol=1e-12)
+        assert len(result['tick_meridians'])==len(result['tick_parallels'])==1
+        assert not hasattr(grid,'_mean_reference')
+    points=CelestialPoints(None)
+    points.add_equatorial_pole('north').add_ecliptic_pole('north',frame=BarycentricMeanEcliptic(equinox=Time('J2000')))
+    points.add_ecliptic_cardinal_points(frame=BarycentricMeanEcliptic(equinox=Time('J2000')))
+    originals=tuple(p.coord for p in points._points)
+    geometry=points.realize(context,None)
+    result=service.orient_geometry(geometry,f)
+    np.testing.assert_allclose(result.lat_deg[1],90,atol=1e-12)
+    np.testing.assert_allclose(result.lat_deg[2:],0,atol=1e-12)
+    np.testing.assert_allclose((result.lon_deg[2:]-[0,90,180,270]+180)%360-180,0,atol=1e-11)
+    assert tuple(p.coord for p in points._points)==originals
+    fixed=CelestialPoints(None)
+    fixed.add_ecliptic_pole('north',frame=BarycentricMeanEcliptic(equinox=Time('J2050')))
+    with pytest.raises(ValueError,match='canonical poles/cardinals'):
+        fixed.realize(context,None)
+    with pytest.raises(ValueError,match='canonical source grid'):
+        EquatorialGrid(None,frame='fk5',equinox='B1950').realize(context,None)
+    points.add_equatorial_point(12,34)
+    with pytest.raises(ValueError,match='canonical poles/cardinals'):
+        points.realize(context,None)

@@ -471,7 +471,17 @@ def analyze(inputs, output_prefix, bins=30, show_magnitudes=True, atlas_report=F
         except ValueError as error:
             manifest_path = filename.parent / "manifest.json"
             manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
-            if "No Wenu stellar semantic layer" not in str(error) or "stars" in manifest.get("presentation", {}).get("layers", ["stars"]):
+            absent_layer = "stars" not in manifest.get("presentation", {}).get("layers", ["stars"])
+            verified_empty = False
+            report_path = filename.with_name(filename.stem + "_report_data.json")
+            products = manifest.get("products", {})
+            if report_path.is_file() and all(products.get(p.name) == hashlib.sha256(p.read_bytes()).hexdigest()
+                                             for p in (filename, report_path)):
+                report = json.loads(report_path.read_text())
+                statistics = report.get("stars", {}).get("statistics")
+                verified_empty = (isinstance(statistics, dict)
+                    and type(statistics.get("visible_count")) is int and statistics["visible_count"] == 0)
+            if "No Wenu stellar semantic layer" not in str(error) or not (absent_layer or verified_empty):
                 raise
             stars = []
         records.extend(stars)

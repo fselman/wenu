@@ -124,6 +124,8 @@ def parser():
     sheet.add_argument("--from-sky", type=Path)
     sheet.add_argument("--stellar-motion-config", type=Path,
         help="Explicit local stellar-motion TOML; nominal TCB epoch, no observer reconstruction.")
+    sheet.add_argument("--atlas-frame-config", type=Path,
+        help="Explicit TT mean-axis atlas-view TOML, independent of stellar motion.")
     sheet.add_argument("--chart-number", type=int, required=True)
     sheet.add_argument("--output-dir", type=Path, required=True)
     sheet.add_argument("--debug", action="store_true")
@@ -873,14 +875,20 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
         if arguments.stellar_motion_config is not None:
             from wenu.stellar_state import load_stellar_motion_request
             motion = load_stellar_motion_request(arguments.stellar_motion_config)
+        orientation = frame_input = None
+        if arguments.atlas_frame_config is not None:
+            from wenu.charts.atlas_sheet import AtlasFrameExecutionInput
+            frame_input,orientation=AtlasFrameExecutionInput.capture(arguments.atlas_frame_config,
+                design_bytes=raw,snapshot_sha256=snapshot.manifest_sha256)
         atlas_request = AtlasSheetChartRequest(selected[0], atlas.geometry.page,
-            presentation, arguments.output_dir, stellar_motion=motion)
+            presentation, arguments.output_dir, stellar_motion=motion,orientation=orientation,
+            design_sha256=hashlib.sha256(raw).hexdigest(),design_bytes=raw,frame_input=frame_input)
         sky = snapshot.make_sky()
     else:
         if not isinstance(atlas_request, AtlasSheetChartRequest):
             raise TypeError("atlas_request must be AtlasSheetChartRequest.")
         if any(value is not None for value in (arguments.design, arguments.config,
-                arguments.from_sky, arguments.stellar_motion_config)):
+                arguments.from_sky, arguments.stellar_motion_config, arguments.atlas_frame_config)):
             raise ValueError("Prepared atlas requests cannot also supply design/config/snapshot files.")
         if (atlas_request.sheet.number != arguments.chart_number
                 or atlas_request.output_dir != arguments.output_dir):

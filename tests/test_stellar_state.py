@@ -1785,7 +1785,7 @@ def test_stellar_sheet_borrows_matching_live_view_without_rebinding(motion_sourc
     assert not hasattr(sky.stars, '_stellar_realization')
 
 
-def _synthetic_publication_worker(directory, digest, command, motion_input, design_sha256):
+def _synthetic_publication_worker(directory, digest, command, motion_input, design_sha256, frame_input=None):
     """Spawn seam replaces source-sky decoding only; all stellar code is real."""
     from pathlib import Path
     from wenu.charts import atlas_publication as publication
@@ -1803,7 +1803,7 @@ def _synthetic_publication_worker(directory, digest, command, motion_input, desi
     original = native_snapshot.read_native_sky_snapshot
     native_snapshot.read_native_sky_snapshot = lambda *a, **k: SyntheticSnapshot()
     try:
-        publication._initialize_atlas_worker(directory, digest, command, motion_input, design_sha256)
+        publication._initialize_atlas_worker(directory, digest, command, motion_input, design_sha256, frame_input)
     finally:
         native_snapshot.read_native_sky_snapshot = original
     # Receipt is written by normal production multiprocessing finalization.
@@ -1820,7 +1820,8 @@ def _synthetic_publication_worker(directory, digest, command, motion_input, desi
     extra_photometry={9:3.})], indirect=True)
 @pytest.mark.parametrize('epoch', [2000., -8000.])
 @pytest.mark.parametrize('jobs', [1, 2])
-def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_document, monkeypatch, epoch, jobs):
+@pytest.mark.parametrize('frame_axes', [None, 'mean-equator-equinox', 'mean-ecliptic-equinox'])
+def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_document, monkeypatch, epoch, jobs, frame_axes):
     """Synthetic snapshot seam, real command/SDK/exports/book; detects static counts."""
     from pathlib import Path
     from hashlib import sha256
@@ -1859,14 +1860,28 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
         for suffix in ('png','pdf','svg'):
             figure.savefig(index.with_suffix('.'+suffix))
         index_bytes = index.read_bytes()
+    frame_options = {}; orientation = None
+    if frame_axes is not None:
+        from test_atlas_cli import _atlas_frame_document
+        from wenu.charts.atlas_sheet import load_atlas_frame
+        frame_config = root / 'frame.toml'
+        # Deliberately independent TT and TCB labels: orientation is not motion.
+        frame_config.write_bytes(_atlas_frame_document(frame_axes, -8000 if epoch == 2000 else 2000))
+        orientation = load_atlas_frame(frame_config.read_bytes())
+        frame_options['atlas_frame_config'] = frame_config
     output = root / 'batch' 
     manifest_path = publication.create_atlas(design, output, presentation=presentation,
-        charts='22,23', jobs=jobs, from_sky=bundle, stellar_motion_config=config, index=index)
+        charts='22,23', jobs=jobs, from_sky=bundle, stellar_motion_config=config, index=index, **frame_options)
     manifest = json.loads(manifest_path.read_text())
     motion = bridge.load_stellar_motion_request(config)
     assert manifest['stellar_realization'] == dict(bridge.stellar_motion_identity(motion),
         model_counts={'full-input-rectilinear':2, 'proper-motion-angular':3,
                       'hipparcos2-angular-fallback':1, 'unavailable':3})
+    if orientation is not None:
+        from wenu.charts.atlas_sheet import atlas_frame_record
+        assert manifest['atlas_frame'] == atlas_frame_record(orientation)
+        assert manifest['atlas_frame_execution_input_sha256']
+        assert all(v['frame_sha256'] == orientation.model.configuration_digest for v in manifest['derived_views'])
     assert manifest['charts'] == [22,23]
     assert manifest['workers'] == jobs
     assert not hasattr(sky.stars, '_stellar_realization')
@@ -1880,7 +1895,7 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
     atlas = AtlasBandTiling.from_json(design.read_text())
     for number in (22,23):
         request = AtlasSheetChartRequest(atlas.geometry.sheets[number-1], atlas.geometry.page,
-            presentation, root / f'direct-{number}', stellar_motion=motion)
+            presentation, root / f'direct-{number}', stellar_motion=motion, orientation=orientation, design_sha256=design_digest, design_bytes=design.read_bytes())
         generate_chart_request(request, sky=sky)
         stem = f'chart-{number:02d}'
         for suffix in ('', '_report'):
@@ -1892,8 +1907,13 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
     pdf = PdfReader(output / 'atlas.pdf')
     if index is not None:
         assert index.read_bytes() == index_bytes == (output/'atlas-index.pdf').read_bytes()
-        assert 'Supplied static reference index' in pdf.pages[0].extract_text()
-        assert manifest['index_reference']['stellar_epoch_updated'] is False
+        if orientation is not None:
+            assert 'frame/date unverified' in pdf.pages[0].extract_text()
+            assert manifest['index_reference']['frame_and_date_verified'] is False
+            assert manifest['index_reference']['stellar_epoch_updated'] is False
+        else:
+            assert 'Supplied static reference index' in pdf.pages[0].extract_text()
+            assert manifest['index_reference']['stellar_epoch_updated'] is False
     assert len(pdf.pages) == len(manifest['page_order'])
     assert all(float(p.mediabox.width) == pytest.approx(atlas.geometry.page.width_mm*72/25.4) for p in pdf.pages)
     if jobs == 2:

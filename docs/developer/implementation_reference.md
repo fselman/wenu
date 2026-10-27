@@ -1,5 +1,59 @@
 # Wenu implementation reference
 
+## Dated-axis atlas views (K4b.06 candidate)
+
+The implementation selected after #352 uses the qualified `LongTermFrame`
+through `CoordinateService.orient_geometry(geometry, orientation, inverse=False)`.
+This re-expresses supported degree spherical carriers without propagating them,
+retains source specification/metadata, segmentation/rings/IDs and NaN gaps,
+and rejects incompatible origins/status/axes or a second forward orientation.
+Inverse reference construction solves the actual matrix, not its transpose.
+
+`LayerRealizationContext.orientation` is an optional admitted frame, restricted
+to the native source route. Its existing `product_coordinate_spec` remains the
+native layer-routing contract; the optional view is applied afterward.
+`realize_layer_geometry` in `sky.realization` owns that common source validation
+and orientation before guarding/projection. The sphere and chart-owned secondary
+constellation label regions both use it. Stars remain the stellar-time/model
+owner; source membership, lines and labels acquire no propagation policy.
+
+`AtlasSheetChartRequest` accepts `orientation` and exact `design_bytes` for a
+dated view. It verifies the source design, selected sheet/page and optional
+`design_sha256`; `AtlasMeanAxisSheet` wraps the original ICRS layout as a
+separately identified target-axis derivation. The design format is unchanged.
+`load_atlas_frame(bytes)` reads the separate closed `wenu-atlas-frame/1` TOML.
+`AtlasFrameExecutionInput.capture(path, design_bytes=..., snapshot_sha256=...)`
+retains exact document/design bytes, bound digests and frame/reference matrix
+identity; `admit(design_sha256=..., snapshot_sha256=...)` rebuilds and verifies
+the receiving process's frame. An optional request `frame_input` preserves the
+captured document identity in single-sheet reports. Workers transport data only.
+
+Both installed commands accept `--atlas-frame-config PATH`;
+`create_atlas(..., atlas_frame_config=...)` captures once before dispatch.
+TT equinox and finite TT domain are independent of the existing stellar-motion
+TCB document. Reports record both identities separately, the target-frame centre,
+derived layout, backend/matrices, numerical epoch rounding and unknown physical/
+total frame errors. Publication checks each returned frame/layout/input identity
+before analysis and completion. Catalogue counts retain native source/population
+semantics. Supplied indices are disclosed as static with unverified frame/date.
+
+The dated reference policy constructs canonical mean-equatorial/ecliptic grids,
+ticks, poles and cardinal points at the explicit TT equinox using the qualified
+paired frames. Galactic references and source shapes/membership retain their
+meaning. Canonical J2000 source grids are the admitted construction templates;
+other equinox/frame reference policies or arbitrary celestial points refuse
+instead of being silently reinterpreted. Reference source coordinates/specs
+are retained separately. Primary ecliptic ticks use degrees; equatorial ticks
+use RA hours. Ecliptic edge furniture requires `ecliptic_grid` in the independent
+presentation; no layer is silently added or renamed. Omitting frame input keeps
+the native route. No observer, persistence, nutation or new accuracy claim follows.
+
+A demonstrated empty-field publication case is handled by the SVG sizing
+analyser only when the checksummed SVG and independent report agree with a
+zero visible-star count. Missing markers for a nonempty or unverified field
+still refuse. Focused candidate tests are separate from pending Mac actual-cache
+and visual acceptance; parent K4b.06 and K4b.07/K4b.08 remain open.
+
 ## Native stellar motion in atlas publications
 
 `wenu_create_atlas` accepts the same `--stellar-motion-config PATH` scientific
@@ -2851,5 +2905,6 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
 

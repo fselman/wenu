@@ -133,34 +133,9 @@ class CelestialSphere:
             geometry_options, prepare, render_options = (
                 self._pipeline_options(configured)
             )
-            spherical = (
-                layer.spherical_geometry(
-                    resolved_observer,
-                    **geometry_options,
-                )
-                if realization_context is None
-                else layer.realize(
-                    realization_context,
-                    resolved_observer,
-                    **geometry_options,
-                )
-            )
-            if native_icrs:
-                spec = spherical.coordinate_spec
-                if (spec.frame != "icrs" or spec.origin != "solar-system-barycenter"
-                        or spec.position_status.value != "astrometric"
-                        or (spec.instant is not None and (
-                            spec.instant != realization_context.evaluation_instant
-                            or spec.time_scale != realization_context.evaluation_time_scale))):
-                    raise ValueError("Native ICRS layers must return matching barycentric astrometry.")
-            if realization_context is not None and realization_context.reception is not None:
-                spec = spherical.coordinate_spec
-                expected = realization_context.product_coordinate_spec
-                if (any(getattr(spec, key) != getattr(expected, key) for key in
-                        ("frame", "origin", "position_status", "instant", "time_scale",
-                         "longitude_unit", "latitude_unit", "corrections"))
-                        or realization_context.reception.identity not in spec.provenance):
-                    raise ValueError("Observed layers must return matching reception-bound vacuum geometry.")
+            from wenu.sky.realization import realize_layer_geometry
+            spherical = realize_layer_geometry(layer, realization_context,
+                resolved_observer, **geometry_options)
             project = (
                 projection.project_geometry
                 if project_geometry is None

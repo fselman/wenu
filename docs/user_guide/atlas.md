@@ -258,3 +258,77 @@ choose worker count for the actual workload rather than assuming a speedup.
 Physical ancient-position accuracy remains unknown.
 
 
+
+## Mean-axis atlas views
+
+The K4b.06 candidate adds an optional scientific frame document to both
+`wenu_chart atlas-sheet` and `wenu_create_atlas`. It changes axes while retaining
+a barycentric origin. It does not move stars unless the independent
+`--stellar-motion-config` is also supplied, and does not reconstruct an observer.
+Mac actual-cache and visual acceptance remain pending.
+
+Example `frame-jminus8000-v1.toml`:
+
+```toml
+schema_version = 1
+document_kind = "wenu-atlas-frame"
+axes = "mean-equator-equinox"
+model_policy = "vcw2011-2012-erfa"
+
+[equinox]
+jd1 = -1200955
+jd2 = 0.0
+scale = "tt"
+
+[start]
+jd1 = -1200956
+jd2 = 0.0
+scale = "tt"
+
+[stop]
+jd1 = 2451546
+jd2 = 0.0
+scale = "tt"
+```
+
+These two-part dates declare a J-8000 TT equinox and a finite caller domain.
+They are not a calendar-date or TCB conversion. Use
+`axes = "mean-ecliptic-equinox"` for mean ecliptic axes. The corrected VCW
+model admits only its qualified finite frame range J-198000..J202000;
+source-motion and ephemeris domains remain separate, and physical accuracy
+is unknown.
+
+With an existing matching design/source sky and a new output location:
+
+```bash
+wenu_chart atlas-sheet --design /absolute/path/design.json \
+  --config /absolute/path/presentation.toml \
+  --from-sky /absolute/path/source-sky --chart-number 13 \
+  --stellar-motion-config /absolute/path/motion-v1.toml \
+  --atlas-frame-config /absolute/path/frame-jminus8000-v1.toml \
+  --output-dir /absolute/path/new-dated-sheet
+```
+
+For a book, add the same `--atlas-frame-config` to the existing
+`wenu_create_atlas` invocation. Both serial and spawn workers preserve the
+captured scientific identity. No ordinary chart-family option or motion schema
+has changed. The original ICRS design bytes stay intact; an explicitly identified
+derived view uses their numerical layout in the selected axes.
+
+The full presentation still selects layers. For ecliptic longitude/latitude
+edge marks, include `ecliptic_grid` in its `layers`; `equatorial_grid` alone
+draws the dated mean-equatorial reference in the ecliptic view without pretending
+it is the primary ecliptic graticule. Equatorial edge labels use RA hours;
+ecliptic edge labels use longitude degrees. Existing RA-cadence presentation
+values set the corresponding 15-degree multiples for ecliptic meridians.
+No layer is automatically added or renamed. Dated canonical references use the
+TT mean-axis policy; Galactic references remain fixed. Noncanonical reference
+grids/arbitrary celestial point policies refuse explicitly.
+
+Reports retain the source design hash, derived sheet/frame identity, TT equinox,
+stellar TCB event when present, target-axis centre, backend/matrices and unknown
+accuracy. A supplied index remains a static unverified frame/date reference.
+Omitting `--atlas-frame-config` retains native ICRS behavior.
+
+
+

@@ -131,16 +131,19 @@ class AtlasPublicationBatchPlan:
 _WORKER_SKY = None
 _WORKER_CHART_COMMAND = None
 _WORKER_MOTION = None
+_WORKER_FRAME = None
+_WORKER_FRAME_INPUT = None
+_WORKER_DESIGN = None
 _WORKER_SCOPE = None
 _WORKER_FINALIZER = None
 
 
 def _close_atlas_worker():
     """Explicit spawn-process finalization, also safe after partial setup."""
-    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION
+    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION, _WORKER_FRAME, _WORKER_DESIGN, _WORKER_FRAME_INPUT
     global _WORKER_SCOPE, _WORKER_FINALIZER
     scope, finalizer = _WORKER_SCOPE, _WORKER_FINALIZER
-    _WORKER_SKY = _WORKER_CHART_COMMAND = _WORKER_MOTION = None
+    _WORKER_SKY = _WORKER_CHART_COMMAND = _WORKER_MOTION = _WORKER_FRAME = _WORKER_DESIGN = _WORKER_FRAME_INPUT = None
     _WORKER_SCOPE = _WORKER_FINALIZER = None
     if finalizer is not None:
         finalizer.cancel()
@@ -149,7 +152,7 @@ def _close_atlas_worker():
 
 
 def _initialize_atlas_worker(directory, digest, chart_command=None,
-                             motion_input=None, design_sha256=None):
+                             motion_input=None, design_sha256=None, frame_input=None):
     import matplotlib
     matplotlib.use("Agg", force=True)
     from contextlib import ExitStack
@@ -157,7 +160,7 @@ def _initialize_atlas_worker(directory, digest, chart_command=None,
     from wenu.sky.native_snapshot import read_native_sky_snapshot
     from wenu.sky.assembly import stellar_realization_sky
     from wenu.stellar_state import StellarMotionExecutionInput
-    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION
+    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION, _WORKER_FRAME, _WORKER_DESIGN, _WORKER_FRAME_INPUT
     global _WORKER_SCOPE, _WORKER_FINALIZER
     _close_atlas_worker()
     scope = ExitStack()
@@ -170,9 +173,19 @@ def _initialize_atlas_worker(directory, digest, chart_command=None,
             snapshot.require(design_sha256=design_sha256)
             motion = motion_input.admit(snapshot_sha256=snapshot.manifest_sha256,
                                         design_sha256=design_sha256)
+        orientation = None
+        if frame_input is not None:
+            from .atlas_sheet import AtlasFrameExecutionInput
+            if type(frame_input) is not AtlasFrameExecutionInput:
+                raise TypeError('Expected captured atlas frame execution input.')
+            snapshot.require(design_sha256=design_sha256)
+            orientation=frame_input.admit(design_sha256=design_sha256,
+                snapshot_sha256=snapshot.manifest_sha256)
         sky = snapshot.make_sky()
         if motion is not None:
             sky = scope.enter_context(stellar_realization_sky(sky, motion))
+        _WORKER_FRAME_INPUT = frame_input
+        _WORKER_FRAME, _WORKER_DESIGN = orientation, (None if frame_input is None else frame_input.design_bytes)
         _WORKER_SCOPE = scope
         _WORKER_FINALIZER = Finalize(None, _close_atlas_worker, exitpriority=10)
         _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION = sky, chart_command, motion
@@ -184,14 +197,17 @@ def _initialize_atlas_worker(directory, digest, chart_command=None,
         raise
 
 
-def _render_atlas_sheet(task, sky=None, *, chart_command=None, stellar_motion=None):
+def _render_atlas_sheet(task, sky=None, *, chart_command=None, stellar_motion=None,
+                        orientation=None, design_sha256=None, design_bytes=None, frame_input=None):
     """Dispatch through the canonical command, borrowing process-owned stars."""
     sheet, page, presentation, directory = task
     command = chart_command if chart_command is not None else (_WORKER_CHART_COMMAND if sky is None else None)
     if sky is None:
         sky, stellar_motion = _WORKER_SKY, _WORKER_MOTION
+        orientation, design_bytes, frame_input = _WORKER_FRAME, _WORKER_DESIGN, _WORKER_FRAME_INPUT
     request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory),
-                                    stellar_motion=stellar_motion)
+                                    stellar_motion=stellar_motion, orientation=orientation,
+                                    design_sha256=design_sha256,design_bytes=design_bytes,frame_input=frame_input)
     if command is None:
         from wenu.cli.chart import main as command
     status = command(["atlas-sheet", "--chart-number", str(sheet.number),
@@ -223,7 +239,7 @@ def _append_atlas_index(writer, reader, page, *, static_note=False):
             from matplotlib.figure import Figure
             from pypdf import PdfReader
             figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
-            figure.text(.5, .008, 'Supplied static reference index; stellar epoch not updated.',
+            figure.text(.5, .008, static_note if isinstance(static_note,str) else 'Supplied static reference index; stellar epoch not updated.',
                         ha='center', va='bottom', fontsize=6)
             buffer = io.BytesIO()
             figure.savefig(buffer, format='pdf', transparent=True)
@@ -284,7 +300,7 @@ def _read_selection_criteria(paths, catalogues):
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                  save_sky=None, from_sky=None, index=None, chart_command=None,
                  open_cluster_catalogue=None, planetary_nebula_catalogue=None,
-                 selection_criteria=(), stellar_motion_config=None):
+                 selection_criteria=(), stellar_motion_config=None, atlas_frame_config=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -414,6 +430,12 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             motion_input, motion = StellarMotionExecutionInput.capture(stellar_motion_config,
                 snapshot_sha256=digest, design_sha256=hashlib.sha256(raw).hexdigest())
             science = stellar_motion_identity(motion)
+        frame_input = orientation = frame_science = None
+        if atlas_frame_config is not None:
+            from .atlas_sheet import AtlasFrameExecutionInput, atlas_frame_record
+            frame_input,orientation=AtlasFrameExecutionInput.capture(atlas_frame_config,
+                design_bytes=raw,snapshot_sha256=digest)
+            frame_science=atlas_frame_record(orientation)
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
         for record in criteria:
             (staging / record['file']).write_bytes(record['content'])
@@ -430,6 +452,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             completed = []
             for task in tasks:
                 options = {} if motion is None else dict(stellar_motion=motion)
+                if orientation is not None:
+                    options.update(orientation=orientation,design_bytes=raw,design_sha256=hashlib.sha256(raw).hexdigest(),frame_input=frame_input)
                 if chart_command is not None:
                     options['chart_command'] = chart_command
                 completed.append(_render_atlas_sheet(task, sky, **options))
@@ -444,7 +468,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                     mp_context=multiprocessing.get_context("spawn"),
                     initializer=_initialize_atlas_worker,
                     initargs=(str(directory), digest, chart_command, motion_input,
-                              hashlib.sha256(raw).hexdigest()))
+                              hashlib.sha256(raw).hexdigest()) + (() if frame_input is None else (frame_input,)))
                 pending = {}
                 remaining = iter(tasks)
                 done_numbers = set()
@@ -475,6 +499,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                         os.environ[key] = value
         if completed != [sheet.number for sheet in sheets]:
             raise RuntimeError("Incomplete atlas batch.")
+        if frame_science is not None:
+            from wenu.atlas_design import AtlasMeanAxisSheet
+            for sheet in sheets:
+                report=json.loads((staging/f'chart-{sheet.number:02d}_report_data.json').read_text())
+                derived=AtlasMeanAxisSheet(sheet,hashlib.sha256(raw).hexdigest(),
+                    orientation.model.configuration_digest,orientation.axes)
+                if (report.get('atlas_frame') != frame_science or report.get('derived_view') != derived.record()
+                        or report.get('atlas_frame_execution_input_sha256') != frame_input.integrity_sha256):
+                    raise ValueError('Atlas sheet returned a different frame or derived layout.')
         if science is not None:
             # Validate every returned scientific binding before analysis/publication.
             for sheet in sheets:
@@ -511,18 +544,23 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 count_provenance['stellar_realization'] = dict(science, model_counts=population)
                 if getattr(catalogue_sky.stars, '_stellar_realization', None) is None:
                     raise ValueError('Catalogue counts require the publication stellar view.')
+            if frame_science is not None:
+                count_provenance['atlas_frame'] = frame_science
             count_report = render_catalogue_star_counts(catalogue_sky.stars,
                 staging / "atlas-star-counts", magnitude_limit=presentation.star_magnitude_limit,
                 page=atlas.geometry.page, dpi=presentation.dpi,
                 provenance=count_provenance)
         with PdfWriter() as writer:
             writer.page_layout = '/TwoPageLeft'
-            if motion is not None and index_bytes is not None:
+            if frame_science is not None and index_bytes is not None:
+                writer.add_metadata({'/Subject': 'Supplied static index; frame and date unverified, not regenerated.'})
+            elif motion is not None and index_bytes is not None:
                 writer.add_metadata({'/Subject': 'Supplied static reference index; stellar epoch not updated.'})
             page_order = []
             if index_bytes is not None:
                 _append_atlas_index(writer, index_reader, atlas.geometry.page,
-                                    static_note=motion is not None)
+                                    static_note=('Supplied static index; frame/date unverified, not regenerated.'
+                                        if frame_science is not None else motion is not None))
                 page_order.append(dict(page=1, kind="index"))
                 writer.add_outline_item("Atlas index", 0)
                 writer.add_blank_page(width=atlas.geometry.page.width_mm * 72 / 25.4,
@@ -578,6 +616,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             manifest['stellar_execution_input_sha256'] = motion_input.integrity_sha256
             manifest['index_reference'] = (None if index_bytes is None else dict(
                 kind='supplied-static-reference', stellar_epoch_updated=False,
+                sha256=manifest['index_sha256']))
+        if frame_science is not None:
+            manifest['atlas_frame']=frame_science
+            manifest['atlas_frame_execution_input_sha256']=frame_input.integrity_sha256
+            manifest['derived_views']=[AtlasMeanAxisSheet(sheet,hashlib.sha256(raw).hexdigest(),
+                orientation.model.configuration_digest,orientation.axes).record() for sheet in sheets]
+            manifest['index_reference']=(None if index_bytes is None else dict(
+                kind='supplied-static-reference',frame_and_date_verified=False,regenerated=False,
+                stellar_epoch_updated=False,
                 sha256=manifest['index_sha256']))
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         # Successful scientific cleanup precedes the public completion marker.

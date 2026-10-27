@@ -1353,3 +1353,44 @@ class AtlasDesignRequest:
         result = designer(self.design_id, self.revision, self.page, self.overview, **options)
         return replace(result, request_json=self.request_json)
 
+
+
+@dataclass(frozen=True)
+class AtlasMeanAxisSheet:
+    """Derived numerical layout in declared mean axes, retaining the ICRS source.
+
+    Projection/viewport calculations use the existing layout mathematics.
+    The source sheet is never mutated or relabelled as a framed design file.
+    Legacy internal RA/Dec attribute names denote longitude/latitude here.
+    """
+    source: AtlasSheetGeometry
+    design_sha256: str
+    frame_sha256: str
+    axes: str
+
+    def __post_init__(self):
+        import re
+        if (type(self.source) is not AtlasSheetGeometry
+                or self.axes not in ('mean-equator-equinox','mean-ecliptic-equinox')
+                or any(not isinstance(v,str) or not re.fullmatch('[0-9a-f]{64}',v)
+                       for v in (self.design_sha256,self.frame_sha256))):
+            raise ValueError('A derived atlas view requires exact source design/frame identities.')
+
+    @property
+    def sheet_id(self):
+        import hashlib, json
+        payload=[asdict(self.source),self.design_sha256,self.frame_sha256,self.axes,'target-axis-layout/1']
+        return self.source.sheet_id+':view:'+hashlib.sha256(
+            json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+    def __getattr__(self, name):
+        # No recursive lookup while pickle/dataclasses reconstruct the record.
+        source=object.__getattribute__(self,'source')
+        return getattr(source,name)
+
+    def record(self):
+        return dict(policy='target-axis-layout/1', source_design_sha256=self.design_sha256,
+            source_sheet_id=self.source.sheet_id, sheet_id=self.sheet_id, axes=self.axes,
+            frame_sha256=self.frame_sha256, longitude_deg=self.center_ra_deg,
+            latitude_deg=self.center_dec_deg, pole_meridian_longitude_deg=self.pole_meridian_ra_deg,
+            position_angle_deg=self.position_angle_deg, flip_ew=self.flip_ew)
