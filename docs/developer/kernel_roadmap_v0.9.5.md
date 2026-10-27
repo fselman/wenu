@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 109, 2026-10-27. **Status:** PR #346's native Python atlas-sheet slice passed Mac runtime/documentation, real-cache cold/restored J2000/J-8000 workloads and Fernando's visual review, then merged at `ab8a7e9a`. Clean synchronized Mac main and cleanup are confirmed. PR #347's CLI/TOML scope was explicitly accepted after 36 Mac documentation passes in 4.65 s at `95e3ed5a`, merged at `acbdc3b8` and cleaned up. Fernando selected implementation on 2026-10-27 with “Let us proceed”. Only the bounded native single-sheet CLI/TOML slice below is active; no parent K4b.06 closure is claimed.
+**Plan revision:** 112, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `acbdc3b8464edddde066ac6eee80d5b7f44bfe36`,
-confirmed clean/synchronized on the Mac after PR #347 merge and branch cleanup.
+**Current accepted base:** main `c319c88fc3dac04f8cedbef7ab443a8cd0cc1ace`,
+confirmed clean/synchronized on the Mac after PR #348 merge and branch cleanup.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | PR #346 native Python atlas-sheet slice accepted, merged and cleaned up; Mac cold/restored workloads and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Accepted CLI/TOML extension of the existing native single-sheet path; implementation selected on 2026-10-27. Stars retain realization ownership; observer/frame/batch work stays separate |
+| Current bounded result | PR #348 native single-sheet CLI/TOML slice accepted, merged and cleaned up; all Mac gates, actual-cache CLI/Python parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
+| Next bounded submilestone | Define the native atlas publication/worker execution boundary below, including process-local stellar ownership, catalogue-count consistency and supplied static-index disclosure. Concrete scope proposed for review before runtime work |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -161,16 +161,26 @@ It is a subdivision of existing K4b.06 obligations, not a new scientific milesto
 The acceptance/selection receipt was committed before runtime edits at
 `0a8525651117007aa8c5e60ff1e851490892aae9`.
 
-**Implementation candidate:** `stellar_state.py::load_stellar_motion_request`
-now admits a separate strict schema-1 motion TOML; `cli/chart.py` exposes
-`--stellar-motion-config` only on `atlas-sheet` and passes the resulting request
-through the existing native sheet/executor. Source/model ownership, refusal and
-report provenance remain stellar-owned. Forty new synthetic admission/command
-cases and nine retained native realization/export cases pass locally, including
-fresh offline processes and unchanged no-motion parity. Dropping the command
-binding deliberately fails the closest seam. Complete Mac runtime/documentation
-and actual saved-sky public-command parity remain pending. This candidate closes
-no parent/sibling gate and activates no observer or worker adoption.
+**Accepted implementation:** PR #348's bounded single-sheet CLI/TOML slice is accepted and merged at
+`c319c88fc3dac04f8cedbef7ab443a8cd0cc1ace`. Fernando confirmed clean
+synchronized Mac main and deletion of the task branch locally and remotely.
+At `e0cfa8b8`, 49 stellar/configuration cases passed in 17.85 s, 27 atlas cases
+in 9.75 s, and all 36 documentation cases in 3.06 s. Logs and provenance are
+retained in `~/Software/build/wenu/test/stellar-motion-cli-v1-vxgntb1y`.
+
+The actual installed-command run `stellar-cli-acceptance-v1-2uivsdha`, under
+`~/Software/build/wenu/output/`, passed for Orion (sheet 13) and the Big Dipper
+(sheet 28), at both J2000 and J-8000 TCB. All four reports matched independent
+prepared Python requests exactly; chart and report PNG pixels matched, and
+PNG/PDF/SVG checks passed. Every case retained 97,710 full-input Gaia, 17,395 Gaia
+angular and 2,850 Hip2 fallback models, with 263 explicit gaps (118,218 source
+objects). Retained source/saved-sky bytes and the checkout were unchanged.
+Completion-manifest SHA256:
+`5aeaf874684381ab337356aaf75bf4667df9ad7554adfdd6dbf644cfb58dd48c`.
+Fernando confirmed line/label placement on present and ancient charts, then
+requested merge/cleanup. These are reported Mac results and user visual
+acceptance, not independent assistant inspection of those output files.
+The parent K4b.06 and other product/worker/observer obligations remain open.
 
 **Pre-implementation assessment:** `cli/chart.py::_atlas_sheet` already validates design, atlas-style
 TOML and a source-only saved sky, constructs `AtlasSheetChartRequest`, and calls
@@ -233,8 +243,231 @@ bright-star audit execution, physical accuracy guarantee, dependency or package
 extraction. A source-only saved sky is an input, not serialized motion state.
 The remaining K4b.06 gates and bright-star audit retain their placement and need
 their own bounded selections. The accepted definition introduced no runtime option or schema by itself;
-the candidate above implements only this selected boundary without changing
+the accepted implementation covers only this boundary without changing
 test collection, dependencies or the ordinary chart configuration schema.
+
+## K4b.06: native atlas publication and worker scope
+
+**Selection:** after PR #348 merge/cleanup, Fernando requested the next step and
+its placement in the roadmap. The proposal was multi-sheet `wenu_create_atlas`
+adoption with serial/worker parity, failure cleanup and ancient specimens.
+He said “Proceed”. This selects recording that acceptance and defining the
+concrete publication/transport/lifetime boundary below. These details are
+proposed for review before runtime work; they do not activate observers,
+frame science or the whole remaining K4b.06 backlog.
+
+**Result and compatibility:** expose the same explicit scientific motion TOML
+on the existing `wenu_create_atlas` publication path. One verified source, caller
+model order/policies, finite coverage and nominal TCB event govern all selected
+chart pages and dependent stellar report inputs. Keep design/layout, presentation,
+chart selection, source-only `--save-sky`/`--from-sky`, no-motion defaults,
+page order, physical page sizes, selection-criteria PDFs and atomic publication.
+Do not require a new source-snapshot format or reinterpret a saved source sky
+as evaluated historical state. The existing batch-planning schema need not
+change merely to add an explicit execution input.
+
+**Existing owners and missing connection:** `cli/atlas.py::create_main` reads
+presentation and calls `charts/atlas_publication.py::create_atlas`. Serial
+publication uses a prepared/restored sky; spawn workers restore one sky in
+`_initialize_atlas_worker`. Both call `_render_atlas_sheet`, which currently
+constructs a request without motion and invokes the canonical chart command.
+The publication also builds sizing analysis and a whole-catalogue count appendix;
+the parallel parent currently restores a separate source-native sky for counts.
+Its optional index is a supplied static PDF with companions, not a regenerated
+historical stellar product. These are separate from per-sheet propagation.
+
+**Proposed transport and ownership:** capture a data-only, integrity-bound
+description of the existing scientific motion input before dispatch: exact TOML
+bytes/digest, a resolved local source location and its expected immutable
+manifest identity, together with the already verified source-sky/design identities.
+Keep this description with the stellar input owner, using the same validation
+and admissions as the single-sheet loader. Workers must reconstruct their own
+admitted stellar inputs from that description and verify the pinned source;
+they must not reread an unbound mutable config path or resolve relative paths
+against a worker's current directory. Reject corrupt/unknown descriptor data and
+source mismatch. No live `StellarMotionRequest`, provider, session, kernel or
+realized sky is pickled. Its current live-request transport refusal remains.
+This is only the bounded atlas execution-description transport, not a general
+serialized kernel state or evaluated-sky persistence protocol.
+
+**Lifetime and reuse:** admit one stellar input set per serial publication or
+worker process, and open a stellar-owned realized view for that execution
+lifetime. Sheets consume the bound public stellar positions through the current
+command/executor/render route. Reuse may occur across sheets within the owning
+process; no cross-process live cache or per-line/label session is introduced.
+Bound state must not leak into later publications/epochs or mutate a borrowed
+source sky. Close owned resources on normal exit, partial initializer failure,
+render/refusal, interruption and pool shutdown. Use explicit worker finalization
+compatible with spawn; operating-system process reclamation alone is not a
+successful-path cleanup receipt. Independent processes can have different query/
+reuse counts; science and provenance must agree.
+
+**Publication-wide consistency:** sizing analysis uses the actual returned sheet
+products. Feed the catalogue-count consumer the same stellar realization and
+retain original HIP/V deduplication and membership; unavailable positions remain
+explicitly unavailable. Its count inputs/provenance must disclose the event and
+motion/source identity, rather than quietly using a separately restored static
+sky. Retained source-population counts and evaluated-position availability remain
+distinct. Preserve the existing count definition and limits; do not invent new
+photometry or evolve unrelated catalogue layers.
+
+Treat an optional supplied index explicitly as a static reference document,
+retaining its byte identity and identifying that status in publication metadata
+and visible publication context. Do not claim its stellar content shares the
+historical epoch or silently redraw it. Source-selection/editorial PDFs also
+remain source documents. All historical stellar charts/reports disclose nominal
+epoch, model/source identity, gaps and unknown physical accuracy.
+
+**Integrity, failure and manifest:** bind the execution description before any
+public output. Every worker's admitted identities and event must agree with the
+parent; corruption or refusal aborts the batch, never selects a static fallback.
+The final completion manifest and relevant report/appendix provenance identify
+the motion document, source/model admissions, finite domains and common event.
+Keep diagnostic worker/query/reuse/timing data separate from science identity.
+Do not publish the completion marker for an incomplete batch; preserve existing
+destinations, retained source skies, unrelated competing writers and evidence.
+Clean only owned staging; restore temporary process/environment configuration.
+
+**Acceptance:** extend existing `test_atlas_cli.py`, `test_stellar_state.py`
+and closest request-lifetime/publication consumers. First select the nearest
+existing failure, spawn, no-clobber, serial/parallel and returned-value tests;
+test the new boundaries rather than repeat propagation/projection proofs.
+Use synthetic immutable sources for deterministic coverage of captured-input
+mutation, corrupt descriptors, wrong source/design/event, missing stellar inputs,
+initializer/render/warm refusal, incomplete workers, source immutability, cleanup
+and unchanged no-motion paths. A deliberate dropped binding in either serial
+or worker execution must fail; a deliberately static catalogue-count consumer
+must also fail. Verify realized-view reuse within a process and isolation between
+processes/requests. A worker failure must retain no public completion manifest.
+
+Then run the complete focused Mac runtime/documentation gates and an offline
+actual-cache two-sheet batch at J2000/J-8000 with `jobs=1` and `jobs=2`, using
+the retained source-only sky and explicit motion input. Compare each sheet with
+the accepted single-sheet route; verify chart/report PNG pixels, scientific
+records, source/model/event/gaps, count appendix, PDF page order and physical
+sizes. Compare science/provenance independently of legitimately varying telemetry:
+worker count, elapsed time, per-process query/evaluation/reuse counters and
+execution paths. Preserve numerical and source identities; do not broadly ignore
+report differences. Review actual epoch-labelled atlas/chart specimens visually.
+Use `~/Software/build/wenu/` and `run-provenance.json`; retain earlier evidence.
+
+**Limits:** no new stellar input/model/policy, source acquisition or redistribution,
+bright-star audit execution, dated-axis/observer/EOP adoption, other ordinary
+chart families, general motion-request pickling, temporal sequence, evaluated
+snapshot, independent package, SDK freeze or parent K4b.06 closure is selected.
+The supplied static index remains a disclosed reference. Improved sources and
+other remaining adoption obligations still require their own bounded selection.
+
+## K4b.07: reusable epoch catalogues and Solar System companion states
+
+**Agreement and status:** on 2026-10-27 Fernando requested a separate milestone
+for persistent ancient/future epoch catalogues, configurable nearby-epoch reuse,
+a preparation tool and subsequent atlas/regional-chart consumption. He also
+requested considering Earth and Solar System states saved alongside the stellar
+catalogue. This records that capability as agreed roadmap scope, not implemented
+or scientifically qualified functionality. Detailed format, model continuation,
+consumer adoption and acceptance scopes must be reviewed before runtime work.
+It is separate from K4b.06's proposed publication/worker implementation; that
+scope does not acquire persistence or additional observer science.
+
+**Dependencies and order:** first retain the selected K4b.06 publication/worker
+scope and its independent acceptance. Before activating K4b.07, assess the
+existing stellar, Cartesian, ephemeris, time and observer owners and agree its
+bounded implementation sequence. Exact-epoch publication/reload/parity is the
+first proposed implementation slice; nearby-epoch reuse and applicable consumer/
+companion adoption follow separately reviewed boundaries. This does not silently
+reorder remaining K4b.06 obligations or make all optional observer capabilities
+prerequisites for a native stellar catalogue. Reconcile the accepted format and
+public interfaces at K5 before freezing/extracting affected contracts.
+
+**Epoch catalogue and tool:** provide an explicit offline preparation tool and
+versioned immutable data-only product for one declared nominal epoch. Preserve
+all source identities, original photometry/names/membership, ordered model
+selection, gaps/refusals and original source facts. Save evaluated full-input
+Cartesian position/velocity where supported, separately typed angular-model
+data where distance/RV are unavailable, and the original model coefficients/
+reference event needed for faithful continuation. Do not fabricate physical
+distance or velocity for angular-only rows, reset a normalized angular model's
+reference epoch, or repeatedly propagate rounded exported directions. Determine
+which stellar Cartesian capabilities are actually exposed and qualify any
+necessary adapter extension; full Cartesian persistence is not already supplied
+by the existing stellar direction interface.
+
+The manifest binds payload bytes, source/model/resource identities and policies,
+original and evaluated epochs, time scales, frame/origin/units/status, domains,
+capabilities, code/format versions and separate known/unknown error channels.
+Retain source provenance and uncertainty meaning; a derived epoch product never
+replaces or relabels the immutable source catalogue or source-only saved sky.
+Use explicit destinations, atomic no-clobber publication and a completion marker
+last. No live provider/session/kernel pickling or implicit source acquisition.
+
+**Nearby-epoch reuse:** Fernando clarified on 2026-10-27 that a configurable
+time window controls reuse without advancement. After resolving compatible
+catalogue/model identities and expressing the requested and catalogue epochs
+on the admitted common time scale, compare their absolute separation with the
+configured nonnegative window. At or inside the window, use stored positions
+unchanged. Beyond it, advance through the admitted model to the actual requested
+event, observing its time scale, rate units and any required explicit conversion
+receipts. Zero window permits unchanged reuse only at the same event. The
+100-Julian-year example is configurable, not a universal physical-validity claim.
+Record catalogue epoch, requested event, actual position epoch, window, whether
+positions were reused or advanced, model/source identities and conversion receipts.
+
+The configured window explicitly selects the fixed-position approximation;
+do not substitute a mandatory angular-error certificate for that user policy.
+Displacement/error diagnostics or an additional caller-requested angular tolerance
+may qualify suitability; unknown physical errors remain unknown. Advancement
+must remain within original model/resource domains and preserve original
+coefficients/reference events rather than repeatedly rebase rounded outputs.
+An unsupported advancement refuses or follows an explicitly configured
+recomputation policy; it must not keep stale positions beyond the window.
+Chart/publication workers consume verified products through existing stellar
+and kernel owners. Atlas and regional adoption require their own native/frame/
+observer capability checks; persistence alone does not implement missing science.
+
+**Earth and Solar System companion:** allow a separately identified companion
+with geometric Cartesian position/velocity for an explicit body list including
+Earth and Sun, and selected planets/Moon where the admitted provider supports
+them. Preserve target and centre IDs (Earth centre is distinct from the
+Earth-Moon barycentre), reference origin/axes, units, evaluation event/scale,
+model/resource hashes, coverage and error status for each component. Keep
+stellar TCB and ephemeris TDB coordinate conventions explicit; common-event
+composition needs an admitted time conversion and spatial/state convention
+receipt, never matching year labels or subtracting incompatible states.
+
+A barycentric stellar catalogue does not require an Earth state merely to exist.
+The companion supports separately admitted observer/relative-state consumers;
+it is optional for native barycentric stellar charts. A single saved Earth/
+planet state is an exact-event record, not an orbit or a 100-year ephemeris.
+Give companion components independently declared reuse windows appropriate to
+their own admitted policy; the stellar window does not apply to them. Beyond
+a companion's window, evaluate the requested event using verified ephemeris
+resources or a separately qualified interval representation with coverage/error
+checks, never stellar linear extrapolation of planetary states. Ephemeris coverage is independent of
+the stellar domain: out-of-range bodies remain explicitly unavailable, or fail
+when required. No promise of Earth/planet reconstruction at J-2000000 follows.
+Saving a snapshot supplies neither historical Earth orientation/rotation,
+site geometry, Delta-T/EOP, apparent corrections nor retarded-time ephemeris
+samples. Additional models/resources, their acquisition and their qualification
+need their own explicit review.
+
+**Acceptance:** use closest existing source/admission/Cartesian/ephemeris,
+snapshot, lifetime and chart/publication tests. Verify exact-event fresh-process
+reload against direct evaluation; original source bytes/identities and all row
+statuses; model-faithful nearby-event evaluation on both sides of an anchor;
+unchanged positions inside and exactly at the window, advancement immediately
+outside on either side, zero/invalid windows, explicit time-scale conversions,
+optional tolerance checks and high-motion cases; no accumulated rebasing;
+mixed angular/full capabilities; corrupt or missing payloads, wrong sources,
+frames/centres/scales/events and unsupported format versions; refusal/no-clobber/
+cleanup; and serial/spawn scientific and product parity. Companion tests must
+detect Earth-centre/barycentre substitution, time/state convention mismatch,
+unsupported body/domain, wrongly reused planetary states and missing observer
+capabilities. For supported epochs, compare saved companion states with direct
+provider results and test independent body coverage. Use actual-cache Mac
+atlas/regional specimens only as each consumer becomes admitted, retain workload
+measurements and visual review, and use the established run/provenance locations.
+Persisting results does not certify physical accuracy or extend model validity.
 
 ## K4b.05: qualification review after reference comparisons
 
@@ -2174,7 +2407,9 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML definition proposed for review; remaining sibling/product/worker/CLI gates and bright-star audit stay explicit |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Publication/worker scope proposed for review; remaining sibling/product/observer gates and bright-star audit stay explicit |
+| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; definition/implementation pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
+
 
 ### K5–K9: freeze, extraction and release
 
@@ -2212,10 +2447,11 @@ and preservation of existing capabilities are the roadmap obligations.
 
 ### Optional proposals and exclusions
 
+Persisted epoch catalogues are now separately agreed under K4b.07 above;
+the following remaining proposals do not acquire that status.
 These were mentioned in earlier roadmap text, but are **not activated milestones**
 or automatic prerequisites: Cartesian temporal reuse/error certificates,
-canonical provider schedules, persisted evaluated/common-epoch state formats,
-additional observer correction/absolute-error research, and extending the new
+canonical provider schedules, additional observer correction/absolute-error research, and extending the new
 cluster motion CLI to additional frames. If one is needed, discuss, agree and
 record its scope/dependencies/gate before implementation. This does not defer
 K3's obligation to preserve/reroute all already-existing chart frames or K4's

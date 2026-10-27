@@ -51,8 +51,12 @@ Run the `stellar_motion_document` cases plus retained `stellar_realiz`,
 the closest atlas sheet adapter/report/executor/default/worker contracts; and
 the complete documentation gate. No SDK mathematics, model, dependency, collection
 or gate manifest changes warrant unrelated numerical/family suites.
-Local stellar selection: 49 passed. Complete Mac runtime/documentation and
-actual verified saved-sky public-command J2000/J-8000 parity remain pending.
+Local stellar selection: 49 passed. Complete Mac acceptance in PR #348 passed
+49 stellar/configuration cases in 17.85 s, 27 atlas cases in 9.75 s and 36
+documentation cases in 3.06 s at `e0cfa8b8`. The actual immutable-cache saved-sky
+run passed all four Orion/Dipper J2000/J-8000 CLI/Python report/PNG comparisons;
+Fernando accepted present/ancient line and label placement. PR #348 merged at
+`c319c88f`, followed by clean synchronized Mac main and branch cleanup.
 Use the retained accepted cache/snapshot, a new provenance-recorded directory
 under `~/Software/build/wenu/`, and compare the public command with the accepted
 Python route. Do not overwrite the earlier acceptance run or repeat acquisition.

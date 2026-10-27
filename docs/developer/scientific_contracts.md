@@ -1,5 +1,35 @@
 # Current scientific contracts and paused work
 
+## Planned reusable epoch catalogues (K4b.07)
+
+The separately agreed [K4b.07 milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
+plans persistent evaluated stellar products and optional Earth/Solar System
+companion states; no format, loader, preparation command or consumer adoption
+is implemented by this documentation. Existing source-only skies stay unchanged.
+Full-input Cartesian states and angular-only coefficients retain distinct
+capabilities; no physical distance/velocity is invented. Continuation must
+preserve the original model and reference event, not restart propagation from
+rounded directions or normalized angular coefficients at a new epoch.
+
+The agreed configurable nearby-epoch rule reuses stored positions unchanged at
+or inside the window and advances them through the admitted model beyond it.
+Compare epochs on a compatible time scale; advancement respects model time/rate
+conventions and explicit conversion receipts. Record stored/requested/actual
+position epochs and reuse/advancement status. The window explicitly authorizes
+the fixed-position approximation; an angular tolerance is optional, not a hidden
+prerequisite. A 100-year example is not a physical-error bound.
+Companion geometric states retain their own body/centre, origin/frame, epoch/
+scale, units, resource identity and coverage. Stellar TCB and ephemeris TDB
+composition needs admitted time and spatial/state-convention receipts. Earth
+centre and Earth-Moon barycentre are not interchangeable. A single body state
+does not provide an orbit, nearby-date validity or historical Earth orientation;
+Earth/planet components have independently declared windows; beyond those,
+reevaluate through their admitted ephemeris/interval model. The stellar window
+does not authorize unchanged companion positions.
+Required unsupported components refuse; optional ones remain explicitly missing.
+Unknown errors and remote-epoch ephemeris gaps stay unknown. Saving state does
+not extend physical/model validity or enable an unadmitted observer chart.
+
 ## K4b.06 native stellar integration candidate
 
 The explicit Python native atlas-sheet opt-in uses only previously admitted
@@ -26,7 +56,9 @@ Julian target epoch. This input does not infer a civil date, historical observer
 or dated coordinate axes. The loader belongs to stars; style, line and label
 owners gain no propagation policy. Exact document identity is retained in motion
 reports. Source/model mathematics and the accepted nominal-use limits above are
-unchanged; full Mac command acceptance remains pending.
+unchanged. The bounded command slice passed complete Mac, real-cache parity and
+visual acceptance in PR #348, merged at `c319c88f`; this does not certify physical
+ancient-position accuracy or close the remaining K4b.06 obligations.
 
 ## K4b.05 qualification status
 

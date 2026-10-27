@@ -43,7 +43,8 @@ the existing source/model admission identities, policies, finite coverage,
 resolved event and gaps. Python requests without that field retain their report
 shape; no-motion commands retain their existing output and schema.
 
-This is the bounded single-sheet CLI candidate, pending complete Mac acceptance.
+This bounded single-sheet CLI slice passed complete Mac and real-cache command
+acceptance with visual review in PR #348, merged at `c319c88f`.
 It adds no `wenu_create_atlas` worker transport or ordinary chart-family observer
 adoption. See the [atlas guide](../user_guide/atlas.md#nominal-stellar-motion-for-one-sheet)
 for input and command examples.
