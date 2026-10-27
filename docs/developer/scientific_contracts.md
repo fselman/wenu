@@ -1,10 +1,24 @@
 # Current scientific contracts and paused work
 
+## Planned ancient and future Earth-bound observers
+
+[K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
+not an admitted observer model. A barycentric direction, a TT-oriented view and
+a site-dependent horizon are distinct products. Preserve the current modern
+reception service's finite leap/final-EOP/model limits. Ancient/future routes
+need explicit site/datum assumptions, TT/UT1/TCB/TDB mapping, Earth-rotation
+policy and uncertainty, ephemeris coverage, capability-aware parallax and
+declared apparent/atmospheric corrections. No assumed ancient UTC, predicted
+leap table, fabricated EOP, silent zero offsets or distant-future extrapolation.
+Unknown errors remain unknown; explicitly approximate horizons must disclose
+their assumptions. Persisted Earth PV alone supplies no Earth rotation or site.
+Detailed model/domain/product qualification precedes implementation.
+
 ## Proposed date-oriented atlas boundary
 
 The [K4b.06 proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
-reuses qualified long-term mean-axis orientation; atlas integration is not yet
-implemented or accepted. TT equinox/domain and stellar TCB evaluation remain
+reuses qualified long-term mean-axis orientation; the scope was accepted in #352, while runtime atlas integration remains
+unimplemented. TT equinox/domain and stellar TCB evaluation remain
 separate scientific inputs. A view transformation adds no physical evolution
 of boundaries/shapes, observer state, Earth orientation or accuracy guarantee.
 Dated grids/poles must use the admitted mean-axis policy, while fixed references

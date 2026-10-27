@@ -1,5 +1,18 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Planned Earth-bound ancient and future views
+
+The [K4b.08 observer milestone](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs)
+adds a planned terrestrial product distinct from barycentric atlas directions
+and dated mean axes. Separate geocentric translation, topocentric site position/
+velocity, Earth rotation and requested corrections. Stellar TCB, TT frame/
+dynamical time, ephemeris TDB and rotation UT1 require admitted common-event
+composition; an ancient or future civil label is not implicitly UTC.
+Site datum/epoch, fixed-site assumptions, Delta-T/EOP policy and uncertainty
+must remain explicit. Current modern reception admissions are unchanged.
+K4b.07's optional saved companion states can be inputs, but do not by themselves
+supply a horizon or establish observer accuracy. No new observer CLI is provided.
+
 ## Proposed date-oriented atlas integration
 
 The [K4b.06 as-is review and scope proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
@@ -7,10 +20,10 @@ does not introduce a current atlas frame option. `LongTermFrame` already owns
 qualified TT mean-axis orientation; the atlas currently requires native ICRS,
 and its design sheet centres are ICRS. A derived target-axis layout, common
 pre-domain geometry orientation, dated reference grids and truthful furniture
-are proposed together. Projection alignment alone does not perform that change.
+were accepted as scope in #352; runtime implementation remains pending. Projection alignment alone does not perform that change.
 Stellar TCB evaluation stays independent; no conversion follows from matching
 Julian-year labels. Explicitly fixed reference geometry retains its source
-meaning. Scope agreement precedes runtime integration.
+meaning. The accepted definition does not itself implement runtime integration.
 
 ## Stellar-owned native realization in K4b.06
 
