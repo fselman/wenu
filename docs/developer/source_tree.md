@@ -1,7 +1,9 @@
 # Wenu production source map
 
 K4b.06's selected native-sheet integration extends existing owners only:
-`stellar_state.py` owns explicit model/event inputs and the SDK bridge;
+`stellar_state.py` owns explicit model/event inputs, strict scientific motion-TOML
+loading/source verification and the SDK bridge; `cli/chart.py` adapts that input
+to the existing single-sheet request and formats kernel refusals;
 `objects/stars.py` owns realized public positions; `sky/assembly.py` binds an
 isolated stellar view to dependent position consumers; `charts/atlas_sheet.py`
 uses it in the existing sheet route. Lines retain their public endpoint lookup;

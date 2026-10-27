@@ -97,6 +97,7 @@ class StellarMotionRequest:
 
     catalogues: tuple
     instant: TimePoint
+    input_document_sha256: str | None = None
 
     def __post_init__(self):
         catalogues = tuple(self.catalogues)
@@ -113,9 +114,101 @@ class StellarMotionRequest:
             if not catalogue.coverage.contains(self.instant):
                 raise ValueError('Stellar event lies outside a supplied model domain.')
         object.__setattr__(self, 'catalogues', catalogues)
+        if self.input_document_sha256 is not None:
+            value = self.input_document_sha256
+            if (type(value) is not str or len(value) != 64
+                    or any(c not in '0123456789abcdef' for c in value)):
+                raise ValueError('Invalid stellar motion document SHA-256.')
 
     def __reduce__(self):
         raise TypeError('Stellar motion request transport is not admitted; bind it in the rendering process.')
+
+
+def load_stellar_motion_request(path):
+    """Admit one explicit local motion TOML through existing stellar models.
+
+    This describes a nominal TCB event, never an observer clock or equinox.
+    Paths are relative to the document. Source bytes are verified, not acquired.
+    """
+    from pathlib import Path
+    try:
+        import tomllib
+    except ModuleNotFoundError:  # Python 3.10
+        import tomli as tomllib
+    from wenu.stellar_enrichment import load_stellar_enrichment
+
+    document = Path(path).expanduser().resolve()
+    raw = document.read_bytes()
+    values = tomllib.loads(raw.decode('utf-8'))
+    required = {'schema_version', 'document_kind', 'source_directory',
+                'source_manifest_sha256', 'target_jyear_tcb', 'models'}
+    if values.keys() != required:
+        raise ValueError('Stellar motion document has missing or unknown keys.')
+    if (type(values['schema_version']) is not int or values['schema_version'] != 1
+            or values['document_kind'] != 'wenu-stellar-motion-request'):
+        raise ValueError('Unsupported stellar motion document schema.')
+    digest = values['source_manifest_sha256']
+    if (type(digest) is not str or len(digest) != 64
+            or any(c not in '0123456789abcdef' for c in digest)):
+        raise ValueError('An explicit source manifest SHA-256 is required.')
+    directory = values['source_directory']
+    if type(directory) is not str or not directory.strip():
+        raise ValueError('An explicit local source directory is required.')
+
+    def epoch(value):
+        if type(value) not in (int, float):
+            raise ValueError('TCB Julian epochs must be finite numbers.')
+        try:
+            if not isfinite(value):
+                raise ValueError('TCB Julian epochs must be finite numbers.')
+            return _stellar_epoch(value, 'tcb')
+        except (ValueError, TypeError, OverflowError) as exc:
+            raise ValueError('Unsupported TCB Julian epoch.') from exc
+
+    instant = epoch(values['target_jyear_tcb'])
+    models = values['models']
+    if type(models) is not list or not models:
+        raise ValueError('An explicit nonempty ordered model list is required.')
+    policies = set()
+    admissions = []
+    for model in models:
+        required_model = {'motion_policy', 'start_jyear_tcb', 'stop_jyear_tcb',
+                          'distance_policy', 'radial_velocity_policy'}
+        if type(model) is not dict:
+            raise ValueError('Each stellar model must be a TOML table.')
+        policy = model.get('motion_policy')
+        if type(policy) is not str or policy not in (
+                'full-input-rectilinear', 'proper-motion-angular',
+                'hipparcos2-angular-fallback'):
+            raise ValueError('Unsupported stellar motion policy.')
+        hip2 = policy == 'hipparcos2-angular-fallback'
+        if hip2:
+            required_model.add('epoch_policy')
+        if model.keys() != required_model:
+            raise ValueError('Stellar model has missing or unknown keys.')
+        if policy in policies:
+            raise ValueError('Duplicate stellar models are not admitted.')
+        policies.add(policy)
+        expected = (('positive-parallax-reciprocal', 'spectroscopic-proxy')
+                    if policy == 'full-input-rectilinear' else ('not-used', 'not-used'))
+        if (model['distance_policy'], model['radial_velocity_policy']) != expected:
+            raise ValueError('Unsupported explicit stellar distance/radial-velocity policy.')
+        if hip2 and model['epoch_policy'] != 'nominal-tcb-deferred-qualification':
+            raise ValueError('An explicit nominal Hipparcos-2 epoch policy is required.')
+        try:
+            coverage = TimeSpan(epoch(model['start_jyear_tcb']), epoch(model['stop_jyear_tcb']))
+        except InvalidQuery as exc:
+            raise ValueError('Stellar model domain must be ordered.') from exc
+        if not coverage.contains(instant):
+            raise ValueError('Stellar event lies outside a supplied model domain.')
+        admissions.append((model, coverage))
+
+    source = load_stellar_enrichment(document.parent / Path(directory).expanduser(),
+                                    expected_manifest_sha256=digest)
+    catalogues = tuple(StellarMotionCatalogue(source, coverage,
+        model['distance_policy'], model['radial_velocity_policy'],
+        model['motion_policy'], model.get('epoch_policy')) for model, coverage in admissions)
+    return StellarMotionRequest(catalogues, instant, sha256(raw).hexdigest())
 
 
 class _StellarRealization:
@@ -242,7 +335,7 @@ class _StellarRealization:
             stellar_motion_reason=np.asarray(['' if self._models[n] else ';'.join(self._reasons[n]) for n in indices], dtype=object))
 
     def report(self):
-        return dict(epoch=dict(jd1=self.request.instant.jd1, jd2=self.request.instant.jd2, scale='tcb'),
+        result = dict(epoch=dict(jd1=self.request.instant.jd1, jd2=self.request.instant.jd2, scale='tcb'),
             model_order=[c.motion_policy for c in self.request.catalogues],
             models=[dict(policy=c.motion_policy, identity_sha256=_stellar_digest(c.to_record()),
                          admission=c.to_record()) for c in self.request.catalogues],
@@ -251,6 +344,9 @@ class _StellarRealization:
             public_position_queries=self.query_calls,
             sdk_batches_evaluated=self.sdk_batches_evaluated,
             exact_batch_reuses=self.exact_batch_reuses, physical_accuracy='unknown')
+        if self.request.input_document_sha256 is not None:
+            result['input_document_sha256'] = self.request.input_document_sha256
+        return result
 
 
 @dataclass(frozen=True, slots=True)

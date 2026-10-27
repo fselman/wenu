@@ -595,6 +595,328 @@ def test_stellar_realization_restored_facade_keeps_explicit_binding(motion_sourc
     np.testing.assert_array_equal(restored.native_positions().lon_deg, before.lon_deg)
 
 
+@pytest.fixture
+def motion_document(motion_source, tmp_path):
+    """Byte-bound synthetic local source and explicit motion TOML."""
+    from hashlib import sha256
+    source = motion_source()
+    directory = tmp_path / 'synthetic-source'
+    directory.mkdir()
+    for name, raw in source.products:
+        (directory / name).write_bytes(raw)
+    (directory / 'source_manifest_v1.json').write_bytes(source.manifest)
+    models = [
+        dict(motion_policy='full-input-rectilinear',
+             distance_policy='positive-parallax-reciprocal',
+             radial_velocity_policy='spectroscopic-proxy'),
+        dict(motion_policy='proper-motion-angular',
+             distance_policy='not-used', radial_velocity_policy='not-used'),
+        dict(motion_policy='hipparcos2-angular-fallback',
+             distance_policy='not-used', radial_velocity_policy='not-used',
+             epoch_policy='nominal-tcb-deferred-qualification')]
+    for model in models:
+        model.update(start_jyear_tcb=-8001., stop_jyear_tcb=2050.)
+    data = dict(schema_version=1, document_kind='wenu-stellar-motion-request',
+                source_directory='synthetic-source',
+                source_manifest_sha256=sha256(source.manifest).hexdigest(),
+                target_jyear_tcb=2000., models=models)
+    def write(change=None):
+        from copy import deepcopy
+        values = deepcopy(data)
+        if change:
+            change(values)
+        def literal(value):
+            if type(value) is float:
+                return repr(value)
+            return json.dumps(value)
+        text = '\n'.join(f'{key} = {literal(value)}' for key, value in values.items()
+                         if key != 'models') + '\n'
+        if type(values.get('models')) is list:
+            for model in values['models']:
+                text += '\n[[models]]\n' + '\n'.join(
+                    f'{key} = {literal(value)}' for key, value in model.items()) + '\n'
+        elif 'models' in values:
+            text += 'models = ' + literal(values['models']) + '\n'
+        path = tmp_path / 'motion-v1.toml'
+        path.write_text(text)
+        return path
+    return source, directory, write
+
+
+@pytest.mark.parametrize('epoch', [2000., -8000.])
+def test_stellar_motion_document_matches_explicit_models(motion_document, monkeypatch, epoch):
+    """Protected fault: config must select the same public stellar results."""
+    import numpy as np
+    from hashlib import sha256
+    source, directory, write = motion_document
+    path = write(lambda d: d.update(target_jyear_tcb=epoch))
+    monkeypatch.chdir(path.parent.parent)  # source paths are document-relative
+    request = bridge.load_stellar_motion_request(path)
+    expected = _production_motion(source, bridge._stellar_epoch(epoch, 'tcb'))
+    assert request.input_document_sha256 == sha256(path.read_bytes()).hexdigest()
+    assert request.instant == expected.instant
+    assert [c.motion_policy for c in request.catalogues] == [
+        c.motion_policy for c in expected.catalogues]
+    before = {p.name: p.read_bytes() for p in directory.iterdir()}
+    stars = _production_stars(source)
+    with stars.realized(request) as actual, stars.realized(expected) as reference:
+        a, b = actual.native_positions(), reference.native_positions()
+        np.testing.assert_array_equal(a.lon_deg, b.lon_deg)
+        np.testing.assert_array_equal(a.lat_deg, b.lat_deg)
+        assert actual._stellar_realization.report()['input_document_sha256'] == request.input_document_sha256
+        assert 'input_document_sha256' not in reference._stellar_realization.report()
+    assert {p.name: p.read_bytes() for p in directory.iterdir()} == before
+
+
+@pytest.mark.parametrize('fault', [
+    'schema', 'kind', 'unknown', 'missing', 'digest', 'source', 'boolean-epoch',
+    'nan-epoch', 'inf-epoch', 'string-epoch', 'empty-models', 'model-type',
+    'model-name', 'duplicate-model', 'missing-policy', 'extra-policy',
+    'wrong-distance', 'wrong-rv', 'hip2-epoch', 'nan-domain', 'reverse-domain',
+    'uncovered', 'duplicate-key', 'malformed'])
+def test_stellar_motion_document_refuses_before_source_loading(motion_document, monkeypatch, fault):
+    """Closest existing admission refusals; bad configuration cannot acquire inputs."""
+    source, directory, write = motion_document
+    def change(d):
+        if fault == 'schema': d['schema_version'] = True
+        elif fault == 'kind': d['document_kind'] = 'other'
+        elif fault == 'unknown': d['observer'] = 'now'
+        elif fault == 'missing': del d['source_manifest_sha256']
+        elif fault == 'digest': d['source_manifest_sha256'] = 'BAD'
+        elif fault == 'source': d['source_directory'] = ''
+        elif fault == 'boolean-epoch': d['target_jyear_tcb'] = True
+        elif fault == 'nan-epoch': d['target_jyear_tcb'] = float('nan')
+        elif fault == 'inf-epoch': d['target_jyear_tcb'] = float('inf')
+        elif fault == 'string-epoch': d['target_jyear_tcb'] = '2000'
+        elif fault == 'empty-models': d['models'] = []
+        elif fault == 'model-type': d['models'] = 'full'
+        elif fault == 'model-name': d['models'][0]['motion_policy'] = 'best'
+        elif fault == 'duplicate-model': d['models'].append(d['models'][0].copy())
+        elif fault == 'missing-policy': del d['models'][0]['distance_policy']
+        elif fault == 'extra-policy': d['models'][1]['epoch_policy'] = 'inferred'
+        elif fault == 'wrong-distance': d['models'][0]['distance_policy'] = 'prior'
+        elif fault == 'wrong-rv': d['models'][0]['radial_velocity_policy'] = 'zero'
+        elif fault == 'hip2-epoch': d['models'][2]['epoch_policy'] = 'inferred'
+        elif fault == 'nan-domain': d['models'][0]['start_jyear_tcb'] = float('nan')
+        elif fault == 'reverse-domain': d['models'][0]['stop_jyear_tcb'] = -9000.
+        elif fault == 'uncovered': d['target_jyear_tcb'] = 2051.
+    path = write(change)
+    if fault == 'empty-models':
+        path.write_text(path.read_text() + 'models = []\n')
+    if fault == 'duplicate-key':
+        path.write_text(path.read_text().replace('schema_version = 1', 'schema_version = 1\nschema_version = 1'))
+    if fault == 'malformed':
+        path.write_text('broken = [')
+    from wenu import stellar_enrichment
+    def forbidden(*args, **kwargs):
+        raise AssertionError('invalid document reached source loading')
+    monkeypatch.setattr(stellar_enrichment, 'load_stellar_enrichment', forbidden)
+    with pytest.raises(ValueError):
+        bridge.load_stellar_motion_request(path)
+
+
+@pytest.mark.parametrize('fault', ['manifest', 'payload', 'missing'])
+def test_stellar_motion_document_source_integrity(motion_document, fault):
+    source, directory, write = motion_document
+    path = write()
+    if fault == 'manifest':
+        path = write(lambda d: d.update(source_manifest_sha256='0' * 64))
+    elif fault == 'payload':
+        (directory / 'gaia_sources_v1.jsonl').write_bytes(b'{}\n')
+    else:
+        (directory / 'metadata_v1.json').unlink()
+    with pytest.raises((ValueError, OSError)):
+        bridge.load_stellar_motion_request(path)
+
+
+def _motion_cli_sky(source, directory):
+    """Constructed sky for the file-adapter seam; no real sky snapshot claim."""
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.constellation_lines import ConstellationLines
+    from wenu.sky.constellation_labels import ConstellationLabels
+    sky = CelestialSphere(None)
+    sky.stars = _production_stars(source)
+    path = directory / 'synthetic-lines.fab'
+    path.write_text('Ori 1 1 2\n')
+    sky.constellation_lines = ConstellationLines(sky.stars, filename=path)
+    sky.constellation_labels = ConstellationLabels(sky.stars, min_stars=1)
+    sky.extend((sky.stars, sky.constellation_lines, sky.constellation_labels))
+    return sky
+
+
+@pytest.mark.parametrize('fault', ['none', 'static', 'source-sky', 'sdk', 'warm-sdk',
+                                  'bad-config', 'manifest', 'existing-output'])
+def test_stellar_motion_document_cli_route_and_cleanup(motion_document, monkeypatch, fault):
+    """Real command/executor/render seam; synthetic saved-sky reader is explicit."""
+    import numpy as np
+    from pathlib import Path
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    from wenu.charts.request_generation import generate_chart_request
+    from wenu.cli.chart import main
+    from wenu.sky import native_snapshot
+    source, directory, write = motion_document
+    config = write()
+    root = config.parent
+    atlas_path = Path(__file__).parents[1] / 'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json'
+    atlas = AtlasBandTiling.from_json(atlas_path.read_text())
+    # Select an equatorial sheet near the synthetic source's original axes.
+    sheet = min(atlas.geometry.sheets, key=lambda s: abs(s.center_dec_deg) + abs(s.center_ra_deg - 83.))
+    style = root / 'style-v1.toml'
+    style.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\n'
+        'layers = ["stars", "constellation_lines", "constellation_labels"]\n'
+        'formats = ["png", "pdf", "svg"]\ndpi = 36\nlegend_fontsize = 6.0\nreport_label_scale = 1.0\n')
+    sky = _motion_cli_sky(source, root)
+    requires = []
+    class SyntheticSnapshot:
+        def require(self, **kwargs): requires.append(kwargs)
+        def make_sky(self): return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: SyntheticSnapshot())
+    out = root / 'cli'
+    argv = ['atlas-sheet', '--design', str(atlas_path), '--config', str(style),
+        '--from-sky', str(root / 'synthetic-snapshot'), '--chart-number', str(sheet.number),
+        '--output-dir', str(out), '--stellar-motion-config', str(config)]
+    if fault == 'static':
+        argv = argv[:-2]
+    elif fault == 'bad-config':
+        config.write_text('broken = [')
+    elif fault == 'manifest':
+        write(lambda d: d.update(source_manifest_sha256='0' * 64))
+    if fault == 'source-sky':
+        metadata = dict(stellar_table_metadata(sky.stars.source_catalog).to_record())
+        metadata['source_sha256'] = 'b' * 64
+        sky.stars.source_catalog = ingest_stellar_catalogue(
+            sky.stars.source_catalog, StellarCatalogueMetadata.from_record(metadata)).table
+    if fault in ('sdk', 'warm-sdk'):
+        from wenu_kernel import KernelSession
+        original = KernelSession.evaluate
+        count = [0]
+        def refuse(self, query):
+            count[0] += 1
+            if fault == 'sdk' or count[0] > 3:
+                raise UnsupportedCapability('synthetic SDK refusal')
+            return original(self, query)
+        monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    sentinel = None
+    if fault == 'existing-output':
+        out.mkdir()
+        sentinel = out / f'chart-{sheet.number:02d}.png'
+        sentinel.write_bytes(b'existing product')
+    status = main(argv, emit_outputs=False)
+    assert requires and requires[0]['layers'] == ('stars', 'constellation_lines', 'constellation_labels')
+    if fault not in ('none', 'static'):
+        assert status != 0
+        assert (not out.exists()) if sentinel is None else sentinel.read_bytes() == b'existing product'
+        assert not list(root.glob('.wenu-chart-*'))
+        assert not hasattr(sky.stars, '_stellar_realization')
+        return
+    assert status == 0
+    report = json.loads((out / f'chart-{sheet.number:02d}_report_data.json').read_text())
+    if fault == 'static':
+        assert 'stellar_realization' not in report
+    else:
+        assert report['stellar_realization']['input_document_sha256'] == bridge.load_stellar_motion_request(config).input_document_sha256
+    expected = root / 'python'
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
+    presentation = AtlasChartPresentation.from_dict(tomllib.loads(style.read_text()))
+    request = AtlasSheetChartRequest(sheet, atlas.geometry.page, presentation, expected,
+        stellar_motion=None if fault == 'static' else bridge.load_stellar_motion_request(config))
+    generate_chart_request(request, sky=sky)
+    assert report == json.loads((expected / f'chart-{sheet.number:02d}_report_data.json').read_text())
+    assert (out / f'chart-{sheet.number:02d}.png').read_bytes() == (expected / f'chart-{sheet.number:02d}.png').read_bytes()
+    assert len(list(out.iterdir())) == 7
+
+
+@pytest.mark.parametrize('epoch', [2000., -8000.])
+def test_stellar_motion_document_cli_fresh_process(motion_document, epoch):
+    """Offline process composition with an explicitly synthetic snapshot seam."""
+    from pathlib import Path
+    import os, subprocess, sys
+    source, directory, write = motion_document
+    config = write(lambda d: d.update(target_jyear_tcb=epoch))
+    root = config.parent
+    script = r'''
+from pathlib import Path
+import json, socket, sys
+from test_stellar_state import motion_source, _motion_cli_sky
+from wenu import stellar_state as bridge
+from wenu.atlas_design import AtlasBandTiling
+from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+from wenu.charts.request_generation import generate_chart_request
+from wenu.cli import chart
+from wenu.sky import native_snapshot
+def forbidden(*a, **k):
+    raise AssertionError('network/observer forbidden in native motion command')
+socket.socket.connect = forbidden
+chart.Observer = forbidden
+root, design = map(Path, sys.argv[1:])
+source = motion_source.__wrapped__()()
+sky = _motion_cli_sky(source, root)
+class SyntheticSnapshot:
+    def require(self, **kwargs):
+        assert kwargs['layers'] == ('stars', 'constellation_lines', 'constellation_labels')
+    def make_sky(self):
+        return sky
+native_snapshot.read_native_sky_snapshot = lambda *a, **k: SyntheticSnapshot()
+atlas = AtlasBandTiling.from_json(design.read_text())
+sheet = min(atlas.geometry.sheets, key=lambda s: abs(s.center_dec_deg) + abs(s.center_ra_deg))
+style = root / 'style-v1.toml'
+style.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\n'
+    'layers = ["stars", "constellation_lines", "constellation_labels"]\n'
+    'formats = ["png", "pdf", "svg"]\ndpi = 36\nlegend_fontsize = 6.0\nreport_label_scale = 1.0\n')
+status = chart.main(['atlas-sheet', '--design', str(design), '--config', str(style),
+    '--from-sky', str(root / 'synthetic-snapshot'), '--chart-number', str(sheet.number),
+    '--output-dir', str(root / 'cli'), '--stellar-motion-config', str(root / 'motion-v1.toml')],
+    emit_outputs=False)
+assert status == 0
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
+presentation = AtlasChartPresentation.from_dict(tomllib.loads(style.read_text()))
+motion = bridge.load_stellar_motion_request(root / 'motion-v1.toml')
+request = AtlasSheetChartRequest(sheet, atlas.geometry.page, presentation, root / 'python',
+                                stellar_motion=motion)
+generate_chart_request(request, sky=sky)
+stem = f'chart-{sheet.number:02d}'
+a = json.loads((root / 'cli' / (stem + '_report_data.json')).read_text())
+b = json.loads((root / 'python' / (stem + '_report_data.json')).read_text())
+assert a == b
+assert a['stellar_realization']['input_document_sha256'] == motion.input_document_sha256
+assert a['stellar_realization']['model_counts']['unavailable'] == 3
+assert (root / 'cli' / (stem + '.png')).read_bytes() == (root / 'python' / (stem + '.png')).read_bytes()
+assert len(list((root / 'cli').iterdir())) == 7
+print('PASS: synthetic offline fresh-process command/Python parity')
+'''
+    repository = Path(__file__).resolve().parents[1]
+    design = repository / 'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json'
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(
+        (str(repository / 'src'), str(repository / 'packages/wenu_kernel/src'),
+         str(repository / 'tests'))))
+    result = subprocess.run([sys.executable, '-c', script, str(root), str(design)],
+                            env=env, cwd=root, capture_output=True, text=True, timeout=90)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert 'PASS: synthetic offline' in result.stdout
+
+
+def test_stellar_motion_document_cannot_override_prepared_request(motion_document):
+    from wenu.cli.chart import main
+    from wenu.atlas_design import AtlasSheetGeometry, AtlasPageGeometry
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    source, directory, write = motion_document
+    config = write()
+    request = AtlasSheetChartRequest(AtlasSheetGeometry('synthetic', 1, 0., 0., 40.),
+        AtlasPageGeometry(250., 353., 10., 10., 10., 10.),
+        AtlasChartPresentation(), config.parent / 'out')
+    assert main(['atlas-sheet', '--chart-number', '1', '--output-dir', str(request.output_dir),
+                 '--stellar-motion-config', str(config)],
+                atlas_request=request, sky=object(), emit_outputs=False) == 2
+    assert not request.output_dir.exists()
+
+
 def test_stellar_motion_admission_preserves_source_population_and_explicit_gaps(motion_source):
     """Protect source loss/zero filling; closest existing native input-copy test."""
     from dataclasses import FrozenInstanceError

@@ -122,6 +122,8 @@ def parser():
     sheet.add_argument("--design", type=Path)
     sheet.add_argument("--config", type=Path)
     sheet.add_argument("--from-sky", type=Path)
+    sheet.add_argument("--stellar-motion-config", type=Path,
+        help="Explicit local stellar-motion TOML; nominal TCB epoch, no observer reconstruction.")
     sheet.add_argument("--chart-number", type=int, required=True)
     sheet.add_argument("--output-dir", type=Path, required=True)
     sheet.add_argument("--debug", action="store_true")
@@ -867,13 +869,18 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
         snapshot.require(layers=presentation.layers,
             star_magnitude_limit=presentation.star_magnitude_limit,
             design_sha256=hashlib.sha256(raw).hexdigest())
+        motion = None
+        if arguments.stellar_motion_config is not None:
+            from wenu.stellar_state import load_stellar_motion_request
+            motion = load_stellar_motion_request(arguments.stellar_motion_config)
         atlas_request = AtlasSheetChartRequest(selected[0], atlas.geometry.page,
-            presentation, arguments.output_dir)
+            presentation, arguments.output_dir, stellar_motion=motion)
         sky = snapshot.make_sky()
     else:
         if not isinstance(atlas_request, AtlasSheetChartRequest):
             raise TypeError("atlas_request must be AtlasSheetChartRequest.")
-        if any(value is not None for value in (arguments.design, arguments.config, arguments.from_sky)):
+        if any(value is not None for value in (arguments.design, arguments.config,
+                arguments.from_sky, arguments.stellar_motion_config)):
             raise ValueError("Prepared atlas requests cannot also supply design/config/snapshot files.")
         if (atlas_request.sheet.number != arguments.chart_number
                 or atlas_request.output_dir != arguments.output_dir):
@@ -897,7 +904,14 @@ def main(argv=None, *, atlas_request=None, sky=None, emit_outputs=True):
                 print(write_defaults_template(arguments.write))
             return 0
         if arguments.command == "atlas-sheet":
-            outputs = _atlas_sheet(arguments, atlas_request=atlas_request, sky=sky)
+            from wenu_kernel.errors import KernelError
+            try:
+                outputs = _atlas_sheet(arguments, atlas_request=atlas_request, sky=sky)
+            except KernelError as error:
+                if arguments.debug:
+                    raise
+                print(f"wenu_chart: error: {error}", file=sys.stderr)
+                return 2
         else:
             if atlas_request is not None or sky is not None:
                 raise ValueError("Prepared native sky inputs require the atlas-sheet command.")

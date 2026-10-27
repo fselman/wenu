@@ -201,6 +201,14 @@ def test_atlas_guide_uses_existing_cli_options():
     options = {n.value for n in ast.walk(source)
                if isinstance(n, ast.Constant) and isinstance(n.value, str) and n.value.startswith("--")}
     options |= {"--no-" + option[2:] for option in options if not option.startswith("--no-")}
+    # The guide also documents the existing single-sheet chart subcommand.
+    chart_source = ast.parse(read(ROOT / "src/wenu/cli/chart.py"))
+    options |= {arg.value for node in ast.walk(chart_source)
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name) and node.func.value.id == "sheet"
+                and node.func.attr == "add_argument"
+                for arg in node.args if isinstance(arg, ast.Constant)
+                and isinstance(arg.value, str) and arg.value.startswith("--")}
     guide = read(ROOT / "docs/user_guide/atlas.md")
     assert set(re.findall(r"(?<![\w-])--[a-z][a-z0-9-]*", guide)) <= options
 

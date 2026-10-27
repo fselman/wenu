@@ -20,6 +20,13 @@ falls back to static coordinates, and physical ancient-position accuracy remains
 unknown. Other native layers remain truthfully static; the stellar specimen does
 not claim that deep-sky objects or the entire historical sky physically evolved.
 
+The single-sheet motion TOML's `target_jyear_tcb`, `start_jyear_tcb` and
+`stop_jyear_tcb` express explicit nominal TCB Julian epochs through the existing
+Julian-year definition. They select stellar realization only, never a TT equinox,
+calendar/observer clock, EOP reconstruction or time-scale conversion. Source
+epochs retain their own metadata; the motion document's digest is separate
+input provenance. No numerical transform or source interpretation changes.
+
 ## Hipparcos-2 source covariance diagnostic
 
 The offline qualification mode reports a source-epoch covariance ordered

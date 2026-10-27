@@ -166,3 +166,62 @@ acceptance logs are preserved in the
 [original atlas guide](../developer/archive/pre_kernel_20261017/docs/user_guide/atlas.md).
 The old explicit v6 style example remains `examples/atlas_chart_style_v6.toml`;
 installed preset names are the current operational entry point.
+
+## Nominal stellar motion for one sheet
+
+A single native ICRS sheet can opt in to the accepted nominal stellar models.
+Use the existing verified source-only saved sky, matching resolved design and
+independent atlas presentation, plus a separate scientific TOML file. The
+command performs no downloads and reconstructs no historical observer.
+
+A minimal full-input model document has this form. Replace the source path and
+manifest digest with the verified local source values; they are explicit inputs.
+
+```toml
+schema_version = 1
+document_kind = "wenu-stellar-motion-request"
+source_directory = "/absolute/path/to/stellar_enrichment_source_v1"
+source_manifest_sha256 = "REPLACE_WITH_VERIFIED_64_CHARACTER_LOWERCASE_SHA256"
+target_jyear_tcb = -8000.0
+
+[[models]]
+motion_policy = "full-input-rectilinear"
+start_jyear_tcb = -8001.0
+stop_jyear_tcb = 2050.0
+distance_policy = "positive-parallax-reciprocal"
+radial_velocity_policy = "spectroscopic-proxy"
+```
+
+This selects only the full-input subset; it does not silently fill missing data.
+To select other already admitted models, append explicit ordered tables with
+`motion_policy = "proper-motion-angular"` or
+`motion_policy = "hipparcos2-angular-fallback"`, finite bounds and
+`distance_policy = "not-used"`, `radial_velocity_policy = "not-used"`.
+The Hipparcos-2 model additionally requires
+`epoch_policy = "nominal-tcb-deferred-qualification"`. Table order selects the
+first declared available model; a failed query never falls back to static stars.
+
+Example invocation, after supplying the existing matching files and a new output
+location (this is a command synopsis, not the guarded Mac acceptance recipe):
+
+```bash
+wenu_chart atlas-sheet --design /absolute/path/design.json \
+  --config /absolute/path/presentation.toml \
+  --from-sky /absolute/path/source-sky \
+  --chart-number 1 \
+  --stellar-motion-config /absolute/path/motion-v1.toml \
+  --output-dir /absolute/path/new-sheet-output
+```
+
+The epoch values are nominal TCB Julian epochs, not calendar dates or a dated
+equinox. Relative source paths resolve against the motion file, independently
+of the shell working directory. Exact TOML/source/model identities, the resolved
+epoch, finite coverage, availability and unknown physical accuracy are recorded
+in the sheet report. Stars own realization; constellation lines and label anchors
+follow their public positions while preserving source membership, names and V.
+
+Omitting `--stellar-motion-config` preserves the existing static command.
+Other chart families, `wenu_create_atlas` batch/worker transport, historical
+observers and date-oriented axes remain separate work. Physical ancient-position
+accuracy is unknown. Complete Mac acceptance of this command extension is pending.
+
