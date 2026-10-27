@@ -616,6 +616,11 @@ def render_atlas_sheet(request, sky):
     """Bind stellar realization once around the existing native-sheet route."""
     if not isinstance(request, AtlasSheetChartRequest):
         raise TypeError('request must be AtlasSheetChartRequest.')
+    realization = getattr(getattr(sky, 'stars', None), '_stellar_realization', None)
+    if realization is not None:
+        if realization.request is not request.stellar_motion:
+            raise ValueError('Atlas sheet motion differs from its borrowed stellar view.')
+        return _render_atlas_sheet(request, sky)
     if request.stellar_motion is None:
         return _render_atlas_sheet(request, sky)
     from wenu.sky.assembly import stellar_realization_sky
@@ -743,4 +748,5 @@ def _render_atlas_sheet(request, sky):
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
     finally:
         plt.close(figure)
+
 

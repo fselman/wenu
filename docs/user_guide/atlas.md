@@ -221,9 +221,36 @@ in the sheet report. Stars own realization; constellation lines and label anchor
 follow their public positions while preserving source membership, names and V.
 
 Omitting `--stellar-motion-config` preserves the existing static command.
-Other chart families, `wenu_create_atlas` batch/worker transport, historical
-observers and date-oriented axes remain separate work. Physical ancient-position
+Other chart families, historical observers and date-oriented axes remain
+separate work. Physical ancient-position
 accuracy is unknown. This single-sheet command extension passed complete Mac,
 real-cache CLI/Python parity and present/ancient visual acceptance in PR #348,
-merged at `c319c88f`. Multi-sheet motion adoption remains separate planned work.
+merged at `c319c88f`.
+
+### Nominal stellar motion for a multi-sheet atlas
+
+The atlas publication command now accepts the same motion file:
+
+```bash
+wenu_create_atlas --design /absolute/path/design.json \
+  --config /absolute/path/presentation.toml \
+  --from-sky /absolute/path/source-sky \
+  --charts 13,28 --jobs 2 \
+  --stellar-motion-config /absolute/path/motion-v1.toml \
+  --output-dir /absolute/path/new-atlas-output
+```
+
+Use `--jobs 1` for serial publication. Each process owns its stellar realization
+and reuses it across sheets; all sheets and catalogue counts share scientific
+source/model/event identities. No live stellar session is sent between workers.
+The input is captured before dispatch, so editing the motion file afterward
+does not change the running publication. The source sky stays source-only.
+
+The count appendix reports the same nominal stellar epoch and unavailable
+population. A supplied index is retained as a static reference, visibly marked
+in the assembled atlas; selection-criteria PDFs retain their source meaning.
+Failures publish no completion manifest. Without the motion option, existing
+static publication behavior remains unchanged. This multi-sheet candidate still
+requires its Mac runtime, actual-cache and visual acceptance gates.
+
 

@@ -13,6 +13,8 @@ try:
 except ModuleNotFoundError:  # Python 3.10, supported by the package.
     import tomli as tomllib
 
+from wenu_kernel.errors import KernelError
+
 from wenu.atlas_design import AtlasDesignRequest, AtlasBandTiling
 from wenu.resources import configuration_input_path, configuration_preset_names
 
@@ -124,6 +126,8 @@ def create_main(argv=None):
     _layout_arguments(parser)
     parser.add_argument('--config', type=Path, default=Path('atlas-v6'),
                         help='Full atlas presentation TOML path or installed style name (default atlas-v6).')
+    parser.add_argument('--stellar-motion-config', type=Path,
+        help='Explicit stellar-motion TOML; native stellar positions only.')
     parser.add_argument("--charts", default="all")
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--magnitude-limit", type=float,
@@ -185,11 +189,15 @@ def create_main(argv=None):
             index=args.index, chart_command=chart_command,
             open_cluster_catalogue=args.open_cluster_catalogue,
             planetary_nebula_catalogue=args.planetary_nebula_catalogue,
-            selection_criteria=args.selection_criteria)
+            selection_criteria=args.selection_criteria,
+            stellar_motion_config=args.stellar_motion_config)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
+        parser.error(str(exc))
+    except KernelError as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
         print("Atlas generation interrupted.", file=sys.stderr)
         return 130
     print(output)
     return 0
+

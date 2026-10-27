@@ -2,11 +2,13 @@
 
 K4b.06's selected native-sheet integration extends existing owners only:
 `stellar_state.py` owns explicit model/event inputs, strict scientific motion-TOML
-loading/source verification and the SDK bridge; `cli/chart.py` adapts that input
+loading/source verification, captured data-only worker inputs and the SDK bridge; `cli/chart.py` adapts that input
 to the existing single-sheet request and formats kernel refusals;
 `objects/stars.py` owns realized public positions; `sky/assembly.py` binds an
 isolated stellar view to dependent position consumers; `charts/atlas_sheet.py`
-uses it in the existing sheet route. Lines retain their public endpoint lookup;
+uses it in the existing sheet route. `cli/atlas.py` and
+`charts/atlas_publication.py` connect it to serial/spawn publication, process-local
+lifetime/reuse, science identity validation and consistent catalogue counts. Lines retain their public endpoint lookup;
 labels separate source membership from returned anchor directions. No new
 production module or package boundary is introduced. The bounded native-sheet
 slice passed Mac acceptance and visual review in PR #346, merged at `ab8a7e9a`.
@@ -162,7 +164,7 @@ concrete Wenu classes.
 | [`charts/all_sky.py`](../../src/wenu/charts/all_sky.py) | Production configuration for Galactic Mollweide all-sky charts. |
 | [`charts/atlas_index.py`](../../src/wenu/charts/atlas_index.py) | Resolved atlas index presentation through canonical chart/render/export owners. |
 | [`charts/atlas_modes.py`](../../src/wenu/charts/atlas_modes.py) | Print and presentation realizations of the atlas chart style. |
-| [`charts/atlas_publication.py`](../../src/wenu/charts/atlas_publication.py) | Design-bound atlas planning and canonical chart-page publication. |
+| [`charts/atlas_publication.py`](../../src/wenu/charts/atlas_publication.py) | Design-bound atlas planning and canonical publication, captured stellar input dispatch, process-owned realization/finalization and count consistency. |
 | [`charts/atlas_sheet.py`](../../src/wenu/charts/atlas_sheet.py) | Single-sheet atlas request, rendering, furniture and report service below batch publication. |
 | [`charts/automatic_legends.py`](../../src/wenu/charts/automatic_legends.py) | High-level automatic composition of chart legends. |
 | [`charts/binocular.py`](../../src/wenu/charts/binocular.py) | Circular binocular-field chart type. |
@@ -534,3 +536,4 @@ single-edition native-direction ingestion contract in `stellar_catalogue.py`.
 The existing offline audit owns normalization/staged local publication and its
 existing tests own corruption, source-free reload and public-command seams.
 This adds no new kernel route, provider, dependency or installed command.
+

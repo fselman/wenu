@@ -275,7 +275,8 @@ def motion_source():
     from pathlib import Path
     from wenu.stellar_enrichment import StellarEnrichmentSnapshot, PRODUCTS, encode, identity
     def build(change=None, *, epoch=2016., original_v=2., edr3=False,
-              hip2_change=None, hip2_hips=(5,), hip2_epoch=1991.25, hip2_scale=None):
+              hip2_change=None, hip2_hips=(5,), hip2_epoch=1991.25, hip2_scale=None,
+              extra_photometry=None):
         sources = []
         for i in (1, 2, 3, 4, 6, 7, 8):
             src = dict(source_id=str(9007199254740992+i), solution_id='9007199254740999',
@@ -320,7 +321,7 @@ def motion_source():
             if edr3 and i==1:
                 link.update(release='EDR3',equivalent_dr3_identity=dict(release='DR3',source_id=src['source_id'],
                     bridge={'policy':'ESA-explicit-identical-source-list'}))
-            original=dict(hip=hip,magnitude=original_v if i==1 else None, designation={'names':['Synthetic star']})
+            original=dict(hip=hip,magnitude=original_v if i==1 else (extra_photometry or {}).get(i), designation={'names':['Synthetic star']})
             row=dict(schema='wenu-stellar-enrichment/1',
                 identity=dict(catalogue='hipparcos',edition='synthetic-1997',identifier=hip,component=None),
                 original=original,published_association=link,match_status='identified'if link else'unmatched',
@@ -596,10 +597,10 @@ def test_stellar_realization_restored_facade_keeps_explicit_binding(motion_sourc
 
 
 @pytest.fixture
-def motion_document(motion_source, tmp_path):
+def motion_document(motion_source, tmp_path, request):
     """Byte-bound synthetic local source and explicit motion TOML."""
     from hashlib import sha256
-    source = motion_source()
+    source = motion_source(**getattr(request, 'param', {}))
     directory = tmp_path / 'synthetic-source'
     directory.mkdir()
     for name, raw in source.products:
@@ -1723,3 +1724,315 @@ def test_stellar_perspective_pair_preserves_gaps_and_domain_refusal(motion_sourc
             with pytest.raises(OutsideCoverage):
                 session.evaluate(outside)
             assert session.evaluate(paired) == baseline
+
+
+
+@pytest.mark.parametrize('fault', ['none', 'document', 'directory', 'snapshot', 'design', 'model', 'source'])
+def test_stellar_execution_input_pins_bytes_paths_and_bindings(motion_document, monkeypatch, fault):
+    """Captured configuration survives path edits; corruption never selects defaults."""
+    import pickle
+    from dataclasses import replace
+    source, directory, write = motion_document
+    path = write()
+    captured, motion = bridge.StellarMotionExecutionInput.capture(path,
+        snapshot_sha256='a'*64, design_sha256='b'*64)
+    captured = pickle.loads(pickle.dumps(captured))
+    assert captured.source_directory == str(directory.resolve())
+    path.write_text('invalid = "changed after capture"')
+    monkeypatch.chdir(directory)
+    if fault == 'document': captured = replace(captured, document=b'changed')
+    elif fault == 'directory': captured = replace(captured, source_directory=str(directory.parent))
+    elif fault == 'snapshot': captured = replace(captured, snapshot_sha256='c'*64)
+    elif fault == 'design': captured = replace(captured, design_sha256='c'*64)
+    elif fault == 'model': captured = replace(captured, motion_identity_sha256='c'*64)
+    elif fault == 'source':
+        payload = directory / source.products[0][0]
+        payload.write_bytes(payload.read_bytes()+b' ')
+    if fault != 'none':
+        with pytest.raises(ValueError):
+            captured.admit(snapshot_sha256='a'*64, design_sha256='b'*64)
+    else:
+        admitted = captured.admit(snapshot_sha256='a'*64, design_sha256='b'*64)
+        assert bridge.stellar_motion_identity(admitted) == bridge.stellar_motion_identity(motion)
+        with pytest.raises(TypeError): pickle.dumps(admitted)
+
+
+def test_stellar_sheet_borrows_matching_live_view_without_rebinding(motion_source, monkeypatch, tmp_path):
+    from wenu.sky.assembly import stellar_realization_sky
+    from wenu.charts import atlas_sheet
+    from wenu.atlas_design import AtlasBandTiling
+    from pathlib import Path
+    source = motion_source()
+    sky = _motion_cli_sky(source, tmp_path)
+    motion = _production_motion(source)
+    atlas = AtlasBandTiling.from_json((Path(__file__).resolve().parents[1] /
+        'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json').read_text())
+    def consume(request, borrowed):
+        return borrowed.stars.native_positions()
+    monkeypatch.setattr(atlas_sheet, '_render_atlas_sheet', consume)
+    with stellar_realization_sky(sky, motion) as view:
+        for sheet in atlas.geometry.sheets[:2]:
+            request = atlas_sheet.AtlasSheetChartRequest(sheet, atlas.geometry.page,
+                atlas_sheet.AtlasChartPresentation(), tmp_path, stellar_motion=motion)
+            atlas_sheet.render_atlas_sheet(request, view)
+        assert view.stars._stellar_realization.report()['exact_batch_reuses'] > 0
+        with pytest.raises(ValueError, match='differs'):
+            atlas_sheet.render_atlas_sheet(replace(request, stellar_motion=None), view)
+        with pytest.raises(ValueError, match='differs'):
+            atlas_sheet.render_atlas_sheet(replace(request,
+                stellar_motion=replace(motion, instant=TimePoint(2467389,0.,'tcb'))), view)
+    with pytest.raises(ClosedSession): view.stars.native_positions()
+    assert not hasattr(sky.stars, '_stellar_realization')
+
+
+def _synthetic_publication_worker(directory, digest, command, motion_input, design_sha256):
+    """Spawn seam replaces source-sky decoding only; all stellar code is real."""
+    from pathlib import Path
+    from wenu.charts import atlas_publication as publication
+    from wenu.sky import native_snapshot
+    motion = motion_input.admit(snapshot_sha256=digest, design_sha256=design_sha256)
+    from os import getpid
+    local = Path(directory) / f'worker-{getpid()}'
+    local.mkdir()
+    sky = _motion_cli_sky(motion.catalogues[0].source, local)
+    class SyntheticSnapshot:
+        manifest_sha256 = digest
+        def require(self, **kwargs):
+            assert kwargs['design_sha256'] == design_sha256
+        def make_sky(self): return sky
+    original = native_snapshot.read_native_sky_snapshot
+    native_snapshot.read_native_sky_snapshot = lambda *a, **k: SyntheticSnapshot()
+    try:
+        publication._initialize_atlas_worker(directory, digest, command, motion_input, design_sha256)
+    finally:
+        native_snapshot.read_native_sky_snapshot = original
+    # Receipt is written by normal production multiprocessing finalization.
+    from multiprocessing.util import Finalize
+    from os import getpid
+    borrowed = publication._WORKER_SKY
+    def receipt():
+        assert borrowed.stars._stellar_realization._closed
+        (Path(directory) / f'closed-{getpid()}.txt').write_text('closed')
+    Finalize(None, receipt, exitpriority=9)
+
+
+@pytest.mark.parametrize('motion_document', [dict(change=dict(ra=7.5,pmra=100.,pmdec=200.),
+    extra_photometry={9:3.})], indirect=True)
+@pytest.mark.parametrize('epoch', [2000., -8000.])
+@pytest.mark.parametrize('jobs', [1, 2])
+def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_document, monkeypatch, epoch, jobs):
+    """Synthetic snapshot seam, real command/SDK/exports/book; detects static counts."""
+    from pathlib import Path
+    from hashlib import sha256
+    from PIL import Image
+    import numpy as np
+    from wenu.charts import atlas_publication as publication
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    from wenu.charts.request_generation import generate_chart_request
+    from wenu.charts.stellar_sizing_report import catalogue_star_counts
+    from wenu.sky.assembly import stellar_realization_sky
+    from wenu.sky import native_snapshot
+    from wenu.atlas_design import AtlasBandTiling
+    source, directory, write = motion_document
+    config = write(lambda d: d.update(target_jyear_tcb=epoch))
+    root = config.parent
+    design = Path(__file__).resolve().parents[1] / 'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json'
+    design_digest = sha256(design.read_bytes()).hexdigest()
+    sky = _motion_cli_sky(source, root)
+    class SyntheticSnapshot:
+        manifest_sha256 = 'a'*64
+        def require(self, **kwargs): assert kwargs['design_sha256'] == design_digest
+        def make_sky(self): return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: SyntheticSnapshot())
+    if jobs == 2:
+        monkeypatch.setattr(publication, '_initialize_atlas_worker', _synthetic_publication_worker)
+    presentation = AtlasChartPresentation(layers=('stars','constellation_lines','constellation_labels'),
+        formats=('png','pdf','svg'), dpi=36, legend_fontsize=6., report_label_scale=1.)
+    bundle = root / 'synthetic-snapshot'
+    bundle.mkdir()
+    index = None
+    if jobs == 1 and epoch == 2000.:
+        from matplotlib.figure import Figure
+        index = root / 'index.pdf'
+        figure = Figure(figsize=(6,4))
+        figure.text(.5,.5,'Synthetic static index')
+        for suffix in ('png','pdf','svg'):
+            figure.savefig(index.with_suffix('.'+suffix))
+        index_bytes = index.read_bytes()
+    output = root / 'batch' 
+    manifest_path = publication.create_atlas(design, output, presentation=presentation,
+        charts='22,23', jobs=jobs, from_sky=bundle, stellar_motion_config=config, index=index)
+    manifest = json.loads(manifest_path.read_text())
+    motion = bridge.load_stellar_motion_request(config)
+    assert manifest['stellar_realization'] == dict(bridge.stellar_motion_identity(motion),
+        model_counts={'full-input-rectilinear':2, 'proper-motion-angular':3,
+                      'hipparcos2-angular-fallback':1, 'unavailable':3})
+    assert manifest['charts'] == [22,23]
+    assert manifest['workers'] == jobs
+    assert not hasattr(sky.stars, '_stellar_realization')
+    with stellar_realization_sky(sky, motion) as view:
+        expected, ids, _ = catalogue_star_counts(view.stars, presentation.star_magnitude_limit)
+    count = json.loads((output / 'atlas-star-counts.json').read_text())
+    assert count['selected_count'] == expected['selected_count'] == 1
+    assert catalogue_star_counts(sky.stars, presentation.star_magnitude_limit)[0]['selected_count'] == 2
+    assert count['invalid_count'] == expected['invalid_count']
+    assert count['provenance']['stellar_realization'] == manifest['stellar_realization']
+    atlas = AtlasBandTiling.from_json(design.read_text())
+    for number in (22,23):
+        request = AtlasSheetChartRequest(atlas.geometry.sheets[number-1], atlas.geometry.page,
+            presentation, root / f'direct-{number}', stellar_motion=motion)
+        generate_chart_request(request, sky=sky)
+        stem = f'chart-{number:02d}'
+        for suffix in ('', '_report'):
+            with Image.open(output / (stem+suffix+'.png')) as actual, Image.open(request.output_dir / (stem+suffix+'.png')) as reference:
+                np.testing.assert_array_equal(np.asarray(actual), np.asarray(reference))
+        actual = json.loads((output / (stem+'_report_data.json')).read_text())['stellar_realization']
+        assert all(actual[k] == v for k,v in bridge.stellar_motion_identity(motion).items())
+    from pypdf import PdfReader
+    pdf = PdfReader(output / 'atlas.pdf')
+    if index is not None:
+        assert index.read_bytes() == index_bytes == (output/'atlas-index.pdf').read_bytes()
+        assert 'Supplied static reference index' in pdf.pages[0].extract_text()
+        assert manifest['index_reference']['stellar_epoch_updated'] is False
+    assert len(pdf.pages) == len(manifest['page_order'])
+    assert all(float(p.mediabox.width) == pytest.approx(atlas.geometry.page.width_mm*72/25.4) for p in pdf.pages)
+    if jobs == 2:
+        assert list(bundle.glob('closed-*.txt'))
+
+
+@pytest.mark.parametrize('fault', ['none', 'design', 'source-sky', 'finalizer', 'warm-sdk'])
+def test_stellar_publication_worker_scope_cleanup_and_refusal(motion_document, monkeypatch, fault):
+    from wenu_kernel import KernelSession
+    from pathlib import Path
+    from wenu.charts import atlas_publication as publication
+    from wenu.sky import native_snapshot
+    from wenu.atlas_design import AtlasBandTiling
+    import multiprocessing.util
+    source, directory, write = motion_document
+    config = write()
+    descriptor, _ = bridge.StellarMotionExecutionInput.capture(config,
+        snapshot_sha256='a'*64, design_sha256='b'*64)
+    sky = _motion_cli_sky(source, config.parent)
+    if fault == 'source-sky':
+        sky.stars.source_catalog.loc[1, 'magnitude'] = 99.
+    class SyntheticSnapshot:
+        manifest_sha256 = 'a'*64
+        def require(self, **kwargs):
+            if kwargs['design_sha256'] != 'b'*64: raise ValueError('design mismatch')
+        def make_sky(self): return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: SyntheticSnapshot())
+    closed = []
+    close = bridge._StellarRealization.close
+    def track(value):
+        close(value); closed.append(value)
+    monkeypatch.setattr(bridge._StellarRealization, 'close', track)
+    def command(argv, **kwargs):
+        view = kwargs['sky']
+        assert kwargs['atlas_request'].stellar_motion is view.stars._stellar_realization.request
+        view.stars.native_positions()
+        return 0
+    if fault == 'finalizer':
+        def refuse(*a, **k): raise RuntimeError('synthetic finalizer registration failure')
+        monkeypatch.setattr(multiprocessing.util, 'Finalize', refuse)
+    if fault in ('design','source-sky','finalizer'):
+        with pytest.raises((ValueError, RuntimeError)):
+            publication._initialize_atlas_worker(str(directory), 'a'*64, command,
+                descriptor, 'c'*64 if fault=='design' else 'b'*64)
+        assert publication._WORKER_SKY is None and publication._WORKER_SCOPE is None
+        assert all(v._closed for v in closed)
+        return
+    try:
+        publication._initialize_atlas_worker(str(directory), 'a'*64, command, descriptor, 'b'*64)
+        view = publication._WORKER_SKY
+        atlas = AtlasBandTiling.from_json((Path(__file__).resolve().parents[1] /
+            'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json').read_text())
+        task = (atlas.geometry.sheets[0], atlas.geometry.page, publication.AtlasChartPresentation(), str(config.parent))
+        publication._render_atlas_sheet(task)
+        if fault == 'warm-sdk':
+            def refuse(*a, **k): raise RuntimeError('synthetic warm refusal')
+            monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+            with pytest.raises(RuntimeError, match='warm refusal'):
+                publication._render_atlas_sheet(task)
+        else:
+            publication._render_atlas_sheet(task)
+            assert view.stars._stellar_realization.report()['exact_batch_reuses'] > 0
+    finally:
+        publication._close_atlas_worker()
+    assert closed and all(v._closed for v in closed)
+    assert publication._WORKER_SKY is None
+    assert not hasattr(sky.stars, '_stellar_realization')
+
+
+def _refuse_motion_publication_sheet(argv, **kwargs):
+    raise RuntimeError('synthetic publication render refusal')
+
+
+@pytest.mark.parametrize('jobs', [1,2])
+def test_stellar_motion_publication_failure_has_no_completion(motion_document, monkeypatch, jobs):
+    from pathlib import Path
+    from wenu.charts import atlas_publication as publication
+    from wenu.sky import native_snapshot
+    import os
+    source, directory, write = motion_document
+    config = write()
+    root = config.parent
+    sky = _motion_cli_sky(source, root)
+    class SyntheticSnapshot:
+        manifest_sha256 = 'a'*64
+        def require(self, **kwargs): pass
+        def make_sky(self): return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: SyntheticSnapshot())
+    if jobs == 2:
+        monkeypatch.setattr(publication, '_initialize_atlas_worker', _synthetic_publication_worker)
+    design = Path(__file__).resolve().parents[1] / 'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json'
+    bundle = root/'synthetic-snapshot';bundle.mkdir()
+    output = root/'batch'
+    previous = {key: os.environ.get(key) for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS')}
+    with pytest.raises(RuntimeError, match='render refusal'):
+        publication.create_atlas(design, output, presentation=publication.AtlasChartPresentation(layers=('stars',)),
+            charts='1,14', jobs=jobs, from_sky=bundle, stellar_motion_config=config,
+            chart_command=_refuse_motion_publication_sheet)
+    assert not output.exists()
+    assert not list(root.glob('.wenu-atlas-pages-*'))
+    assert all(os.environ.get(k) == v for k,v in previous.items())
+    assert not hasattr(sky.stars, '_stellar_realization')
+    if jobs == 2: assert list(bundle.glob('closed-*.txt'))
+
+
+@pytest.mark.parametrize('fault', ['epoch','cleanup'])
+def test_stellar_publication_rejects_returned_epoch_or_cleanup_failure(motion_document, monkeypatch, fault):
+    from pathlib import Path
+    from wenu.charts import atlas_publication as publication
+    from wenu.sky import native_snapshot
+    source, directory, write = motion_document
+    config = write(); root = config.parent
+    sky = _motion_cli_sky(source, root)
+    class SyntheticSnapshot:
+        manifest_sha256 = 'a'*64
+        def require(self, **kwargs): pass
+        def make_sky(self): return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: SyntheticSnapshot())
+    render = publication._render_atlas_sheet
+    def wrong_epoch(task, *args, **kwargs):
+        result = render(task, *args, **kwargs)
+        path = Path(task[3]) / f'chart-{result:02d}_report_data.json'
+        report = json.loads(path.read_text())
+        if fault == 'epoch':
+            report['stellar_realization']['epoch']['jd1'] += 1
+        path.write_text(json.dumps(report))
+        return result
+    monkeypatch.setattr(publication, '_render_atlas_sheet', wrong_epoch)
+    if fault == 'cleanup':
+        close = bridge._StellarRealization.close
+        def failed_close(value):
+            close(value)
+            raise RuntimeError('synthetic cleanup failure')
+        monkeypatch.setattr(bridge._StellarRealization, 'close', failed_close)
+    design = Path(__file__).resolve().parents[1] / 'src/wenu/configuration/presets/atlas_layout_b4_portrait_v3.json'
+    bundle = root/'synthetic-snapshot';bundle.mkdir()
+    with pytest.raises(ValueError if fault=='epoch' else RuntimeError,
+            match='different stellar motion identity' if fault=='epoch' else 'cleanup failure'):
+        publication.create_atlas(design, root/'batch', jobs=1, charts='22,23', from_sky=bundle,
+            stellar_motion_config=config, presentation=publication.AtlasChartPresentation(layers=('stars',),dpi=36))
+    assert not (root/'batch').exists()
+    assert not list(root.glob('.wenu-atlas-pages-*'))

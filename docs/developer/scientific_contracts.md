@@ -1,5 +1,18 @@
 # Current scientific contracts and paused work
 
+## Native atlas publication stellar realization
+
+The K4b.06 publication implementation extends the accepted single-sheet motion
+contract across serial/spawn sheets and catalogue counts. Stars remain the
+source/model/event/SDK owner; lines and labels consume only public positions.
+Captured worker inputs retain exact bytes and bound identities, and each process
+owns and closes its realization. No source catalogue or saved source sky is
+relabelled as evaluated state. Full source population and unavailable motion
+positions remain distinct. A supplied static index is disclosed rather than
+claimed to match the historical stellar event. No observer/frame adoption,
+physical accuracy guarantee or K4b.07 persistence follows. Actual-cache Mac and
+visual acceptance for this publication extension remain pending.
+
 ## Planned reusable epoch catalogues (K4b.07)
 
 The separately agreed [K4b.07 milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
@@ -1224,3 +1237,4 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and 
+
