@@ -1,22 +1,41 @@
 # Kernel migration: as-is functionality and test audit
 
-## Native atlas stellar publication implementation candidate
+## Accepted native atlas stellar publication and worker result
 
-PR #349's concrete worker/publication scope was accepted after 36 Mac
-documentation cases passed at `3ebe8878`, merged at `347cdb71`, and confirmed
-clean/synchronized with branch cleanup. Fernando then selected implementation.
-Existing publication restores source skies but had no stellar binding; its
-parallel count appendix was source-native. The candidate now connects captured
-stellar input to the existing command/executor, borrows a matching process-owned
-view across sheets and uses the same scientific realization for counts. Explicit
-spawn finalization and parent validation of returned science prevent silent
-static/mismatched publication. Source-only snapshots and default rendering stay
-unchanged; an optional static index receives honest publication disclosure.
+PR #350's bounded native atlas publication/worker slice is accepted and merged
+at `9776052a9e7bc6a1786c0f6ccadd6e078eef74af`. Fernando confirmed clean,
+synchronized Mac main and deletion of `feat/k4b06-atlas-stellar-workers`
+locally and remotely. Tested head: `f4820501c5f3af60e18c15017513dee5fbc7ef11`.
+All 90 focused Mac runtime cases passed in 68.30 s and all 36 documentation
+cases in 2.98 s. Logs and provenance remain under
+`~/Software/build/wenu/test/atlas-stellar-workers-v1-ctzrblha`.
 
-Focused synthetic source/worker/command/export and failure checks are in the
-existing owner tests. Mac runtime, actual-cache serial/spawn/single-sheet parity,
-workload and visual gates remain pending. This is not accepted K4b.06 closure,
-physical qualification, observer/frame adoption or K4b.07 persistence.
+The actual-cache run
+`~/Software/build/wenu/output/stellar-atlas-acceptance-v1-b56p2g1p`
+passed all four J2000/J-8000 TCB serial (`jobs=1`) and spawn (`jobs=2`)
+cases for Orion sheet 13 and Dipper sheet 28. Fresh independent single-sheet
+results also matched the previously accepted CLI specimens. Scientific reports,
+chart/report PNG pixels, catalogue counts, serial/spawn analysis, PDF page
+order/physical sizes and supplied static-index disclosure passed. The supplied
+index in this run contained static layout geometry only. Each case retained
+97,710 full-input, 17,395 angular and 2,850 Hip2 fallback stars, with 263 explicit
+gaps; the magnitude-limited count appendix selected 5,041 stars and reported
+263 invalid/unavailable positions. Retained source/snapshot bytes and the
+checkout were unchanged. Completion-manifest SHA256:
+`2a9cc22a9b4c27dceea13652a4c1ff5b793bb0a5bad721ac647467ecf2c65f19`.
+
+Serial commands took 202.903 s at J2000 and 178.388 s at J-8000; two-worker
+commands took 374.808 s and 332.723 s. This two-sheet workload demonstrates
+parity, not parallel speedup. Fernando replied “OK.” after the comparison-page
+and linked-book review request, then explicitly requested merge/cleanup.
+These are user-reported Mac results and user visual acceptance, not independent
+assistant inspection of the run files. Retain the run, source-only saved sky,
+immutable enrichment source and related prior evidence with their provenance.
+
+This closes only the selected native atlas publication/worker slice. Parent
+K4b.06, other applicable product/frame/observer obligations and bright-star source
+review remain open. Physical accuracy remains unknown; K4b.07 epoch-catalogue
+persistence remains separate. No next runtime slice is selected by this receipt.
 
 ## K4b.06 production integration assessment, 2026-10-26
 
@@ -243,12 +262,16 @@ without inventing a speed target or treating a numerical cone as physical error.
 
 ### Remaining K4b.06 scope and bright-star audit placement
 
-This first slice does not close K4b.06. Ordinary CLI/TOML historical requests,
-date-oriented mean-axis products, horizontal/observer products, batch/worker/
-saved request transport, broader workload and final ancient atlas specimens
-retain their applicable K4b.06 obligations and existing scientific boundaries.
-Do not promise a normal historical atlas command before its own request,
-consumer, worker and product paths are accepted.
+The native Python sheet, explicit single-sheet CLI/TOML and native atlas
+publication/worker slices are accepted through PRs #346, #348 and #350.
+These bounded results do not close K4b.06. Date-oriented mean-axis products,
+other applicable regional/observer consumers, remaining workload/final product
+reconciliation and the bright-star source review retain their existing
+scientific boundaries and need explicit bounded selections. The accepted atlas
+path already includes captured data-only worker inputs; general live-request
+transport is not admitted, and evaluated epoch-catalogue persistence is separate
+K4b.07 scope. Do not list accepted native atlas/worker or single-sheet CLI gates
+as pending, or extend their acceptance to unadopted product/frame/observer routes.
 
 Fernando deferred the bright-star source audit **to production Wenu integration
 within K4b.06**, not to an earlier standalone prerequisite. Perform it when

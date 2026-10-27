@@ -250,7 +250,11 @@ The count appendix reports the same nominal stellar epoch and unavailable
 population. A supplied index is retained as a static reference, visibly marked
 in the assembled atlas; selection-criteria PDFs retain their source meaning.
 Failures publish no completion manifest. Without the motion option, existing
-static publication behavior remains unchanged. This multi-sheet candidate still
-requires its Mac runtime, actual-cache and visual acceptance gates.
+static publication behavior remains unchanged. This bounded multi-sheet route
+passed Mac runtime/documentation, real-cache serial/spawn/single-sheet parity
+and present/ancient visual acceptance in PR #350, merged at `9776052a`.
+For the accepted two-sheet workload, serial execution was faster than two workers;
+choose worker count for the actual workload rather than assuming a speedup.
+Physical ancient-position accuracy remains unknown.
 
 

@@ -21,10 +21,16 @@ Local focused acceptance: 90 runtime cases passed in 39.80 s, five focused
 documentation cases in 1.32 s, and all 715 active Markdown links resolved.
 Deliberately dropped serial/worker bindings and a substituted static-count input
 each failed the matching successful baseline.
-Actual-cache Mac serial/spawn/two-sheet parity, workload and visual review remain
-pending; synthetic results do not qualify real snapshot decoding or physical
-ancient-position accuracy. Retain earlier evidence and use the established
-run-provenance convention.
+Complete Mac acceptance at `f4820501` passed 90 focused runtime cases in
+68.30 s and all 36 documentation cases in 2.98 s. The actual-cache two-sheet
+J2000/J-8000 serial/spawn run passed parity with fresh single-sheet results
+and prior accepted CLI specimens, counts, PDF layout and static-index disclosure;
+Fernando accepted the visual review. PR #350 merged at `9776052a`, with clean
+synchronized main and branch cleanup confirmed. See the
+[acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
+for retained run identities and measured workload limits. These are user-reported
+Mac results; physical accuracy remains unknown and parent K4b.06 stays open.
+Retain earlier evidence and use the established run-provenance convention.
 
 ## K4b.06 stellar-owned native integration candidate
 
