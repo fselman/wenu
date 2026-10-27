@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 112, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
+**Plan revision:** 113, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -252,9 +252,12 @@ test collection, dependencies or the ordinary chart configuration schema.
 its placement in the roadmap. The proposal was multi-sheet `wenu_create_atlas`
 adoption with serial/worker parity, failure cleanup and ancient specimens.
 He said “Proceed”. This selects recording that acceptance and defining the
-concrete publication/transport/lifetime boundary below. These details are
-proposed for review before runtime work; they do not activate observers,
-frame science or the whole remaining K4b.06 backlog.
+concrete publication/transport/lifetime boundary below. The concrete boundary was accepted with PR #349 after all 36 Mac documentation
+cases passed in 4.82 s at 3ebe8878; Fernando requested merge/cleanup, confirmed
+clean synchronized main 347cdb7178adce405209659ec3599aa04acc66af and task-branch
+deletion, then selected implementation with “Proceed”. This receipt is committed
+before runtime changes. It does not activate observers, frame science or the
+whole remaining K4b.06 backlog.
 
 **Result and compatibility:** expose the same explicit scientific motion TOML
 on the existing `wenu_create_atlas` publication path. One verified source, caller
