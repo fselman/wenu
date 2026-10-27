@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 111, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
+**Plan revision:** 112, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -401,21 +401,29 @@ replaces or relabels the immutable source catalogue or source-only saved sky.
 Use explicit destinations, atomic no-clobber publication and a completion marker
 last. No live provider/session/kernel pickling or implicit source acquisition.
 
-**Nearby-epoch reuse:** expose configurable maximum epoch separation (100 Julian
-years is the user's example, not an agreed universal safe interval), explicit
-selection/tie-breaking and policy. Exact-epoch reuse, model-faithful evaluation
-at the actual requested event, and fixed-position approximation are distinct.
-A time window is eligibility, not an accuracy certificate. Fixed positions need
-an explicitly selected approximation and angular tolerance with supported
-displacement/error evidence; unknown suitability must not silently pass.
-Continuation must remain within original model/resource domains and preserve
-the original nominal model rather than change it by rebasing. Record both
-catalogue and requested epochs, actual evaluation, reuse policy and error limits.
-On incompatibility, refuse or follow an explicitly configured recomputation
-policy; never silently use a nearby epoch or static fallback. Chart/publication
-workers consume verified products through existing stellar and kernel owners.
-Atlas and regional adoption require their own native/frame/observer capability
-checks; persistence alone does not implement missing chart science.
+**Nearby-epoch reuse:** Fernando clarified on 2026-10-27 that a configurable
+time window controls reuse without advancement. After resolving compatible
+catalogue/model identities and expressing the requested and catalogue epochs
+on the admitted common time scale, compare their absolute separation with the
+configured nonnegative window. At or inside the window, use stored positions
+unchanged. Beyond it, advance through the admitted model to the actual requested
+event, observing its time scale, rate units and any required explicit conversion
+receipts. Zero window permits unchanged reuse only at the same event. The
+100-Julian-year example is configurable, not a universal physical-validity claim.
+Record catalogue epoch, requested event, actual position epoch, window, whether
+positions were reused or advanced, model/source identities and conversion receipts.
+
+The configured window explicitly selects the fixed-position approximation;
+do not substitute a mandatory angular-error certificate for that user policy.
+Displacement/error diagnostics or an additional caller-requested angular tolerance
+may qualify suitability; unknown physical errors remain unknown. Advancement
+must remain within original model/resource domains and preserve original
+coefficients/reference events rather than repeatedly rebase rounded outputs.
+An unsupported advancement refuses or follows an explicitly configured
+recomputation policy; it must not keep stale positions beyond the window.
+Chart/publication workers consume verified products through existing stellar
+and kernel owners. Atlas and regional adoption require their own native/frame/
+observer capability checks; persistence alone does not implement missing science.
 
 **Earth and Solar System companion:** allow a separately identified companion
 with geometric Cartesian position/velocity for an explicit body list including
@@ -431,9 +439,11 @@ A barycentric stellar catalogue does not require an Earth state merely to exist.
 The companion supports separately admitted observer/relative-state consumers;
 it is optional for native barycentric stellar charts. A single saved Earth/
 planet state is an exact-event record, not an orbit or a 100-year ephemeris.
-Nearby-event evaluation needs verified ephemeris resources or a separately
-qualified interval representation with coverage/error checks, never stellar
-linear extrapolation of planetary states. Ephemeris coverage is independent of
+Give companion components independently declared reuse windows appropriate to
+their own admitted policy; the stellar window does not apply to them. Beyond
+a companion's window, evaluate the requested event using verified ephemeris
+resources or a separately qualified interval representation with coverage/error
+checks, never stellar linear extrapolation of planetary states. Ephemeris coverage is independent of
 the stellar domain: out-of-range bodies remain explicitly unavailable, or fail
 when required. No promise of Earth/planet reconstruction at J-2000000 follows.
 Saving a snapshot supplies neither historical Earth orientation/rotation,
@@ -445,7 +455,9 @@ need their own explicit review.
 snapshot, lifetime and chart/publication tests. Verify exact-event fresh-process
 reload against direct evaluation; original source bytes/identities and all row
 statuses; model-faithful nearby-event evaluation on both sides of an anchor;
-window/tolerance boundaries and high-motion cases; no accumulated rebasing;
+unchanged positions inside and exactly at the window, advancement immediately
+outside on either side, zero/invalid windows, explicit time-scale conversions,
+optional tolerance checks and high-motion cases; no accumulated rebasing;
 mixed angular/full capabilities; corrupt or missing payloads, wrong sources,
 frames/centres/scales/events and unsupported format versions; refusal/no-clobber/
 cleanup; and serial/spawn scientific and product parity. Companion tests must

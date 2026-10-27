@@ -11,15 +11,21 @@ capabilities; no physical distance/velocity is invented. Continuation must
 preserve the original model and reference event, not restart propagation from
 rounded directions or normalized angular coefficients at a new epoch.
 
-A configurable nearby-epoch window only determines eligibility. Exact-event
-evaluation and fixed-position approximation require distinct explicit policies,
-provenance and suitability checks; a 100-year window is not an error bound.
+The agreed configurable nearby-epoch rule reuses stored positions unchanged at
+or inside the window and advances them through the admitted model beyond it.
+Compare epochs on a compatible time scale; advancement respects model time/rate
+conventions and explicit conversion receipts. Record stored/requested/actual
+position epochs and reuse/advancement status. The window explicitly authorizes
+the fixed-position approximation; an angular tolerance is optional, not a hidden
+prerequisite. A 100-year example is not a physical-error bound.
 Companion geometric states retain their own body/centre, origin/frame, epoch/
 scale, units, resource identity and coverage. Stellar TCB and ephemeris TDB
 composition needs admitted time and spatial/state-convention receipts. Earth
 centre and Earth-Moon barycentre are not interchangeable. A single body state
 does not provide an orbit, nearby-date validity or historical Earth orientation;
-the stellar reuse window cannot authorize stale Earth/planet positions.
+Earth/planet components have independently declared windows; beyond those,
+reevaluate through their admitted ephemeris/interval model. The stellar window
+does not authorize unchanged companion positions.
 Required unsupported components refuse; optional ones remain explicitly missing.
 Unknown errors and remote-epoch ephemeris gaps stay unknown. Saving state does
 not extend physical/model validity or enable an unadmitted observer chart.
