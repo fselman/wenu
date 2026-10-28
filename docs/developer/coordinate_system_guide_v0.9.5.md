@@ -1,8 +1,8 @@
 # Wenu coordinate systems, time and astronomical objects
 
-## Dated-axis atlas candidate semantics
+## Dated-axis atlas semantics
 
-The [K4b.06 implementation candidate](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
+The [accepted K4b.06 implementation](implementation_reference.md#dated-axis-atlas-views-k4b06)
 adds explicit barycentric mean-equatorial/ecliptic view axes at a TT equinox,
 independently of stellar TCB evaluation. Source layers still realize natively;
 the shared source-to-view seam re-expresses both drawn geometry and secondary
@@ -12,8 +12,10 @@ or apparent correction is implied. Source ICRS designs remain unchanged while
 derived sheet identities declare target-axis numerical placement. Canonical
 dated grids/poles use the same mean-frame policy; source-fixed Galactic
 references, boundaries and shapes retain their meaning. Ecliptic longitude
-labels are degrees, equatorial RA labels hours. Mac actual-cache/visual
-acceptance remains pending; K4b.07/K4b.08 capabilities are not activated.
+labels are degrees, equatorial RA labels hours. PR #354 passed Mac and
+retained-source parity gates and user visual acceptance, merged at `d0124837`.
+See the [receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+Scientific meanings/limits are unchanged; K4b.07/K4b.08 remain unimplemented.
 
 ## Planned Earth-bound ancient and future views
 
@@ -28,13 +30,13 @@ must remain explicit. Current modern reception admissions are unchanged.
 K4b.07's optional saved companion states can be inputs, but do not by themselves
 supply a horizon or establish observer accuracy. No new observer CLI is provided.
 
-## Proposed date-oriented atlas integration
+## Accepted date-oriented atlas integration
 
 The [K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
-was accepted in #352. The implementation candidate described above now adds
-its explicit frame option and derived-layout boundary; Mac actual-cache and
-visual acceptance remain pending. The original native-only as-is findings
-remain in the linked migration audit as the pre-implementation assessment.
+was accepted in #352, with implementation accepted in #354. The explicit
+frame option and derived-layout boundary preserve the distinct TT/TCB meanings
+above. The linked audit retains a pointer to the archived native-only
+pre-implementation assessment and the current acceptance receipt.
 
 ## Stellar-owned native realization in K4b.06
 

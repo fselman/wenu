@@ -1,6 +1,8 @@
 # Wenu implementation reference
 
-## Dated-axis atlas views (K4b.06 candidate)
+<a id="dated-axis-atlas-views-k4b06-candidate"></a>
+
+## Dated-axis atlas views (K4b.06)
 
 The implementation selected after #352 uses the qualified `LongTermFrame`
 through `CoordinateService.orient_geometry(geometry, orientation, inverse=False)`.
@@ -51,8 +53,11 @@ the native route. No observer, persistence, nutation or new accuracy claim follo
 A demonstrated empty-field publication case is handled by the SVG sizing
 analyser only when the checksummed SVG and independent report agree with a
 zero visible-star count. Missing markers for a nonempty or unverified field
-still refuse. Focused candidate tests are separate from pending Mac actual-cache
-and visual acceptance; parent K4b.06 and K4b.07/K4b.08 remain open.
+still refuse. This bounded implementation passed Mac runtime/documentation/tooling,
+all eight retained-source publication cases and user visual acceptance in PR #354,
+merged at `d0124837`. See the [acceptance receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+Parent K4b.06 and K4b.07/K4b.08 remain open; ordinary chart/observer adoption is
+not implied.
 
 ## Native stellar motion in atlas publications
 
@@ -2340,9 +2345,10 @@ observer-free prepared sky into the supplied directory and returns the existing
 contains remaining chart formats and report files in the established order.
 This is the sheet rendering service, not the atomic publication entry point:
 call `generate_chart_request(request, sky=sky)` for request scope, safe staging,
-no-clobber publication and cleanup. The renderer uses the unchanged native-ICRS
-realization, composition, grid/furniture/report policies and one offscreen Agg
-figure. Exceptions still close that figure and reach the request executor.
+no-clobber publication and cleanup. The renderer uses native source realization,
+the optional explicit mean-axis view described above, canonical composition and
+grid/furniture/report owners, and one offscreen Agg figure. Exceptions still
+close that figure and reach the request executor.
 
 `catalogue_star_counts(stars, magnitude_limit)` now obtains full-source geometry
 through `stars.native_positions()`, including its HIP IDs and magnitude metadata.

@@ -1,6 +1,6 @@
 # Wenu production source map
 
-The K4b.06 dated-axis candidate extends existing owners: `coordinate_service.py`
+The accepted K4b.06 dated-axis atlas slice (#354) extends existing owners: `coordinate_service.py`
 re-expresses spherical geometry; `sky/realization.py` owns the common source-to-view
 seam consumed by the sphere and secondary constellation-label regions.
 `atlas_design.py` retains source ICRS geometry and identifies derived layouts;

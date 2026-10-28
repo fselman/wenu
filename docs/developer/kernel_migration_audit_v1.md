@@ -1,49 +1,66 @@
 # Kernel migration: as-is functionality and test audit
 
+## Accepted dated-axis atlas result
+
+PR #354's bounded K4b.06 mean-axis atlas slice is accepted and merged at
+`d01248376d9f5e8400575f83053499549604817f`. Tested final head:
+`0c900da15c99e37591a1a07f5495140b3263a4a0`. Fernando confirmed clean,
+synchronized Mac main and local/remote cleanup of
+`feat/k4b06-date-oriented-atlas`; he reconfirmed that base on 2026-10-28.
+The [merged PR receipt](https://github.com/fselman/wenu/pull/354) records his
+acceptance and the user-reported Mac evidence below. These are not claims that
+the assistant independently inspected retained Mac run files.
+
+All 155 distinct focused runtime cases are covered by 143 retained passes plus
+the corrected 24-case layout owner (82.54 s; overlapping coverage, not 167 distinct
+cases). The test-only explicit Agg-canvas correction preserved strict physical
+margin assertions; no production tolerance or canvas change was needed.
+All 36 documentation cases passed in 2.89 s and all eight tooling cases in
+8.593 s. Retry logs/provenance:
+`~/Software/build/wenu/test/dated-atlas-canvas-retry-v1-h0bd4cv6`.
+
+The retained-source recipe v2 passed all eight publication cases: both
+mean-equator/equinox and mean-ecliptic/equinox axes, TT J2000/J-8000 and
+`jobs=1`/`jobs=2`, with polar sheet 1 and ordinary sheet 13. Stellar evaluation
+remained a separately explicit TCB event. Python, installed CLI and publication
+scientific reports and chart/report PNG pixels matched. Counts, serial/spawn
+analysis, PDF page order/physical sizes and supplied static-index disclosure
+passed. Native defaults matched prior CLI evidence before/after, and retained
+source/snapshot bytes were unchanged. This establishes parity for the measured
+workload, not a general speedup claim.
+
+Actual-cache evidence:
+`~/Software/build/wenu/output/dated-atlas-acceptance-v2-8gsytobv`;
+comparison page `comparison-v2.html`; completion-manifest SHA256
+`032c35cb3f9c2ff0bbc9f646fec3744f999a242b660fc7eee3e127cceed83280`.
+The population remains 97,710 full-input, 17,395 angular and 2,850 Hip2 fallback
+stars, with 263 explicit gaps. The count appendix selected 5,041 stars and
+reported 263 invalid/unavailable positions; changing axes does not change
+source/model membership.
+
+Fernando confirmed line/label placement, reviewed the changed target-axis
+footprints and poles, stated “So everything is OK” and requested merge/cleanup.
+That acceptance, recorded in the PR, supersedes the immutable run's original
+`visual_review: pending` field; do not rewrite the run. Recipe v1 stopped at
+the legend-fit guard; v2 used explicit compact typography while retaining all
+layers/fit checks. No production fix followed. Retain both failed and successful
+runs, immutable enrichment source, saved source sky and their dependencies.
+
+This accepts observer-free barycentric mean-axis single-sheet and serial/spawn
+atlas views through existing owners. TT orientation and TCB stellar evolution
+remain independent inputs. It supplies no observer, persistence, new source/model,
+physical-accuracy guarantee or parent K4b.06 closure. The coordinate guide's
+scientific meanings remain current; this receipt changes acceptance status only.
+See the [remaining-obligation review](#remaining-k4b06-scope-and-bright-star-audit-placement)
+and [roadmap selection status](kernel_roadmap_v0.9.5.md#current-position-and-next-item-selection).
+
 ## Date-oriented atlas as-is review, 2026-10-27
 
-Reviewed main `07a03aece766c86f316722200a03253550fbdfb7`, after PR #351
-merge/cleanup and Fernando's clean synchronized Mac report. This is an assessment
-and [proposed K4b.06 scope](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope),
-not an as-built date-oriented atlas claim.
-
-| Current owner | Observed implementation | Integration consequence |
-|---|---|---|
-| `astrometric_coordinates.LongTermFrame` | Corrected VCW2011/2012 ERFA mean-equatorial/ecliptic orientation; explicit TT equinox/domain, exact matrix/backend identity; unknown physical error | Reuse the admitted model within J-198000..J202000; do not replace it with an Astropy FK5/ecliptic date shortcut |
-| `orient_direction_batch` | Validates native nominal astrometric SDK batches/admission, preserves original states and returns an oriented view | This is not an arbitrary contour/grid adapter or persisted catalogue; do not fabricate SDK states for geometry |
-| `CoordinateService.transform` | Existing Astropy frame routes preserve spherical carrier kinds/semantics; no `LongTermFrame` route | A common astronomical geometry handoff is missing |
-| `CelestialSphere.draw_chart` / layer realization | Native/observer/reception routing, then domain/projection/preparation/rendering; no common dated mean-axis stage | Add the proposed seam before guarding/projection, preserving native source realization; changing projection output alone leaves preparation and recorded spherical data inconsistent |
-| `AtlasSheetGeometry` / atlas requests | Design is explicitly ICRS-centred; `SphericalFrame` aligns the projection | A dated numerical tiling needs an explicit derived-view binding; projection alignment cannot stand in for precession |
-| `AtlasSheetChart` / `_render_atlas_sheet` | Native-ICRS guard/context; ICRS centre reporting and equatorial grid/furniture conventions | Frame input, truthful centres and ecliptic longitude labels require product work |
-| `stellar_realization_sky`, lines and labels | Bound star view exposes native positions; copied dependent layers follow it | Keep stellar TCB evaluation and ownership; orient the resulting geometry coherently without line/label epoch policies |
-| Coordinate grids and celestial points | Fixed native grids are supported; other paths use Astropy/date or observer context; equatorial poles are constructed as ICRS points | Distinguish explicitly fixed references from TT mean references; a rotated old grid/pole is not a newly dated reference |
-| Boundaries, shapes and source snapshots | Source-defined membership/shapes and source-only snapshot restoration | Preserve source meaning; orientation is coordinate re-expression, not physical evolution or snapshot conversion |
-| Atlas publication/workers | Exact scientific input capture, per-process stellar binding, report checks, cleanup and completion last | Extend the same owner with immutable frame capture and worker validation; retain accepted native defaults and static-index disclosure |
-
-The two distinct events are not interchangeable: stellar TCB evaluation determines
-positions under admitted motion; TT equinox determines mean-axis orientation.
-Frame orientation adds no observer, light-time, parallax, aberration, nutation or
-Solar System state. Source-fixed geometry can share target axes without gaining
-a new physical propagation model. The finite frame domain does not qualify
-stellar accuracy throughout that domain.
-
-The design alternatives are an explicit derived target-axis layout, fixed-ICRS
-footprints expressed in new axes, or a new framed-design format. They produce
-different product semantics. The proposal selects the first for review and
-retains exact source design identity; it does not silently choose it in runtime.
-Grids, poles, ticks and reports must agree with that choice. The corrected
-first-order-bias matrices require normalization and are not exact orthogonal
-rotations; any inverse reference construction needs its own seam verification.
-
-Existing focused gates were run against the pinned source materialization:
-52 long-frame cases, 12 coordinate-service cases excluding unrelated zodiac-tool
-consumers, 30 atlas sheet footprint/pole/convention/validation cases, and four
-native coordinate-grid cases passed. Their times were 1.04, 1.80, 1.10 and
-1.13 s respectively. These establish current owner behavior, not acceptance
-of the proposed integration. Local source comparisons for frame, coordinate,
-sphere, atlas-sheet and design owners matched the pinned GitHub files.
-Review log/provenance: scratch `frame-scope-review-v1`, disposable.
-No production/resource/dependency/build/test-collection change was made.
+The pre-implementation assessment at `07a03aece766c86f316722200a03253550fbdfb7`
+is retained in the [dated assessment archive](archive/kernel_audit_20261028/date_oriented_atlas_as_is_v1.md).
+It identified the seams subsequently implemented and accepted through #354.
+Use the accepted result above and current implementation reference for present
+behavior; the original review is historical evidence.
 
 ## Accepted native atlas stellar publication and worker result
 
@@ -307,29 +324,43 @@ without inventing a speed target or treating a numerical cone as physical error.
 
 ### Remaining K4b.06 scope and bright-star audit placement
 
-The native Python sheet, explicit single-sheet CLI/TOML and native atlas
-publication/worker slices are accepted through PRs #346, #348 and #350.
-These bounded results do not close K4b.06. Date-oriented mean-axis products,
-other applicable regional/observer consumers, remaining workload/final product
-reconciliation and the bright-star source review retain their existing
-scientific boundaries and need explicit bounded selections. The accepted atlas
-path already includes captured data-only worker inputs; general live-request
-transport is not admitted, and evaluated epoch-catalogue persistence is separate
-K4b.07 scope. Do not list accepted native atlas/worker or single-sheet CLI gates
-as pending, or extend their acceptance to unadopted product/frame/observer routes.
+Reviewed GitHub main `d01248376d9f5e8400575f83053499549604817f` after #354.
+The native Python sheet, explicit single-sheet CLI/TOML, native atlas
+publication/workers and dated mean-axis atlas views are accepted through PRs
+#346, #348, #350 and #354. None of those bounded acceptance gates remains pending.
+The following is an as-is reconciliation of existing obligations, not selection
+of new runtime work or a changed milestone order.
+
+| Boundary | As-is evidence | Remaining obligation / disposition |
+|---|---|---|
+| Native and dated-axis atlas sheets/publication | `AtlasSheetChartRequest` admits explicit motion and optional frame input; the canonical executor/publication binds them and #354 accepts both axes, polar/ordinary sheets and serial/spawn parity | Retain accepted receipts and evidence. No repeat implementation or blanket physical-accuracy claim |
+| Ordinary regional, planisphere and other applicable chart consumers | `ChartRequest` has cluster-motion selection but no stellar-motion input. `chart_request_realization_context` requires an observer; the atlas branch of `generate_chart_request` is separately observer-free | Product/frame/observer applicability and a bounded consumer contract still need selection and acceptance. Atlas acceptance cannot be extended to these public paths |
+| Stellar ownership and observer refusal | `stellar_realization_sky` rejects an observer-bound sky; `Stars.realize`/`_spherical_geometry` reject non-native realization of the bound stellar view | Preserve stars as source/model/event owner and lines/labels as public-position consumers. Any new consumer must compose admitted services, not bypass the refusal or substitute a frozen Earth. Ancient/future terrestrial model qualification is separately K4b.08 |
+| Workload and final product reconciliation | Accepted native and dated atlas runs supply real-source workload/reuse, default compatibility and visual evidence for their exact public paths | Reuse applicable evidence; measure/accept newly selected consumers separately. Reconcile the complete applicable inventory at K5 before freeze, without treating accepted atlas gates as pending |
+| Bright-star source review | Deferred by Fernando to production integration within K4b.06; current admitted source remains unchanged | Still open. Agree bounded review/outputs when selecting that adoption work; no standalone prerequisite, new acquisition or input replacement is activated here |
+| Evaluated epoch persistence and general transport | Atlas workers already admit captured data-only inputs; source-only saved skies remain source-only, and live request/session transport refuses | Persistent evaluated catalogues, preparation/reload, nearby-epoch policy and optional companion states belong to K4b.07. They are not missing #354 worker gates |
+
+The source findings above were checked against `charts/request.py`,
+`charts/request_realization.py`, `charts/request_generation.py`,
+`charts/atlas_sheet.py`, `objects/stars.py` and `sky/assembly.py` at the pinned
+base. This documentation review executes no new observer/product acceptance.
 
 Fernando deferred the bright-star source audit **to production Wenu integration
-within K4b.06**, not to an earlier standalone prerequisite. Perform it when
-reviewing production adoption of the real stellar inputs; no separate audit
-runs in this definition task and no input replacement is implicit. Its eventual
-scope/outputs and any adoption decision must be explicit, with original evidence/
-identity retained. Keep the accepted current source for initial architecture
-wiring and preserve the future ability to supply improved admitted inputs.
+within K4b.06**, not to an earlier standalone prerequisite. Its eventual scope,
+outputs and any adoption decision must be explicit, retaining original source
+identity/evidence. Keep the accepted current source for architecture wiring and
+the ability to supply improved admitted inputs later.
+
+The next decision is an explicit bounded selection: a remaining K4b.06 consumer
+or source-review boundary, or K4b.07 definition after its owner assessment.
+Exact-epoch publication/reload/parity remains K4b.07's first proposed slice,
+not activated implementation. K4b.08's site/time/rotation/ephemeris/correction
+definition remains separately pending; it is not silently inserted before
+K4b.07 or baseline K5. This review selects no new order.
 
 K5 still reconciles the complete consumer and science/capability inventory before
 contract freeze. Stellar extraction remains K6 after K5, followed by remaining
-families and release gates. This definition neither freezes the kernel nor
-moves astronomical source policy into generic geometry/services.
+families and release gates. Source/model policy stays outside generic services.
 
 ### Definition-task verification and decision
 

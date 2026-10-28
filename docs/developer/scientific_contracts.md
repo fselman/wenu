@@ -1,6 +1,6 @@
 # Current scientific contracts and paused work
 
-## Dated-axis atlas candidate contract
+## Dated-axis atlas contract
 
 The selected K4b.06 implementation composes admitted native stellar TCB
 directions with a separate finite TT mean-axis view. It preserves barycentric
@@ -11,10 +11,13 @@ error certificate. Canonical dated grids/poles and target-frame furniture
 are bound to the qualified TT policy; Galactic references and static source
 shapes retain their meaning. Captured frame/design bytes and actual backend/
 matrix identity bind workers and reports; incompatible references refuse.
-The [API boundary](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
-and [usage](../user_guide/atlas.md#mean-axis-atlas-views) distinguish pending
-Mac/visual acceptance from implemented candidate behavior. K4b.07 persistence
-and K4b.08 Earth-bound observation remain separate.
+The [API boundary](implementation_reference.md#dated-axis-atlas-views-k4b06)
+and [usage](../user_guide/atlas.md#mean-axis-atlas-views) are accepted through
+PR #354, merged at `d0124837`, after Mac runtime/documentation/tooling,
+retained-source parity and user visual review. See the
+[acceptance receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+Unknown physical/total errors and the finite frame domain are unchanged.
+Parent K4b.06, K4b.07 persistence and K4b.08 Earth-bound observation remain open.
 
 ## Planned ancient and future Earth-bound observers
 
@@ -30,11 +33,11 @@ Unknown errors remain unknown; explicitly approximate horizons must disclose
 their assumptions. Persisted Earth PV alone supplies no Earth rotation or site.
 Detailed model/domain/product qualification precedes implementation.
 
-## Proposed date-oriented atlas boundary
+## Accepted date-oriented atlas boundary
 
-The [K4b.06 proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
-reuses qualified long-term mean-axis orientation; the scope was accepted in #352 and its implementation is now a candidate
-awaiting Mac actual-cache and visual acceptance. TT equinox/domain and stellar TCB evaluation remain
+The [K4b.06 boundary](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
+reuses qualified long-term mean-axis orientation; scope was accepted in #352
+and implementation in #354. TT equinox/domain and stellar TCB evaluation remain
 separate scientific inputs. A view transformation adds no physical evolution
 of boundaries/shapes, observer state, Earth orientation or accuracy guarantee.
 Dated grids/poles must use the admitted mean-axis policy, while fixed references
@@ -88,7 +91,7 @@ Required unsupported components refuse; optional ones remain explicitly missing.
 Unknown errors and remote-epoch ephemeris gaps stay unknown. Saving state does
 not extend physical/model validity or enable an unadmitted observer chart.
 
-## K4b.06 native stellar integration candidate
+## K4b.06 native stellar integration
 
 The explicit Python native atlas-sheet opt-in uses only previously admitted
 full Gaia, angular Gaia and nominal-TCB Hip2 models. Source/model/event ownership
@@ -108,7 +111,7 @@ The bounded native-sheet slice passed 59 Mac runtime and 36 documentation cases,
 actual cold/restored source workloads and Fernando's visual review in PR #346,
 merged at `ab8a7e9a`. These receipts preserve the physical-accuracy limits above.
 
-The single-sheet CLI candidate accepts only an explicit local motion TOML:
+The accepted single-sheet CLI accepts only an explicit local motion TOML:
 caller model order/policies, verified source manifest, finite domains and a TCB
 Julian target epoch. This input does not infer a civil date, historical observer
 or dated coordinate axes. The loader belongs to stars; style, line and label
