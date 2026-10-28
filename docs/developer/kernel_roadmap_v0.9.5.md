@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 118, 2026-10-28. **Status:** PR #354's bounded dated-axis atlas slice passed Mac focused/runtime, documentation, tooling, retained-source Python/CLI/serial/spawn parity and user visual acceptance, then merged at `d0124837`; clean synchronized Mac main and task-branch cleanup are confirmed. Native sheet/CLI/publication slices #346/#348/#350 remain accepted. Parent K4b.06 remains open for applicable consumer/final reconciliation and the deferred bright-star source review. This documentation receipt reconciles those obligations without selecting new runtime work. K4b.07 persistence and K4b.08 ancient/future Earth-bound observers remain separately agreed capability scopes with detailed slices pending.
+**Plan revision:** 119, 2026-10-28. **Status:** Native/dated atlas slices through #354 are accepted; #355's acceptance receipt/reconciliation is merged at `50b3d4bd`, with 36 Mac documentation passes and clean main/branch cleanup confirmed. Fernando selected completion of parent K4b.06. The concrete native-consumer, modern-observer capability and source-review boundary below is proposed for agreement before runtime; parent closure is not claimed. K4b.07 persistence and K4b.08 ancient/future Earth-bound models remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,9 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `d01248376d9f5e8400575f83053499549604817f`,
-confirmed clean/synchronized on the Mac after PR #354 merge and task-branch
-cleanup, and reconfirmed on 2026-10-28 before this documentation branch.
+**Current accepted base:** main `50b3d4bd25c07eb4695dc101828b5c5b81fabf33`,
+confirmed clean/synchronized on the Mac after PR #355 merge and local/remote
+branch cleanup on 2026-10-28.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -69,7 +69,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #354 dated mean-equatorial/ecliptic atlas views accepted, merged and cleaned up; Mac runtime/documentation/tooling, all eight actual-cache publication cases and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Current documentation task: #354 acceptance receipt and [remaining K4b.06 reconciliation](#remaining-obligations-after-354). A remaining K4b.06 boundary or K4b.07 definition needs explicit selection before further implementation. K4b.08 remains separate; no new runtime/order is selected here |
+| Next bounded submilestone | Fernando selected completion of K4b.06. Its [concrete completion boundary](#k4b06-proposed-completion-boundary-2026-10-28) is proposed for agreement; native public-product and modern observer-gap policies are not yet settled. No K4b.07/K4b.08 implementation is activated |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -82,6 +82,88 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.06: proposed completion boundary, 2026-10-28
+
+**Selection:** after #355 merge/cleanup and clean synchronized Mac main
+`50b3d4bd25c07eb4695dc101828b5c5b81fabf33`, Fernando requested:
+“Let us finish K4b.06.” This selects completion of the parent and the present
+as-is/closure definition. It does not settle the new public product and
+observer-capability decisions below. These subdivisions and their dependency
+edges are **proposed**, not agreed implementation authority. No runtime change
+or K4b.06 closure is claimed by this definition.
+
+**Problem:** accepted native/dated atlas paths cover #346/#348/#350/#354,
+but ordinary requests require an observer and lack stellar-motion input.
+Direct regional and polar renderers already accept a native realization context;
+that lower-level seam is not acceptance of ordinary request/CLI adoption.
+The existing finite-distance observer service accepts Cartesian state batches;
+angular-only catalogues do not supply physical distance/PV and cannot be fed
+into it as if they did. See the [source-pinned assessment](kernel_migration_audit_v1.md#k4b06-completion-assessment-2026-10-28).
+
+| Proposed ID | Concrete result | Dependency / smallest acceptance |
+|---|---|---|
+| K4b.06.R1 | Finish the deferred bright-star source review during production adoption: original-Wenu V ≤ 3 population; compare current Gaia/Hip2 choices with applicable UBSC/UBAD/HGCA and published system/orbit/RV evidence; retain per-HIP gaps and provenance, without changing adopted data | Runs within integration, not a new prerequisite before R2/R3. Resolve the actual retained population, provider permissions and available evidence; produce an explicit source-suitability/gap table. No unsupported “best catalogue” claim |
+| K4b.06.R2 | Adopt the existing stellar-owned realization through explicit observer-free native-ICRS regional and physical polar disk requests; reuse canonical rendering, source membership and public positions, with Python and installed-command/TOML access | Preserve observer-bound defaults. Use the existing motion TOML, caller-ordered models, source-only sky and request lifetime. Closest stellar/request/regional/polar/CLI seams plus real-source modern/ancient specimens; no horizon/calendar reconstruction |
+| K4b.06.R3 | Adopt full-input stellar Cartesian states in modern observer-bound chart consumers through the existing qualified reception/finite-observer services and their actual resource domains | Define and agree the capability policy below before runtime. Reuse admitted time/state conversion and correction owners. Closest observer/source/request/line/label/CLI seams, mixed-capability/refusal/isolation tests and real-source modern chart specimens |
+| K4b.06.R4 | Reconcile all applicable consumers, workloads/reuse, source review and scientific/visual evidence; close only K4b.06 once its agreed R1–R3 boundary is accepted | Reuse #346/#348/#350/#354 evidence for unchanged paths; accept new public routes and explicit unsupported cases. Complete documentation and bounded affected-consumer gates. K5 remains final cross-K contract reconciliation/freeze |
+
+**Proposed native product boundary (R2):** expose native barycentric chart
+requests explicitly rather than making a dummy observer or attaching motion
+to lines/labels. Start from the existing regional and physical polar disk
+geometry owners. Native requests take an explicit admitted
+`StellarMotionRequest` (or the same source-bound motion TOML on the installed
+command) and observer-free source sky. Retain source-defined IAU/Serpens
+membership and source-fixed masks/shapes. Unsupported observer/horizon,
+site-dependent centering/orientation, calendar/fabrication or source-layer
+combinations refuse before publication. Optional mean-axis use must compose
+the accepted TT orientation seam and truthful frame furniture; it cannot be
+inferred from the stellar TCB epoch. Any dated regional/polar frame option
+needs its explicit product contract before activation. The precise public
+request/command contract is part of agreement on R2, not an already existing API.
+
+**Proposed modern observer policy (R3), requiring agreement:** initially use only
+the existing full-input Cartesian capability. Preserve every HIP, names,
+photometry and original source record; angular-only/missing-distance rows remain
+explicitly unavailable in the selected observer realization, with reasons and
+source/selected/visible counts. Do not fabricate a distance, adopt zero RV,
+silently restore static positions or turn a direction into a Cartesian state.
+No default-model/source change. Reports must disclose these declared gaps and must not claim complete
+observed coverage. This proposed product policy needs agreement before
+implementation. The existing
+angular-model native views remain available independently.
+
+Admitting an angular-only observer transformation with omitted parallax would
+be an additional scientific capability requiring its own policy, corrections,
+qualification and explicit agreement. It is an alternative to the proposed
+full-input-only initial observer boundary, not an implemented fallback.
+Do not silently reclassify modern observer adoption as K4b.08, which covers
+separately agreed ancient/future terrestrial models.
+
+**Bright-star review boundary (R1):** preserve the existing original V selection,
+not UBSC Hpmag or Gaia G substituted for V. For each retained HIP, record current
+source/model capability and source epoch/scale, component/system identity,
+available errors/covariances, multiplicity/acceleration flags and RV provenance.
+Distinguish photocentre/short-baseline motions from evidence for centre-of-mass
+motion. Mark unavailable external comparisons explicitly; a literature review
+alone is not a measured per-HIP source comparison. Any source acquisition must
+first follow the dated provider-policy review; any replacement/adoption is a
+separate explicitly reviewed decision. Improved data are not a new prerequisite
+for testing the accepted current-source architecture.
+
+**Scope limits:** retain canonical catalogue/provider → spherical → domain →
+projection → preparation → renderer → furniture/export ownership. Stars/their
+adapter own source/model/event and SDK reuse; lines/labels consume public
+positions and do not acquire astrometric policies. No new propagation engine,
+kernel extraction/freeze, persisted epoch product or nearby-epoch reuse window
+(K4b.07), ancient/future observer model (K4b.08), implicit data acquisition,
+physical-accuracy guarantee or source replacement. Existing scientific gaps
+(#326/#333 and other K4b.02/AX scopes) remain explicit.
+
+**Decision required before runtime:** agree this concrete R1–R4 boundary,
+including native request products and the modern full-input/gap policy, or
+revise the affected scope explicitly. Merely accepting this documentation as a
+faithful proposal does not activate an unresolved scientific choice.
 
 ## K4b.06: proposed date-oriented atlas view scope
 
@@ -224,10 +306,10 @@ pins actual owners at `d0124837` and separates accepted gates from pending scope
 | Bright-star source audit during production adoption | Deferred within K4b.06; bounded scope/outputs still need selection. No acquisition, source replacement or new standalone prerequisite |
 | Persistent evaluated epoch products/reuse and optional companion states | Separate K4b.07 scope; existing captured worker transport is already accepted |
 
-Next choices require explicit selection: a remaining K4b.06 consumer/source-review
-boundary, or K4b.07 definition and owner assessment. Exact-epoch publication/
-reload/parity is still only K4b.07's first proposed slice. This receipt changes
-no sequence, activates no runtime and does not insert K4b.08 before K4b.07 or K5.
+Fernando has now selected completion of K4b.06; the proposed R1–R4 boundary
+above makes the remaining product/science decisions concrete for agreement.
+K4b.07 definition is not the selected next track. Its exact-epoch publication/
+reload/parity remains proposed; K4b.08 is not inserted before K4b.07 or K5.
 The documentation-only gate is the complete `documentation` selection; unchanged
 science/runtime suites reuse their accepted receipts.
 

@@ -1,5 +1,37 @@
 # Testing policy and module independence
 
+## Proposed K4b.06 completion acceptance
+
+The [completion boundary](kernel_roadmap_v0.9.5.md#k4b06-proposed-completion-boundary-2026-10-28)
+is a proposal awaiting agreement; this section executes no new runtime gate.
+
+- Native consumers: extend existing stellar, request, realization, regional,
+  polar and installed-command owners. Verify returned propagated positions drive
+  stars/endpoints/anchors; source membership and gaps remain stable; native
+  framing/furniture/masks carry truthful axes; observer-only combinations refuse;
+  failures clean staging and close resources; no-motion defaults remain equal.
+- Modern observed consumers: use existing source Cartesian and finite-observer
+  qualification. Protect event/scale/resource/site binding, correction ownership,
+  missing-distance capability, explicit gap/refusal policy, source immutability
+  and request isolation. A deliberate static-coordinate substitution or dropped
+  realization must fail after a passing baseline. Include lines/labels and
+  all applicable ordinary family/view/CLI paths in the impact matrix.
+- Source review: retain the actual V-selected HIP list and source identity,
+  per-HIP current/alternative evidence and unresolved entries. Check original V
+  versus Hp/G and component/systemic-RV distinctions; no acquisition or source
+  replacement is inferred from test success.
+- Final evidence: retain real-source modern/ancient native regional/polar
+  specimens and supported modern observed specimens with scientific reports,
+  counts/gaps, workload/exact-reuse measurements, native compatibility, user
+  visual review and run provenance. Reuse accepted atlas evidence; do not claim
+  unchanged-service numerical tests qualify new observation policies.
+
+For this definition-only diff, run the complete `documentation` gate on the
+Mac. Existing stdlib-only documentation checks and pinned-tree link/inventory
+preflight can run in the assistant environment; that is not a substitute for
+the complete archive-byte/public-import gate. Runtime tests belong to separately
+agreed implementation changes and their actual affected-consumer matrix.
+
 <a id="dated-axis-atlas-candidate-gate"></a>
 
 ## Dated-axis atlas acceptance gate

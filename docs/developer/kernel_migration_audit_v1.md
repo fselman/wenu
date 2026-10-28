@@ -1,5 +1,72 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.06 completion assessment, 2026-10-28
+
+**Base:** GitHub main `50b3d4bd25c07eb4695dc101828b5c5b81fabf33`.
+Fernando confirmed clean synchronized Mac main and deletion of the #355 task
+branches, then requested completion of K4b.06. All 36 #355 documentation cases
+passed in 4.97 s at `0cd43b989f8251c6731b0b7a62a28abce566b9d9`;
+evidence `~/Software/build/wenu/test/dated-atlas-receipt-docs-v1-co9r1jmy`.
+This assessment reads current code; it runs no new scientific/product workload.
+
+| Existing owner | Observed source behavior | Closure consequence |
+|---|---|---|
+| `charts/request.py::ChartRequest` | Required observer and cluster-motion selection; no stellar-motion request | An explicit stellar public-input contract is missing outside the atlas route |
+| `charts/request_chart.py::prepare_chart_request`, `charts/view.py::get_chart_view` | Ordinary chart preparation/view refuses absent observer | Native product adoption is broader than passing a context to a renderer; preparation, spatial selection, furniture and export all need coherent native semantics |
+| `charts/request_generation.py` / `request_realization.py` | Ordinary export requires observer; realization supports observer-horizontal/Galactic and a distinct frozen-Earth construction. Atlas dispatch is separately observer-free | Preserve defaults and supported observer contracts. Do not use the frozen-Earth route to approximate an ancient observer or create a dummy observer for native products |
+| `charts/regional.py::RegionalChart.render` | Accepts realization context and delegates through the sphere/domain/projection pipeline; constellation auto-framing still requires observer | Reuse the native rendering seam, but explicitly qualify native framing, masks, coordinate names and secondary label regions before public adoption |
+| `charts/polar_planisphere.py::PolarPlanisphereChart.render` | Admits a native context without observer and bypasses the observer-to-ICRS conversion in that case | Native disk geometry is reusable. This does not qualify dated calendars/horizon overlays or ordinary observer-visible planispheres |
+| `charts/all_sky.py`, `circumpolar.py`, `binocular.py`, `full_sky.py` | Existing family-specific observer/framing/projection contracts; context parameters alone do not establish native public requests | Include them in the applicable-consumer inventory; review actual observed paths and unsupported combinations rather than claiming atlas acceptance covers them |
+| `sky/assembly.py::stellar_realization_sky` and `objects/stars.py` | Bound stellar view is isolated and observer-free; non-native realization refuses | Keep the stellar-owned public interface; a new observer view must be admitted explicitly, not enabled by removing this guard |
+| `stellar_state.py::StellarMotionProvider` | Exposes separately admitted full-input Cartesian representation; angular catalogues reject Cartesian representation | Full-input observer adoption can reuse the existing engine. Angular-only directions cannot supply observer PV/distance by inference |
+| `astrometric_observation.py::realize_astrometric_batch` | Uses typed Cartesian batches, explicit reception TCB event, TCB/TDB conversion and finite-observer correction policy; reception admits verified leap/final-EOP and finite model/resource coverage | Reuse this admitted modern service for supported full-input rows. Angular observer policy and ancient/future extension are not supplied by that service |
+| Existing test owners | Stellar view/motion/publication tests, ordinary request-realization/cluster composition, regional geometry and polar native/render contracts already exist | Extend these owners for real new seams; do not add milestone-only modules or repeat unrelated numerical proofs |
+
+Inspected source blob identities include:
+`ChartRequest 0c5f6341`, `request_realization 8a1f38d3`,
+`request_generation 109e4f20`, `request_chart f6f76272`,
+`view 1343b4ea`, `regional 1ab20490`,
+`polar_planisphere bc5ad9a3`, `stellar_state 72c354f0`,
+`Stars e79b3789`, `assembly 4820f01f`.
+The exact pinned commit, not abbreviated blob labels, is the authority.
+
+### Bright-star source question and review scope
+
+Fernando's original question was which astrometric observations are best for
+the brightest stars. The earlier assistant proposed a V ≤ 3 review against
+UBSC, UBAD, HGCA and individual orbital/systemic-RV references; Fernando deferred
+that review to K4b.06 production integration. The magnitude threshold and
+per-HIP comparison protocol are a recovered proposal, not a previously accepted
+source replacement or universal source ranking.
+
+Primary documentation rechecked 2026-10-28:
+
+| Source | Verified role | Review consequence |
+|---|---|---|
+| [UBSC, Zacharias et al. 2022; CDS J/AJ/164/36](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/J/AJ/164/36?format=html&tex=true) | 1,423 all-sky bright stars; nearly complete to V=3 except three systems; ICRS astrometric parameters/covariances at J1991.25; known/suspected multiplicity flags. Its listed Hpmag is not Wenu V | Candidate alternative for missing/poor Gaia bright-star solutions; shared Hipparcos inputs and multiplicity preclude treating it as an independent universal oracle |
+| [UBAD, Munn et al. 2022; CDS J/AJ/163/131](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/J/AJ/163/131?format=html&tex=true) | 364 bright northern stars, current-epoch astrometry and Hip2-combined proper motions; includes stars missing from Gaia EDR3 | Useful northern comparison, not complete southern coverage or independent Hip2-free proper motions |
+| [HGCA EDR3, Brandt 2021; CDS J/ApJS/254/42](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/J/ApJS/254/42?format=html&tex=true) | Cross-calibrated Hipparcos, Gaia EDR3 and positional-difference proper motions with covariance/acceleration diagnostics | Compare baselines and acceleration/component evidence; do not simply select the smallest formal PM error as a systemic rectilinear motion |
+| Published individual system/orbit and spectroscopic-binary RV evidence | Individual original references, component definitions and systemic versus instantaneous RV must be checked during the actual audit | No original orbital/RV value is asserted inspected or adopted by this assessment |
+
+This is a source-role literature assessment only. No complete V ≤ 3 retained
+HIP list, external per-HIP matches, measured input differences or provider
+permissions have been executed/established here. R1 must report those honestly
+from retained source evidence and approved acquisition routes, rather than
+claiming a catalogue-level summary completed the promised source audit.
+The current admitted source remains unchanged.
+
+### Proposed closure and unresolved scientific boundary
+
+The [concrete completion proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-completion-boundary-2026-10-28)
+separates bright-star review, native regional/polar consumers, modern
+full-input observer adoption and final acceptance. Its central scientific
+choice is whether to accept an initial modern observer product with explicit
+angular-only/missing-distance gaps, or separately qualify an angular-observer
+policy before that product is accepted. The latter is not a routine renderer
+choice. No new policy, reordering or hidden fallback is implemented here.
+The parent K4b.06 stays open until its explicitly agreed closure boundary and
+actual consumer/source-review acceptance are complete.
+
 ## Accepted dated-axis atlas result
 
 PR #354's bounded K4b.06 mean-axis atlas slice is accepted and merged at
@@ -351,8 +418,8 @@ outputs and any adoption decision must be explicit, retaining original source
 identity/evidence. Keep the accepted current source for architecture wiring and
 the ability to supply improved admitted inputs later.
 
-The next decision is an explicit bounded selection: a remaining K4b.06 consumer
-or source-review boundary, or K4b.07 definition after its owner assessment.
+Fernando subsequently selected K4b.06 completion; the current completion
+assessment above proposes the concrete remaining boundaries for agreement.
 Exact-epoch publication/reload/parity remains K4b.07's first proposed slice,
 not activated implementation. K4b.08's site/time/rotation/ephemeris/correction
 definition remains separately pending; it is not silently inserted before
