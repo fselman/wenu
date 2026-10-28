@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## Nearby-epoch query scope definition (K4b.07)
+
+The first exact-epoch slice is accepted through #358, merged at `233f18b1`;
+clean synchronized Mac main and task-branch cleanup are confirmed. Fernando
+selected the next scope definition with “Proceed”. The
+[as-is assessment](kernel_migration_audit_v1.md#k4b07-nearby-epoch-query-as-is-assessment-2026-10-28)
+and [proposed native query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+define configurable unchanged reuse inside the window and original-model
+advancement outside it, with distinct requested/actual events and strict old
+bundle compatibility. This is documentation for scope review; runtime, new
+module/API, consumers, companions and observer functionality are not activated.
+Parent K4b.07 remains open.
+
 ## Exact-epoch stellar persistence candidate (K4b.07)
 
 After #357 merge/cleanup and confirmed clean synchronized Mac main `7407ea1b`,
@@ -15,8 +28,9 @@ all-row exact SDK parity and fresh reload with original-source access and
 provider/session creation prohibited. All 118,218 rows and source identities
 remain preserved. See the [verification receipt and workload costs](kernel_migration_audit_v1.md#retained-source-exact-epoch-verification):
 bundles are about 1.02 GB each; full validated load takes about 81 s on the
-measured Mac workload. Final receipt documentation and user acceptance remain
-pending. No chart, nearby-epoch, companion or observer adoption; parent K4b.07
+measured Mac workload. Final receipt documentation passed 36 Mac cases in 6.67 s at 84e04236;
+Fernando requested merge/cleanup and confirmed clean synchronized main 233f18b1
+after #358. No chart, nearby-epoch, companion or observer adoption; parent K4b.07
 remains open.
 
 ## K4b.06 accepted closure and K4b.07 persistence assessment

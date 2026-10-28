@@ -1,5 +1,39 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.07 nearby-epoch query as-is assessment, 2026-10-28
+
+**Selected work:** define the next nearby-epoch reuse/advancement slice after
+accepted #358 and confirmed clean synchronized Mac main
+`233f18b1a116a6201443e33c2d6606b91f2a1416` and task-branch cleanup. Fernando
+said “Proceed” after that definition proposal. Read-only implementation review
+supports the [proposed contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope);
+no nearby-event runtime implementation has been selected or run here.
+
+| Existing owner/interface | Verified source behavior | Proposed consequence |
+|---|---|---|
+| `StellarEpochCatalogue.at`, `rows`, `models`, `source` | Exact-event-only reader, detached records and immutable source/model/state payloads | Keep `at()` unchanged; new query policy reports requested versus actual position event and explicitly controls reuse/advancement |
+| `stellar_epoch.py::_code_identity` and `_validate` | Exact source/model/codec/core file digests are required; changed watched code rejects accepted bundles | New query/materialization module is a separate lifetime from immutable codec/publication. Do not weaken the v1 guard or rewrite old products solely to introduce the policy |
+| `StellarMotionCatalogue`, existing admission functions and `StellarMotionRequest` | Original source bytes/policies construct typed original coefficients and finite TCB admissions; common request checks supplied model domains | Reconstruct through existing owners, compare admission/coefficients to saved records, then evaluate original models at the target; no new arbitrary-payload admission or rounded-state rebasing |
+| `stellar_model_selection`, `StellarMotionProvider` and SDK | Existing ordered first-available model choice, separate direction/Cartesian capabilities, shared numerical engine and closed-session/refusal behavior | Reuse these owners. Unknown/failed capability cannot silently select another source or stale position; close short-lived owned resources |
+| SDK `TimePoint`/`TimeSpan`, `TimeService`, `astrometric_coordinates.py` | Split-JD typed scales and explicit conversion admissions; native stellar queries require TCB | Proposed first resolver accepts resolved TCB only, compares exact numeric separations and leaves external conversion/receipt ownership upstream |
+| Existing first-slice tests and retained bundles | Mixed model/gap, direct SDK parity, exact reload, identity/refusal/cleanup; accepted all-row J2000/J-8000 states | Keep old protections; new tests must detect window-boundary errors, stale/relabeled outputs, rebasing and sliding anchors. Existing target payload hashes supply accepted full-population references |
+
+The proposed fixed-window result preserves old state events and discloses the
+unquantified approximation at the requested event. Outside the window, it uses
+the actual requested event only when the original admissions support it. A
+window straddling a model-domain boundary does not authorize model evaluation
+outside that domain: unchanged reuse remains explicitly dated at the saved
+event, with requested-event coverage disclosed. This is a proposal for concrete
+scope review, not a new accepted physical-validity claim.
+
+No production/resource/dependency/format/collection change is made by this
+definition. Complete documentation acceptance is the only current gate;
+runtime, compatibility and actual-bundle query verification remain future gates
+of the proposed implementation. The coordinate guide records proposed event
+semantics separately from the accepted exact reader.
+
+
+
 ## K4b.07 exact-epoch persistence candidate, 2026-10-28
 
 **Base and selection:** #357 merged at `7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6`;
@@ -91,10 +125,14 @@ self-contained exact-event data access without saved-event model evaluation.
 No observer, TT orientation, nearby-epoch advancement or chart adoption follows.
 Physical accuracy remains unknown; K4b.07's remaining scope stays open.
 
-Runtime and actual-source verification are complete for this first slice;
-this documentation receipt needs the complete Mac documentation gate, then
-Fernando's final bounded acceptance/merge decision. Unchanged runtime and
-actual-source evidence is reused, not rerun merely for this receipt. The
+Runtime and actual-source verification are complete for this first slice.
+The final receipt at `84e04236e5f6b18df553e52cef61083f51602efa` passed all 36
+Mac documentation cases in 6.67 s, retained under
+`~/Software/build/wenu/test/stellar-epoch-receipt-docs-v1-0ykyu100`.
+Fernando requested merge/cleanup; #358 merged at `233f18b1`, and he confirmed
+clean synchronized Mac main plus local/remote task-branch deletion. The bounded
+first exact-epoch slice is accepted; broader K4b.07 remains open. Unchanged
+runtime and actual-source evidence is reused, not rerun merely for this receipt. The
 coordinate guide remains current.
 
 ## K4b.06 observer-free consumer reconciliation, 2026-10-28

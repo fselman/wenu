@@ -1,5 +1,22 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Proposed nearby-epoch event receipt
+
+The [K4b.07 query proposal](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+keeps catalogue, requested and actual position events distinct. Within the
+caller-selected window, unchanged states remain dated at the catalogue event;
+the requested event is context for an explicit fixed-position approximation,
+with unquantified approximation error and model coverage disclosed separately.
+Outside the window, existing original models evaluate the actual requested TCB
+event only within their admitted domains. The original source reference events
+and coefficients are never rebased to rounded saved directions.
+
+This proposed native query takes already resolved TCB inputs; source chronology,
+explicit upstream conversions/receipts, independent TT axes and observer
+displacement/corrections retain their existing owners. No new conversion,
+observer or apparent direction is implied. The accepted exact reader remains
+unchanged; the proposal introduces no runtime behavior in this definition.
+
 ## Catalogue parallax and observer displacement
 
 Catalogue barycentric astrometric directions and measured parallaxes are source
@@ -33,7 +50,9 @@ references, boundaries and shapes retain their meaning. Ecliptic longitude
 labels are degrees, equatorial RA labels hours. PR #354 passed Mac and
 retained-source parity gates and user visual acceptance, merged at `d0124837`.
 See the [receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
-Scientific meanings/limits are unchanged; K4b.07/K4b.08 remain unimplemented.
+Scientific meanings/limits are unchanged; the first exact-epoch K4b.07 slice
+is now accepted through #358. Nearby-epoch query and K4b.08 observer work remain
+unimplemented.
 
 ## Planned Earth-bound ancient and future views
 

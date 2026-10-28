@@ -27306,7 +27306,7 @@
   "stellar_exact_epoch_persistence": {
     "base_commit": "7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6",
     "plan_commit": "12a549642d83e1a551445159e1fc2542152c0054",
-    "status": "runtime/documentation and actual-source verification complete at 9ed3a7cb; final receipt documentation and bounded user acceptance pending",
+    "status": "accepted first exact-epoch slice through PR358/main 233f18b1; clean synchronized Mac and branch cleanup confirmed; parent K4b.07 open",
     "owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py"
@@ -27391,6 +27391,26 @@
         }
       },
       "limits": "Measured full-population validation-heavy workload; no universal speedup, physical accuracy, observer/nearby-epoch/consumer adoption or parent closure claim."
+    },
+    "acceptance_merge": {
+      "final_tested_head": "84e04236e5f6b18df553e52cef61083f51602efa",
+      "documentation_cases": 36,
+      "documentation_seconds": 6.67,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-receipt-docs-v1-0ykyu100",
+      "merge_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
+      "clean_mac_and_task_branch_cleanup": "confirmed by Fernando"
     }
+  },
+  "stellar_epoch_nearby_query_definition": {
+    "base_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
+    "status": "definition selected; concrete runtime boundary proposed for review",
+    "existing_owners": [
+      "src/wenu/stellar_epoch.py",
+      "src/wenu/stellar_state.py",
+      "src/wenu/astrometric_state.py"
+    ],
+    "proposed_owner": "stellar_epoch_query.py; query/materialization lifetime separate from strict immutable codec/publication",
+    "existing_test_owner": "tests/test_stellar_state.py",
+    "limits": "No production/format/dependency/collection changes. Proposed native TCB window query only, with strict old-bundle compatibility; no later consumers/companions/observers or parent closure."
   }
 }

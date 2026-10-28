@@ -1,8 +1,29 @@
 # Current scientific contracts and paused work
 
+## Proposed nearby-epoch state semantics
+
+The [proposed second K4b.07 boundary](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+defines native TCB query policy only; it is not implemented or accepted science.
+At/inside an explicitly configured fixed-position window, saved states keep
+their actual catalogue event. A separate receipt carries the requested event,
+approximation and unknown requested-event approximation error. The window is
+not an angular-error guarantee or a universal PM/physical-validity cutoff.
+Unchanged reuse is dated at its original valid event even if the requested
+event lies outside a motion-model domain; requested-event coverage is disclosed.
+No evaluation or physical validity at that requested event is implied.
+
+Outside the window, advancement requires the original admitted model domains
+and exact preserved source/model/coefficients; states are evaluated at the
+requested event through existing services. Unsupported advancement refuses.
+Preserve full/angular/Hip2 types, source epochs, every source measurement and
+explicit gaps. Never relabel old states, reset normalized angular reference
+events or slide the catalogue anchor between calls. Native barycentric query
+policy does not supply an observer, corrections, TT axes or new uncertainty
+qualification. Current exact-reader and modern-catalogue contracts remain intact.
+
 ## Exact-epoch stellar product contract
 
-The first K4b.07 candidate persists existing admitted nominal states at one
+The accepted first K4b.07 slice (#358) persists admitted nominal states at one
 resolved TCB event; it introduces no numerical model or new physical accuracy.
 All source identities/measurements/photometry/uncertainties/provenance remain
 verbatim, including measured parallaxes for angular models and absent RV.

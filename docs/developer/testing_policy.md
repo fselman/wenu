@@ -1,5 +1,28 @@
 # Testing policy and module independence
 
+## Proposed nearby-epoch query gate
+
+The [next K4b.07 scope](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+is definition-only; run the complete documentation gate for this diff. Future
+runtime coverage belongs in the existing `tests/test_stellar_state.py` owner,
+beside exact persistence, live selection and original-coefficient numerical
+contracts. New query tests must protect both signs/equality at window boundaries,
+zero/invalid windows, exact split-JD comparison, native-scale refusal, requested/
+actual event separation, explicit fixed-window coverage disclosure, source/gap/
+model/measurement preservation and immutable/isolation/resource behavior.
+Provider/session/model reconstruction must be prohibited on the reused path.
+Advancement must agree with original admitted models, with faults that expose
+stale output, changed bindings, query-time fallback, sliding anchors and rebasing
+normalized angular motion. Existing exact `at()` and strict v1 code/hash
+protections must still pass; no watched legacy owner is changed in the proposal.
+
+Reuse the retained accepted bundles, loading each once; compare full-population
+unchanged reuse and reciprocal J2000/J-8000 advancement with accepted target-state
+hashes, preserving all 118,218 statuses. Record initial load, reuse and advancement
+timings separately; no new preparation or blanket speedup claim. Exact runtime
+gate selection follows the eventual diff; unchanged numerical/core proofs are
+reused. No new tests, gate manifest, runtime run or visual claim is made here.
+
 ## Exact-epoch stellar persistence gate
 
 Candidate implementation extends `tests/test_stellar_state.py` with six
@@ -30,7 +53,10 @@ records exact run/product identities, bundle sizes and distinct preparation/
 reference/load/process timings. No new chart output means no new visual
 acceptance is claimed. This final documentation-only receipt runs the complete
 documentation gate; unchanged runtime/actual-source results are reused. Final
-user acceptance and parent K4b.07's remaining scope stay separate.
+receipt documentation passed 36 Mac cases in 6.67 s at 84e04236; Fernando
+requested merge/cleanup and confirmed clean synchronized main 233f18b1 after
+#358. Only the first exact-epoch slice is accepted; remaining K4b.07 scope stays
+separate.
 
 ## K4b.06 completion acceptance
 
