@@ -36,9 +36,51 @@ original-model parity, stale/relabeled/sliding/rebased faults, changed bindings
 and owned-resource cleanup. Two initial local test defects (loaded versus
 original object identity and a nontransverse injected rebase) were corrected;
 the same gate passes. Failed evidence is retained. This environment lacks
-pytest/full astronomy dependencies; Mac runtime/documentation and retained
-actual-product reciprocal verification remain pending. No consumer, observer,
+pytest/full astronomy dependencies; the successful Mac gates and retained
+actual-product reciprocal verification are recorded below. User acceptance and
+merge remain pending. No consumer, observer,
 source bytes, format, dependency, collection or numerical-engine change.
+
+
+### Retained-bundle nearby-epoch verification
+
+Fernando reported the Mac gates at `350de788e62e6067da30cbfa0aebf550bde18b2f`:
+20 focused runtime cases passed in 17.89 s (227 deselected), then 36 complete
+documentation cases in 3.37 s. Evidence is
+`~/Software/build/wenu/test/stellar-epoch-query-focused-v1-c56bvh_q`.
+The offline versioned recipe `wenu_stellar_epoch_query_acceptance_v1.py`, SHA-256
+`5be79f4d1fb4ed45f651a4c8e0fdf12a364f4c4b8c95947bec281f6c27b9bc4b`,
+then passed on both original accepted bundles, without preparation/republication.
+Retain `~/Software/build/wenu/output/stellar-epoch-query-acceptance-v1-yx6vdak5`,
+including provenance, log, summary and each product's reuse/advanced receipts.
+
+Each product loaded once under its original manifest and strict code binding.
+Reuse retained its exact saved-state hash and raw state times. J2000 → J-8000
+produced target states SHA-256
+`30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf`;
+J-8000 → J2000 produced
+`ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839`.
+These are the already accepted direct-SDK full-payload references, not new oracles.
+Both retain 118,218 rows: 97,710 full-input, 17,395 Gaia angular, 2,850 Hip2 angular
+and 263 explicit gaps. Source manifest remains
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`;
+both original model payloads share SHA-256
+`ff58d44c10d657233a1cfd8f31fbaa74ef79ddd1b204fdbb7186b1b404fbdb4d`.
+Original input bundle bytes were rehashed unchanged. Modern membership and all
+source measurements remain intact. Both inclusive signed edges, six refusal
+cases per product, detached receipts and original-anchor isolation passed;
+external original-source access was prohibited.
+
+| Original product | Validated load (s) | Reuse including verification (s) | Advancement query (s) | Advanced-row verification (s) |
+|---|---:|---:|---:|---:|
+| J2000 | 79.87201049400028 | 25.713258023999515 | 143.62267294299818 | 11.869400908999523 |
+| J-8000 | 72.3836608950005 | 23.400004888000694 | 158.59600560699982 | 14.280871820999891 |
+
+Reuse timing includes full public-row decoding/hashing and boundary checks; it
+is not isolated resolver latency. These validation-heavy workload costs establish
+no universal speedup or new optimization requirement. No runtime change followed
+this run. Final receipt documentation and user acceptance/merge remain pending;
+no chart/worker, companion, observer, physical-accuracy or parent closure follows.
 
 
 ## K4b.07 exact-epoch persistence candidate, 2026-10-28

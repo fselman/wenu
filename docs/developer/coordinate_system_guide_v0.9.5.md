@@ -3,8 +3,9 @@
 ## Nearby-epoch event receipt
 
 The accepted [K4b.07 query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
-now has a separate service candidate; Mac runtime/actual-product verification
-remain pending. Its receipt distinguishes catalogue, requested and actual
+now has a separate service candidate, verified at `350de788` by 20 Mac runtime
+and 36 documentation cases plus exact retained-product reciprocal checks.
+User acceptance/merge remain pending. Its receipt distinguishes catalogue, requested and actual
 position events. Inclusive in-window reuse leaves raw state times/anchors at the
 saved event and discloses fixed-position approximation error as unquantified.
 Requested-event coverage is disclosed even when the window crosses a model domain.

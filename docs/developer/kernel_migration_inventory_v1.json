@@ -27415,7 +27415,7 @@
   },
   "stellar_epoch_nearby_query_definition": {
     "base_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
-    "status": "contract accepted by Fernando with Accepted. Proceed. on 2026-10-28; service candidate implemented, Mac runtime/documentation and retained-product verification pending",
+    "status": "contract accepted; service candidate verified by Mac focused/documentation and original-bundle reciprocal checks at 350de788; final receipt documentation and user acceptance/merge pending",
     "existing_owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py",
@@ -27431,6 +27431,58 @@
       "cases": 36,
       "seconds": 6.6,
       "evidence": "~/Software/build/wenu/test/stellar-epoch-reuse-scope-docs-v1-tz_xhims"
+    },
+    "verification": {
+      "tested_commit": "350de788e62e6067da30cbfa0aebf550bde18b2f",
+      "runtime": {
+        "cases": 20,
+        "deselected": 227,
+        "seconds": 17.89
+      },
+      "documentation": {
+        "cases": 36,
+        "seconds": 3.37
+      },
+      "focused_evidence": "~/Software/build/wenu/test/stellar-epoch-query-focused-v1-c56bvh_q",
+      "actual_evidence": "~/Software/build/wenu/output/stellar-epoch-query-acceptance-v1-yx6vdak5",
+      "recipe": {
+        "filename": "wenu_stellar_epoch_query_acceptance_v1.py",
+        "sha256": "5be79f4d1fb4ed45f651a4c8e0fdf12a364f4c4b8c95947bec281f6c27b9bc4b"
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "models_sha256": "ff58d44c10d657233a1cfd8f31fbaa74ef79ddd1b204fdbb7186b1b404fbdb4d",
+      "population": 118218,
+      "model_counts": {
+        "full-input-rectilinear": 97710,
+        "proper-motion-angular": 17395,
+        "hipparcos2-angular-fallback": 2850,
+        "unavailable": 263
+      },
+      "original_manifest_code_and_state_hashes": "passed; old bundles not rewritten",
+      "reciprocal_full_state_hashes": "exact accepted direct-SDK target payload matches",
+      "original_source_access": "prohibited",
+      "boundary_and_isolation": "passed",
+      "products": {
+        "j2000": {
+          "validated_load_seconds": 79.87201049400028,
+          "reuse_seconds_including_checks": 25.713258023999515,
+          "advancement_query_seconds": 143.62267294299818,
+          "advancement_verification_seconds": 11.869400908999523,
+          "advanced_states_sha256": "30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf",
+          "refusal_checks": 6,
+          "input_bundle_bytes_unchanged": true
+        },
+        "jminus8000": {
+          "validated_load_seconds": 72.3836608950005,
+          "reuse_seconds_including_checks": 23.400004888000694,
+          "advancement_query_seconds": 158.59600560699982,
+          "advancement_verification_seconds": 14.280871820999891,
+          "advanced_states_sha256": "ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839",
+          "refusal_checks": 6,
+          "input_bundle_bytes_unchanged": true
+        }
+      },
+      "limits": "Reuse timing includes public-row verification, not isolated resolver latency; no universal speedup, physical accuracy, consumer/observer adoption or parent closure."
     }
   }
 }

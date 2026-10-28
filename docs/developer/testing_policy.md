@@ -20,7 +20,10 @@ or stellar_sheet_borrows or stellar_motion_public_native_sheet`, then the comple
 documentation gate, with plugin autoload disabled. This adds five collected cases
 to the previous 15-case seam gate; no collection/gate manifest changes.
 Five new functions pass direct local execution with actual source/provider/kernel
-owners; this is not pytest or full Wenu acceptance. Mac gates remain pending.
+owners, together with three existing persistence regressions. At `350de788`,
+the Mac focused gate passed all 20 cases in 17.89 s (227 deselected) and complete
+documentation passed 36 in 3.37 s. Retain
+`~/Software/build/wenu/test/stellar-epoch-query-focused-v1-c56bvh_q`.
 Unchanged core/source mathematics reuse accepted numerical receipts.
 
 Then reuse the accepted bundles at
@@ -29,6 +32,16 @@ once with its original manifest digest. Compare full-population unchanged reuse
 and reciprocal J2000/J-8000 advancement against accepted target-state hashes,
 preserving all 118,218 statuses/source bytes. Record load, reuse and advancement
 timings separately; no new preparation, blanket speedup or visual claim.
+
+That retained-product run passed at the same head. Evidence:
+`~/Software/build/wenu/output/stellar-epoch-query-acceptance-v1-yx6vdak5`.
+Both products loaded once under original manifest/code hashes, returned unchanged
+reused rows, and advanced reciprocally to the exact accepted target-state hashes.
+All 118,218 statuses, source/model identities and input bytes were preserved;
+both signed inclusive edges, six refusal cases per product, detached receipts
+and original-anchor isolation passed. External original-source access was
+prohibited. The final documentation-only receipt needs the complete documentation
+gate; no runtime/source/core change requires repeating the successful science run.
 
 ## Exact-epoch stellar persistence gate
 

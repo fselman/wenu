@@ -28,7 +28,10 @@ the requested event is unquantified, separately from saved-state evidence.
 Advancement retains original source epochs/evidence and no physical qualification.
 Resources are closed before return and failures publish no partial resolution.
 Existing v1 reader/hash guards and accepted bundle bytes are unchanged.
-Mac runtime/retained-product acceptance is pending; no consumer/observer adoption.
+At `350de788`, 20 Mac runtime and 36 documentation cases passed. Retained J2000
+and J-8000 products passed original-hash loading, unchanged reuse and reciprocal
+advancement against accepted full-state hashes, with all statuses/source bytes
+preserved. User acceptance/merge remain pending; no consumer/observer adoption.
 
 
 ## Exact-epoch stellar catalogues

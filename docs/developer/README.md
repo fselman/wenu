@@ -11,9 +11,13 @@ event receipts. Existing watched source/model/core/codec bytes remain unchanged.
 See the [API](implementation_reference.md#nearby-epoch-stellar-queries),
 [contract](scientific_contracts.md#nearby-epoch-state-semantics) and
 [focused gate](testing_policy.md#nearby-epoch-query-gate).
-Five new test functions pass direct local execution with real providers/kernel;
-full Mac pytest/documentation and retained-bundle reciprocal verification remain
-pending. No chart/atlas, worker, companion or observer adoption; parent remains open.
+At `350de788`, 20 focused Mac runtime cases passed in 17.89 s and 36
+documentation cases in 3.37 s. Both retained products loaded under their original
+hashes, reused unchanged and advanced reciprocally with exact accepted target
+state hashes, preserving all 118,218 statuses and original input bytes.
+See the [full-population receipt and measured costs](kernel_migration_audit_v1.md#retained-bundle-nearby-epoch-verification).
+Final receipt documentation and user acceptance/merge remain pending. No
+chart/atlas, worker, companion or observer adoption; parent remains open.
 
 ## Exact-epoch stellar persistence candidate (K4b.07)
 

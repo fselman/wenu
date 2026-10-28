@@ -3,7 +3,10 @@
 ## Nearby-epoch state semantics
 
 The accepted second K4b.07 contract is implemented as a candidate in
-`stellar_epoch_query.py`; runtime and actual-bundle Mac acceptance are pending.
+`stellar_epoch_query.py`. At `350de788`, 20 Mac runtime and 36 documentation
+cases passed, followed by original-bundle compatibility and exact reciprocal
+all-row target-hash checks. User acceptance/merge remain pending; these results
+verify service composition and preservation, not new physical accuracy.
 At/inside an explicitly chosen inclusive Julian-year window, saved states keep
 their actual catalogue event. A detached receipt separates the requested event,
 fixed-position approximation, unquantified requested-event error and original
