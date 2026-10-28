@@ -7,7 +7,12 @@ Fernando confirmed clean synchronized Mac main and deletion of the #355 task
 branches, then requested completion of K4b.06. All 36 #355 documentation cases
 passed in 4.97 s at `0cd43b989f8251c6731b0b7a62a28abce566b9d9`;
 evidence `~/Software/build/wenu/test/dated-atlas-receipt-docs-v1-co9r1jmy`.
-This assessment reads current code; it runs no new scientific/product workload.
+Fernando subsequently accepted the corrected completion scope with “accepted,
+please proceed.” The original-V ≤ 3 review and supported observer-free consumer
+reconciliation are now selected, with modern-star/parallax preservation and
+observer-dependent deferral binding. This assessment/selection receipt runs no
+new scientific/product workload; actual source-review/consumer acceptance and
+parent closure remain pending.
 
 | Existing owner | Observed source behavior | Closure consequence |
 |---|---|---|
@@ -35,9 +40,9 @@ The exact pinned commit, not abbreviated blob labels, is the authority.
 Fernando's original question was which astrometric observations are best for
 the brightest stars. The earlier assistant proposed a V ≤ 3 review against
 UBSC, UBAD, HGCA and individual orbital/systemic-RV references; Fernando deferred
-that review to K4b.06 production integration. The magnitude threshold and
-per-HIP comparison protocol are a recovered proposal, not a previously accepted
-source replacement or universal source ranking.
+that review to K4b.06 production integration. The V ≤ 3 threshold was initially a recovered proposal; Fernando's subsequent
+acceptance of the corrected completion scope selects that bounded sample.
+It authorizes no source replacement or universal source ranking.
 
 Primary documentation rechecked 2026-10-28:
 

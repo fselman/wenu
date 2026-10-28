@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 120, 2026-10-28. **Status:** Atlas slices through #354 and #355's receipt are accepted at main `50b3d4bd`. Fernando selected K4b.06 completion, required preservation/use of modern catalogue measurements and explicitly deferred observer-dependent chart types until full observer functionality. The former full-input-only modern observer proposal is withdrawn. The corrected source-review/observer-free acceptance scope below does not claim runtime changes or parent closure. K4b.07 persistence and later full observer work remain separate.
+**Plan revision:** 121, 2026-10-28. **Status:** Atlas slices through #354 and #355's receipt are accepted at main `50b3d4bd`. Fernando selected K4b.06 completion, required preservation/use of modern catalogue measurements and explicitly deferred observer-dependent chart types until full observer functionality. The former full-input-only modern observer proposal is withdrawn. Fernando accepted the corrected completion scope with “accepted, please proceed.” Source review and supported observer-free reconciliation are selected; runtime acceptance and parent closure remain pending. K4b.07 persistence and later full observer work remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -93,8 +93,11 @@ Mac main `50b3d4bd25c07eb4695dc101828b5c5b81fabf33`, Fernando requested:
 observer subset and instructed: preserve modern catalogue stars, use measured
 source parallaxes when no better qualified input is available, and defer any
 chart type needing an observer until full observer functionality is added.
-These explicit instructions govern this completion scope. The former modern
-observer exclusion policy is withdrawn; it was never implemented or accepted.
+These explicit instructions govern this completion scope. Fernando then stated
+“accepted, please proceed.” This accepts the corrected R1–R4 scope below,
+including the bounded original-V ≤ 3 source-review sample, and selects its
+execution after the documentation gate. The former modern observer exclusion
+policy is withdrawn; it was never implemented or accepted.
 
 **Agreed limits:** K4b.06 completion covers the source review, already supported
 observer-free consumer paths and their final reconciliation/acceptance.
@@ -107,7 +110,7 @@ work; its modern consumer contract must also be defined there when applicable.
 
 | ID | Completion result / disposition | Acceptance / dependency |
 |---|---|---|
-| K4b.06.R1 | Finish the deferred bright-star source review during production adoption; original-Wenu V ≤ 3 is the existing proposed bounded sample. Compare current Gaia/Hip2 choices with applicable UBSC/UBAD/HGCA and published system/orbit/RV evidence; preserve every source identity/measurement and do not replace production inputs implicitly | Resolve the actual retained population, provider permissions and evidence; produce a per-HIP source-suitability/gap table. The exact review sample remains proposed, not a newly mandatory catalogue cut. This is not a prerequisite for current-source architecture acceptance |
+| K4b.06.R1 | Finish the deferred bright-star source review during production adoption; original-Wenu V ≤ 3 is the accepted bounded review sample. Compare current Gaia/Hip2 choices with applicable UBSC/UBAD/HGCA and published system/orbit/RV evidence; preserve every source identity/measurement and do not replace production inputs implicitly | Resolve the actual retained population, provider permissions and evidence; produce a per-HIP source-suitability/gap table. This accepted review sample is not a catalogue membership cut. This is not a prerequisite for current-source architecture acceptance |
 | K4b.06.R2 | Assess and accept applicable already-supported observer-free consumer paths, reusing the accepted atlas receipts and existing native stellar-position/rendering services | Verify actual public preparation/framing/render/export semantics. Existing native regional/polar renderer seams may be assessed; chart types whose product contract needs an observer are deferred. No new observer-free request family is selected merely to close this milestone |
 | K4b.06.R3 | Record all observer-dependent chart types as explicitly deferred until full observer functionality, preserving their existing modern behavior and catalogue population | No full-input-only observed product, angular-star exclusion, observer correction/approximation or new modern observer route is implemented in K4b.06. Deferred consumers remain discoverable for later full observer adoption |
 | K4b.06.R4 | Reconcile source review, applicable observer-free consumers, workload/reuse and scientific/visual evidence; then close only K4b.06 with the user-directed observer deferral explicit | Reuse #346/#348/#350/#354 evidence for unchanged paths. Check modern population/measurement preservation and explicit source-model gaps separately. K5 retains final cross-K contract reconciliation/freeze |
