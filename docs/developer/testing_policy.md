@@ -1,36 +1,40 @@
 # Testing policy and module independence
 
-## Proposed K4b.06 completion acceptance
+## K4b.06 completion acceptance
 
-The [completion boundary](kernel_roadmap_v0.9.5.md#k4b06-proposed-completion-boundary-2026-10-28)
-is a proposal awaiting agreement; this section executes no new runtime gate.
+The [corrected completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)
+records Fernando's explicit modern-catalogue preservation and observer-dependent
+chart deferral. No new runtime gate is executed by this definition.
 
-- Native consumers: extend existing stellar, request, realization, regional,
-  polar and installed-command owners. Verify returned propagated positions drive
-  stars/endpoints/anchors; source membership and gaps remain stable; native
-  framing/furniture/masks carry truthful axes; observer-only combinations refuse;
-  failures clean staging and close resources; no-motion defaults remain equal.
-- Modern observed consumers: use existing source Cartesian and finite-observer
-  qualification. Protect event/scale/resource/site binding, correction ownership,
-  missing-distance capability, explicit gap/refusal policy, source immutability
-  and request isolation. A deliberate static-coordinate substitution or dropped
-  realization must fail after a passing baseline. Include lines/labels and
-  all applicable ordinary family/view/CLI paths in the impact matrix.
-- Source review: retain the actual V-selected HIP list and source identity,
-  per-HIP current/alternative evidence and unresolved entries. Check original V
-  versus Hp/G and component/systemic-RV distinctions; no acquisition or source
-  replacement is inferred from test success.
-- Final evidence: retain real-source modern/ancient native regional/polar
-  specimens and supported modern observed specimens with scientific reports,
-  counts/gaps, workload/exact-reuse measurements, native compatibility, user
-  visual review and run provenance. Reuse accepted atlas evidence; do not claim
-  unchanged-service numerical tests qualify new observation policies.
+- Consumer inventory: assess already-supported observer-free public paths.
+  Reuse accepted atlas receipts. Record chart types whose preparation/framing/
+  view/export needs an observer as deferred until full observer functionality;
+  do not turn a native renderer seam into an implicitly selected new product.
+- Modern compatibility: historical/remote-epoch model limits and incomplete
+  inputs must not reduce the existing usable modern stellar population or
+  discard measured source parallaxes. Protect HIP/component/order/name/V and
+  source astrometric measurements/uncertainties/provenance. An angular-model
+  selection must not imply zero or erased parallax; missing RV alone must not
+  discard an otherwise usable measured parallax. Preserve uncertain/nonpositive
+  measurements without inventing reciprocal distances.
+- Observer deferral: no full-input-only observed product or angular-star exclusion
+  policy is implemented in K4b.06. Existing modern observed behavior stays
+  unchanged. The later full observer work must test capability/correction/event/
+  resource/site handling and population preservation under its own agreed scope.
+- Source review: retain actual original-V-selected HIPs and per-HIP current/
+  alternative source evidence, including unresolved matches and component/
+  systemic-RV distinctions. Literature-only findings are not executed numerical
+  comparisons. No source acquisition/replacement follows from a test pass.
+- Final evidence: reconcile supported observer-free consumers, source/model
+  availability versus modern population, workload/exact reuse and retained
+  scientific/visual results. New applicable paths require their own bounded
+  acceptance; unchanged atlas evidence is reused. Explicit observer deferral
+  can coexist with K4b.06 closure, without claiming full observer functionality.
 
-For this definition-only diff, run the complete `documentation` gate on the
-Mac. Existing stdlib-only documentation checks and pinned-tree link/inventory
-preflight can run in the assistant environment; that is not a substitute for
-the complete archive-byte/public-import gate. Runtime tests belong to separately
-agreed implementation changes and their actual affected-consumer matrix.
+For this documentation-only correction, run the complete `documentation` gate
+on the Mac. Local stdlib checks and pinned-tree link/inventory preflight do not
+substitute for the full archive-byte/public-import gate. No production/test/
+source/dependency/collection/default change is made here.
 
 <a id="dated-axis-atlas-candidate-gate"></a>
 

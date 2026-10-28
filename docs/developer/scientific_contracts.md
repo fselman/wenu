@@ -1,5 +1,35 @@
 # Current scientific contracts and paused work
 
+## Stellar catalogue preservation and deferred observers
+
+**User direction, 2026-10-28:** no decision for ancient/far-future maps may cause
+Wenu to lose usable modern catalogue stars. Keep modern catalogue membership/
+position availability separate from the applicability of a particular
+historical model/event. Preserve original source identity/components, names/V,
+position/parallax/proper-motion/RV measurements, uncertainties and provenance.
+
+Use measured source parallaxes when no better qualified input is available.
+Choosing an angular-only propagation model, or lacking RV/full Cartesian
+capability, must not erase an existing measured parallax, replace it implicitly
+by zero or exclude the star from modern use. Keep uncertain/nonpositive
+parallaxes as measurements with their quality information; distance inference
+is a separate explicit policy and must not invent a physical reciprocal distance.
+This records the preservation/use requirement; it changes no source selection,
+distance estimator or existing nominal propagation algorithm by itself.
+
+Published barycentric astrometric direction and parallax belong to the source
+catalogue solution. The local angular propagation representation does not define
+the source's parallax assumptions. A later transformation to Earth/site-dependent
+directions is a separate observer-service responsibility.
+
+For K4b.06, defer treatment of any chart type that needs an observer until full
+observer functionality is added. Preserve existing modern chart behavior and
+catalogue population in the meantime. The withdrawn full-input-only observer
+subset with angular-star exclusions is not an accepted policy. The
+[completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)
+retains the explicit deferral; later observer work must use the available
+measurements through a qualified capability/correction policy.
+
 ## Dated-axis atlas contract
 
 The selected K4b.06 implementation composes admitted native stellar TCB
