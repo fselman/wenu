@@ -19,9 +19,63 @@ lifecycle; serial and spawned sheets carry the same scientific receipt.
 Modified Python compiles. Two new owner functions pass direct local execution
 with real providers/kernel: source binding/gaps/immutable results/lifetime and
 captured document/pickle/re-admission/refusal/corruption. Public sky/render and
-serial/spawn cases are written but not executed locally. Full Mac runtime,
-publication/documentation and actual catalogue/Polaris visual verification are
-pending. No new J-2000 product or polar output is claimed produced yet.
+serial/spawn cases were not executable locally; all Mac and actual-data results
+are now recorded below. Final receipt documentation and user visual acceptance/
+merge remain pending; no observer or parent closure follows.
+
+
+### Saved epoch consumer actual catalogue and polar receipt
+
+Fernando reported all Mac gates passed at
+`9f7b2e9a3ec5c766107d5844e56fb0c56f6aa031`: 50 stellar/publication cases in
+153.64 s, 17 atlas cases in 39.32 s and 36 documentation cases in 3.26 s.
+Test evidence: `~/Software/build/wenu/test/stellar-epoch-consumer-focused-v1-f6yisdg2`.
+The actual run `~/Software/build/wenu/output/epoch-consumers-acceptance-v1-lgsgoia9`
+passed using `wenu_epoch_consumers_acceptance_v1.py`, SHA-256
+`998cd2fa78864b4f1ded4c17645471861dc283f4fe8002ad70aab71fe37f6532`.
+The read-only receipt check pinned completed provenance, recipe/source identity,
+completion digest and its summary entry; these are user-reported Mac results,
+not direct assistant inspection of the Mac files. Completion manifest SHA-256:
+`5376aa19eaf38bf658668cf04b82700cf6e573be5917a23e866a686e852e2cb1`.
+
+The additional self-contained `jminus2000` directory is an active retained input
+under that run, not disposable rendering output. It records JD(990545,0) TCB;
+manifest SHA-256 is
+`63f4bfa9f02cf724f40c068af7580506d5d226effea9819feca5a776e9bdb68b`,
+states SHA-256 is
+`57313d4ec51e0d0590b85050b050c283265f7db99285a0c888b39556dea877e7`.
+All 118,218 rows remain: 97,710 full-input, 17,395 Gaia angular, 2,850 Hip2 angular
+and 263 explicit gaps. Original source/model records remain unchanged and the
+entire new state payload agrees with the original-model query path. Original
+J2000 input files were rehashed unchanged; older catalogues were not replaced.
+
+Both specimen layouts use the same public 80-degree design, north sheet 18 and
+regional control sheet 7. Saved/live geometry is compared at actual stellar time;
+direct, serial and spawned chart/report PNGs and normalized scientific reports
+agree. The successful checks exclude only the existing process-local counters
+and publication-added bindings when comparing direct reports.
+
+| Specimen | Requested TCB | Actual stellar TCB | Independently declared mean-axis TT | Polaris RA (deg) | Polaris Dec (deg) |
+|---|---|---|---|---:|---:|
+| Modern 2026-10-28 | JD(2461342,-0.5) | JD(2451545,0), reused | JD(2461342,-0.5) | 46.77584367410853 | 89.3747262476918 |
+| J-2000 | JD(990545,0) | JD(990545,0) | JD(990545,0) | 334.7987173066494 | 67.56518205779696 |
+
+Polaris is HIP 11767, original magnitude 1.97. Both records are finite, selected,
+inside the viewport and each reaches one actual drawn marker. Projected positions
+are (-0.006372034352550834, 0.008859739374744371) for the modern specimen and
+(-0.3778630600896356, -0.12060080600294866) at J-2000. Fernando observed roughly
+22 degrees southward near RA 22h; the recorded ancient RA is about 22h19m and
+declination changes by about 21.81 degrees between these different axes.
+This is visual feedback, not a claim of 22-degree physical stellar travel or a
+new astrometric accuracy qualification. Matching TT/TCB numeric labels do not
+assert the same physical event. Modern unchanged reuse is explicitly approximate.
+
+Retain catalogue, source-sky, all reference/batch products, source dependencies,
+provenance and `comparison-v1.html`. The recipe's `visual_review: pending` is
+preserved; user visual acceptance and merge remain pending. No runtime change
+followed this successful run. The final documentation-only receipt needs the
+complete documentation gate, not another science/render run. Companion/observer
+work and parent K4b.07 closure remain separate.
 
 
 ## K4b.07 nearby-epoch query as-is assessment, 2026-10-28

@@ -11,7 +11,10 @@ publication counts and reports consume that shared view through existing owners.
 Publication workers receive a small digest-bound descriptor, verify source-sky
 and design identity and admit their own input once. Codecs, strict saved-product
 compatibility, source/model mathematics and observer ownership remain unchanged.
-This candidate still needs Mac publication/runtime and actual visual acceptance.
+The candidate passed 50 stellar/publication, 17 atlas and 36 documentation Mac
+cases at `9f7b2e9a`, then actual J-2000 preparation and saved/live/serial/spawn
+geometry/product checks with Polaris drawn in both north caps. User visual
+acceptance and merge remain pending; no observer/companion scope follows.
 
 
 ## Stellar epoch query lifetime

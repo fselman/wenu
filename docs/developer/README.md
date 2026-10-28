@@ -12,10 +12,14 @@ motion and strict v1 watched owners remain unchanged.
 See the [API](implementation_reference.md#saved-epoch-consumers),
 [gate](testing_policy.md#saved-epoch-consumer-gate) and
 [usage](../user_guide/atlas.md#saved-stellar-epoch-catalogues).
-Two new owner functions pass direct local execution; all
-modified Python compiles. Full Mac owner/publication/documentation gates and
-actual retained-product/J-2000/Polaris visual acceptance remain pending. No new
-catalogue or cap rendering is claimed yet; observers/companions remain deferred.
+At `9f7b2e9a`, 50 Mac stellar/publication cases passed in 153.64 s, 17 atlas
+cases in 39.32 s and 36 documentation cases in 3.26 s. The actual run then
+created/validated J-2000 with all 118,218 rows and original-model query parity.
+Both 80-degree north caps retain Polaris in an actual drawn marker, with direct,
+serial and spawn agreement and unchanged original inputs. See the
+[retained catalogue and polar receipt](kernel_migration_audit_v1.md#saved-epoch-consumer-actual-catalogue-and-polar-receipt).
+Final receipt documentation and user visual acceptance/merge remain pending;
+observers/companions remain deferred.
 
 
 ## Nearby-epoch stellar query candidate (K4b.07)

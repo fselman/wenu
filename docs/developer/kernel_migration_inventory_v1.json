@@ -27493,7 +27493,7 @@
     }
   },
   "stellar_epoch_consumers": {
-    "status": "candidate; full Mac/actual catalogue/Polaris visual acceptance pending",
+    "status": "verified Mac runtime/documentation and actual J-2000/Polaris specimens; final receipt documentation and user visual acceptance/merge pending",
     "base_commit": "d4fb035d456f084124b3f2f489e4695445253e54",
     "agreement_commit": "d183f81c3f088750d4e8ea61cd6c3fd02472fdbd",
     "owner": "src/wenu/stellar_epoch_consumer.py",
@@ -27506,6 +27506,86 @@
       "Additional retained J-2000 catalogue",
       "Modern/current and J-2000 north-cap specimens with finite/selected/plotted Polaris"
     ],
-    "limits": "Six strict v1 watched files unchanged; no observer/companion/source replacement/new numerical model or parent closure."
+    "limits": "Six strict v1 watched files unchanged; no observer/companion/source replacement/new numerical model or parent closure.",
+    "verification": {
+      "tested_commit": "9f7b2e9a3ec5c766107d5844e56fb0c56f6aa031",
+      "stellar": {
+        "cases": 50,
+        "deselected": 208,
+        "seconds": 153.64
+      },
+      "atlas": {
+        "cases": 17,
+        "deselected": 190,
+        "seconds": 39.32
+      },
+      "documentation": {
+        "cases": 36,
+        "seconds": 3.26
+      },
+      "focused_evidence": "~/Software/build/wenu/test/stellar-epoch-consumer-focused-v1-f6yisdg2",
+      "actual_evidence": "~/Software/build/wenu/output/epoch-consumers-acceptance-v1-lgsgoia9",
+      "recipe_sha256": "998cd2fa78864b4f1ded4c17645471861dc283f4fe8002ad70aab71fe37f6532",
+      "completion_manifest_sha256": "5376aa19eaf38bf658668cf04b82700cf6e573be5917a23e866a686e852e2cb1",
+      "additional_catalogue": {
+        "relative_path": "jminus2000",
+        "retention_role": "active retained input and acceptance evidence",
+        "event": {
+          "jd1": 990545,
+          "jd2": 0.0,
+          "scale": "tcb"
+        },
+        "manifest_sha256": "63f4bfa9f02cf724f40c068af7580506d5d226effea9819feca5a776e9bdb68b",
+        "states_sha256": "57313d4ec51e0d0590b85050b050c283265f7db99285a0c888b39556dea877e7",
+        "population": 118218,
+        "original_model_query_parity": true
+      },
+      "model_counts": {
+        "full-input-rectilinear": 97710,
+        "proper-motion-angular": 17395,
+        "hipparcos2-angular-fallback": 2850,
+        "unavailable": 263
+      },
+      "original_input_unchanged": true,
+      "field_width_deg": 80,
+      "north_sheet": 18,
+      "regional_sheet": 7,
+      "polaris": {
+        "hip": "11767",
+        "magnitude": 1.97,
+        "modern": {
+          "longitude_deg": 46.77584367410853,
+          "latitude_deg": 89.3747262476918,
+          "x": -0.006372034352550834,
+          "y": 0.008859739374744371,
+          "drawn_marker_count": 1
+        },
+        "jminus2000": {
+          "longitude_deg": 334.7987173066494,
+          "latitude_deg": 67.56518205779696,
+          "x": -0.3778630600896356,
+          "y": -0.12060080600294866,
+          "drawn_marker_count": 1
+        }
+      },
+      "modern_requested_tcb": {
+        "jd1": 2461342,
+        "jd2": -0.5,
+        "scale": "tcb"
+      },
+      "modern_actual_position_tcb": {
+        "jd1": 2451545,
+        "jd2": 0.0,
+        "scale": "tcb"
+      },
+      "modern_mean_axes_tt": {
+        "jd1": 2461342,
+        "jd2": -0.5,
+        "scale": "tt"
+      },
+      "serial_spawn_direct_parity": true,
+      "visual_review": "pending",
+      "limits": "User-reported pinned Mac evidence. Modern J2000 reuse is explicit approximation; separate TT/TCB axis labels are not a time conversion; no physical accuracy, observer/companion adoption or parent closure."
+    }
   }
 }

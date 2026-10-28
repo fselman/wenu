@@ -34,8 +34,10 @@ Reports and visible notes disclose actual/requested epochs and approximation.
 Supply a separately admitted atlas-frame file for dated TT mean axes if needed.
 All source identities/measurements stay intact; a source-sky mismatch refuses.
 Serial/spawn workers verify the captured input and their snapshot/design binding.
-Observer-dependent products remain deferred. Mac/visual acceptance is pending,
-including modern/current and J-2000 north caps with Polaris actually plotted.
+Observer-dependent products remain deferred. Mac gates and actual J-2000
+preparation/render checks passed at `9f7b2e9a`. The common 80-degree modern and
+J-2000 north-cap specimens contain Polaris as an actual drawn marker; direct,
+serial and spawned output agree. User visual acceptance and merge remain pending.
 
 
 ## Commands and independent inputs

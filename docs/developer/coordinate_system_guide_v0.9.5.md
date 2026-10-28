@@ -9,7 +9,11 @@ visible notes preserve both events and fixed-position approximation status.
 Mean-equatorial/ecliptic display axes retain their independent admitted TT
 orientation. The modern and J-2000 north-cap specimens must explicitly name
 these axes/epochs and show Polaris at its returned position, not at an assumed
-pole. This is an observer-free candidate, pending Mac/visual acceptance.
+pole. At `9f7b2e9a`, Mac runtime and actual-product checks passed. The modern
+request/TT-axis coordinate is JD(2461342,-0.5) in the separately declared scales,
+while reused raw stellar positions remain JD(2451545,0) TCB. J-2000 positions
+are JD(990545,0) TCB with independently declared JD(990545,0) TT axes. Polaris
+reaches a drawn marker in both; user visual acceptance remains pending.
 
 
 ## Nearby-epoch event receipt

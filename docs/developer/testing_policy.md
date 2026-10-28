@@ -22,13 +22,18 @@ atlas_sheet_command_runs_in_spawn`, followed by the complete documentation gate.
 Disable plugin autoload and use a fresh run/cache directory. No core, dependency,
 collection or schema-v2 configuration gate changes are introduced.
 
-Two new owner functions pass direct local execution with actual provider/kernel
-code, plus compilation of modified Python. This is not full pytest/astronomy
-execution; Mac gates remain pending. Then prepare/validate the additional actual
-J-2000 catalogue and compare serial/spawn output/actual-event live references.
-Retain modern/current and J-2000 north-cap specimens and explicit Polaris finite,
-selected, projected/unclipped evidence for visual acceptance. Preserve original
-catalogues, source measurements and established provenance directories.
+At `9f7b2e9a`, all selected Mac gates passed: 50 stellar/publication cases
+(208 deselected) in 153.64 s, 17 atlas cases (190 deselected) in 39.32 s and 36
+documentation cases in 3.26 s. Retain
+`~/Software/build/wenu/test/stellar-epoch-consumer-focused-v1-f6yisdg2`.
+The actual J-2000/catalogue/polar run also passed, retaining all 118,218 statuses,
+exact original-model query parity, actual-event saved/live geometry and
+direct/serial/spawn PNG/report agreement. Polaris reaches a finite selected,
+unclipped drawn marker in each cap. Evidence:
+`~/Software/build/wenu/output/epoch-consumers-acceptance-v1-lgsgoia9`.
+Original inputs were unchanged. User visual acceptance is pending. This final
+receipt changes documentation only; run the complete documentation gate, without
+repeating the successful runtime or catalogue/render workload.
 
 
 ## Nearby-epoch query gate

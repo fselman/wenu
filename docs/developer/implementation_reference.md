@@ -32,7 +32,10 @@ Reports and publication/count provenance carry `stellar_realization.epoch_query`
 with manifest/code/source identities, requested/actual events, window, coverage
 and approximation. Visible notes identify requested and actual epochs and reuse.
 Display-axis TT orientation remains separate from native TCB position time.
-The six strict v1 watched files are unchanged. Mac and visual acceptance pending.
+The six strict v1 watched files are unchanged. At `9f7b2e9a`, 50 stellar, 17 atlas
+and 36 documentation Mac cases passed, followed by the actual J-2000 catalogue
+and Polaris-visible modern/ancient polar run. Final receipt documentation, user
+visual acceptance and merge remain pending.
 
 
 ## Nearby-epoch stellar queries

@@ -70,7 +70,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. First K4b.07 exact-epoch slice accepted through #358/main 233f18b1, clean synchronization/cleanup confirmed; parent remains open |
-| Next bounded submilestone | Implement the selected [observer-free epoch consumers and J-2000/polar additions](#k4b07-observer-free-epoch-consumers-and-polar-additions), after recording the agreed contract; existing bundles, later consumers/companions/observers and parent K4b.07 remain separate |
+| Next bounded submilestone | Review the verified [observer-free epoch consumers and J-2000/polar specimens](#k4b07-observer-free-epoch-consumers-and-polar-additions) after final receipt documentation; user visual acceptance/merge pending; existing bundles, later consumers/companions/observers and parent K4b.07 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1028,10 +1028,14 @@ companion, acquisition, source replacement, new numerical model, uncertainty
 qualification or K5 freeze. This contract was recorded before consumer runtime implementation at
 `d183f81c`. The assistant execution outage is resolved. The consumer candidate
 now adds the data-backed stellar view, captured worker query input and atlas
-configuration route. Modified Python compiles and two owner
-functions pass direct local execution; full Mac owner/publication/documentation
-gates and actual J-2000/Polaris visual verification remain pending. No new
-catalogue preparation or polar rendering is claimed executed yet.
+configuration route. At `9f7b2e9a`, 50 Mac stellar/publication cases passed in
+153.64 s, 17 atlas cases in 39.32 s and 36 documentation cases in 3.26 s. The
+actual run created/validated J-2000 with all 118,218 rows and original-model
+query parity; both modern and ancient 80-degree caps show Polaris in actual
+drawn markers, with actual-event saved/live and direct/serial/spawn agreement.
+Original inputs remain unchanged. See the [receipt](kernel_migration_audit_v1.md#saved-epoch-consumer-actual-catalogue-and-polar-receipt).
+Final receipt documentation and user visual acceptance/merge remain pending.
+This is bounded consumer verification, not parent K4b.07 closure.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
