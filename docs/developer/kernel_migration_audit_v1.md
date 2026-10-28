@@ -1,5 +1,101 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.06 observer-free consumer reconciliation, 2026-10-28
+
+**Selected IDs:** K4b.06.R2/R3 assessment and R4 reconciliation. GitHub main is
+`b295b88bc42e40fdbade44c0d04935188a99b579`, tree
+`a2f3bcecb258a6c88cfb9a2a79e37b02d55d5e3f`. Fernando confirmed clean synchronized
+Mac main and #356 branch cleanup; the subsequent guarded network diagnostic
+also passed exact-base/clean/upstream checks. #356's corrected completion scope
+passed all 36 Mac documentation cases in 4.62 s at
+`cea277ec945daba3784499ed369d6a4c11abb4ae`, retained in
+`~/Software/build/wenu/test/k4b06-completion-docs-v1-s50qa1l0`.
+
+Fernando then asked “Can we postpone the bright-star comparison?” and selected
+the proposed observer-free review with “proceed”. The roadmap now records R1
+as deferred outside the current K4b.06 closure gate, not completed or cancelled.
+This review makes no runtime, source, resource, dependency, default or collection
+change. R2/R3 findings and R4 reconciliation below await documentation acceptance
+and Fernando's final milestone decision; K4b.06 is not yet closed.
+
+### Public consumer disposition
+
+The following entry points were inspected at the pinned base. “Covered” means
+the exact accepted atlas composition, not a blanket acceptance of every caller
+of the same renderer. No new native request family is needed for this review.
+
+| Public path / existing owner | Preparation, framing and export finding | K4b.06 disposition |
+|---|---|---|
+| `AtlasSheetChartRequest`, `render_atlas_sheet`, `generate_chart_request` atlas dispatch; `wenu_chart atlas-sheet` | Requires an observer-free prepared sky, explicit optional stellar motion and optional mean-axis input; canonical request owner supplies scope, staging/no-clobber and cleanup; sheet owner supplies composition/report/export | Covered by #346/#348/#354 for native and dated-axis single sheets, Python and installed CLI; reuse receipts |
+| `AtlasSheetChart.render`: ordinary rectangular sheet | Validates native realization, matching orientation and absent observer, then calls `RegionalChart.render` with atlas-owned projection/viewport/context | The existing regional rendering seam is already exercised by accepted ordinary atlas sheets. This is not ordinary regional request/auto-framing adoption |
+| `AtlasSheetChart.render`: hemisphere sheet | Constructs `PolarPlanisphereChart` with atlas geometry/label policy and passes the native context; native polar render bypasses observer conversion | Covered by #354's polar sheet 1, both mean axes and serial/spawn cases. This does not accept a physical calendar/horizon/pouch product at an ancient epoch |
+| `wenu_create_atlas`, `charts/atlas_publication.py` and workers | Same sheet service; process-local bound stellar view and captured integrity-bound inputs; counts use the same motion identity, outputs publish on success | Covered by #350/#354. Worker transport is not a persisted evaluated epoch catalogue |
+| Atlas design and `wenu_plot_atlas` / `charts/atlas_index.py` | Design is geometry; standalone index can draw native catalogue layers without an observer. It has no propagated-epoch selection in this accepted slice; supplied publication index is explicitly static | Preserve existing native/static contract and disclosure. Do not claim an updated epoch index or add one as an unlisted closure prerequisite |
+| `ChartRequest`, `prepare_chart_request`, `get_chart_view`, ordinary `generate_chart_request` / `wenu_chart` | Ordinary request requires `ChartObserverRequest`; preparation/view refuses an absent observer, and no ordinary stellar-motion input is admitted | Defer stellar-motion adoption for ordinary all-sky/full-sky (planisphere), regional, circumpolar and binocular products until full observer functionality; existing modern behavior is unchanged |
+| Direct `RegionalChart` / `PolarPlanisphereChart` render/export | Both forward realization context through canonical rendering/export; polar native context is explicit. A manually specified regional geometry can reuse the seam, but `from_coordinate`/orientation and `from_constellations` framing depend on an observer | Retain existing low-level capability. Accepted atlas use supplies evidence for its own composition only; no standalone propagated request, new framing semantics or additional product acceptance is claimed |
+| `export_polar_planisphere_pages`, `CommonYearCalendarRequest`, `PolarHorizonOverlayRequest`, associated pouch products | Page references use observer time; calendar calibration uses local standard-time midnight/longitude and sidereal time; overlays require matching observer latitude and observer-to-equatorial conversion | Physical observer-dependent product adoption is deferred. Native polar disk rendering does not qualify its calendar, horizon or terrestrial geometry |
+| Observer-time sequences and fixed-sky/rotating-horizon products | Existing sequence owners construct or reuse ordinary observer-bound requests; fixed-sky orientation is a distinct observer construction | Defer stellar-motion adoption under the same observer boundary. A frozen Earth is not a substitute for the missing observer contract |
+| `stellar_realization_sky`, stars, constellation lines/labels | The bound view refuses observer-bound/non-native use. Stars own source/model/event and session; lines/labels consume public returned positions and retain source membership | Preserve accepted isolation/refusal and modern catalogue behavior. No bypass, dummy observer or duplicated propagation policy |
+
+The canonical source → spherical → domain guard → projection → projected →
+preparation → renderer → furniture/export path is unchanged. The coordinate
+guide remains current: stellar TCB event and TT mean-axis equinox are independent;
+neither supplies an Earth/site observer. Full observer work must separately
+define modern population-preserving composition as well as K4b.08's ancient/
+future chronology, site and rotation policies.
+
+### R1 retained inventory and explicit postponement
+
+The Mac inventory selected **177 distinct HIPs using original Wenu V ≤ 3**,
+with source manifest SHA256
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+Retained directory:
+`~/Software/build/wenu/output/bright-star-source-review-v1-vzbxi6wk`.
+Its `population` products retain full current source rows, Gaia/Hip2 records,
+metadata, ordered HIPs and a completion manifest binding product bytes/hashes.
+The supplied terminal evidence was inspected: 177 original and 177 Hip2
+parallaxes, 61 Gaia parallaxes and one Gaia RV (HIP 108085). All original/Hip2
+parallaxes in this particular selected sample are positive. The 116 Hip2 / 61
+Gaia availability split is not an adopted quality ranking or replacement policy.
+
+Two v1 comparison captures failed connecting to Strasbourg before receiving
+catalogue data:
+`~/Software/build/wenu/output/bright-star-comparison-capture-v1-mdgpel7m` and
+`~/Software/build/wenu/output/bright-star-comparison-capture-v1-rywhs_ya`.
+The second attempt followed VPN disconnection. A later Mac diagnostic timed
+out for Strasbourg IPv4/IPv6 and the alternate hostname, while Harvard returned
+HTTP 200. This establishes reachability differences at that time, not a proven
+provider outage or VPN cause. A versioned Harvard recipe was supplied but has
+no reported execution; it is not comparison evidence.
+
+Retain the inventory, failed provenance and source dependencies. External
+per-HIP UBSC/UBAD/HGCA comparisons, individual binary/orbit/systemic-RV evidence,
+source suitability/gap table and unresolved provider reuse/licensing review
+remain deferred under R1. No new acquisition is selected here, and no candidate
+data, source ranking, production input change or redistribution is accepted.
+Resume only by explicit selection; R1 remains discoverable after parent closure.
+
+### R4 evidence and closure review
+
+| Obligation | Existing accepted evidence / limitation |
+|---|---|
+| Propagation and scientific meaning | K4b.05 nominal reconstruction accepted with explicit limits; source/model/time-scale/covariance issues #326/#333 remain open. Physical/total historical accuracy remains unknown |
+| Public sheet/CLI, dependent lines/labels and export | #346 source-loaded/restored J2000/J-8000 Python specimens; #348 installed CLI/TOML parity, reports and PNG/PDF/SVG acceptance; source membership and public-position responsibility preserved |
+| Reuse and workloads | #346 warm full-source queries 0.949–1.158 s versus initial 18.279–22.325 s. #350 two-sheet serial 202.903/178.388 s versus two-worker 374.808/332.723 s at J2000/J-8000: parity demonstrated, serial faster for this workload; no universal speedup claim |
+| Dated axes and polar/ordinary rendering | #354's eight actual-cache cases cover both mean axes × TT J2000/J-8000 × jobs 1/2, sheets 1 and 13. Scientific reports, pixels, counts, page order/physical sizes, defaults/source immutability and user visual review accepted |
+| Population and modern compatibility | All 118,218 original objects remain in the source. Historical motion specimens contain 97,710 full-input + 17,395 angular + 2,850 Hip2 fallback models = 117,955 available directions and 263 explicit model gaps. Those gaps are not deletions or a modern-star membership cut. No historical-model fallback is silently inserted into modern charts |
+| Source measurements | Measured parallaxes and other original astrometry/uncertainties/provenance remain source facts. Angular model selection or absent RV does not erase parallax or imply zero; nonpositive/uncertain measurements remain preserved without fabricated reciprocal distances. No production/source bytes change in this reconciliation |
+| Explicit unfinished scope | R1 comparison postponed by Fernando; observer-dependent chart adoption deferred until full observer functionality. K4b.07 persistence, later observer work and K5 cross-K freeze remain separate |
+
+Retained runtime/science/visual evidence is linked in the accepted receipts
+below; no propagation, rendering, timing or visual review was rerun for this
+documentation-only reconciliation. New workload claims are not inferred from
+test counts. Failed and successful runs and their dependencies remain retained.
+The complete Mac `documentation` gate and Fernando's final review remain the
+next acceptance steps. If accepted, K4b.06 can close for its existing-source,
+observer-free atlas integration with the named deferrals; that closure will not
+mean R1, ordinary observer products, physical accuracy, persistence or K5 is done.
+
 ## K4b.06 completion assessment, 2026-10-28
 
 **Base:** GitHub main `50b3d4bd25c07eb4695dc101828b5c5b81fabf33`.
@@ -10,9 +106,10 @@ evidence `~/Software/build/wenu/test/dated-atlas-receipt-docs-v1-co9r1jmy`.
 Fernando subsequently accepted the corrected completion scope with “accepted,
 please proceed.” The original-V ≤ 3 review and supported observer-free consumer
 reconciliation are now selected, with modern-star/parallax preservation and
-observer-dependent deferral binding. This assessment/selection receipt runs no
-new scientific/product workload; actual source-review/consumer acceptance and
-parent closure remain pending.
+observer-dependent deferral binding. The subsequent reconciliation above supersedes the remaining-work status of
+this original selection receipt: R1 is postponed, R2/R3 assessment and R4
+reconciliation are prepared, and final acceptance remains pending. No new
+scientific/product workload was run for either documentation review.
 
 | Existing owner | Observed source behavior | Closure consequence |
 |---|---|---|
@@ -53,12 +150,11 @@ Primary documentation rechecked 2026-10-28:
 | [HGCA EDR3, Brandt 2021; CDS J/ApJS/254/42](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/J/ApJS/254/42?format=html&tex=true) | Cross-calibrated Hipparcos, Gaia EDR3 and positional-difference proper motions with covariance/acceleration diagnostics | Compare baselines and acceleration/component evidence; do not simply select the smallest formal PM error as a systemic rectilinear motion |
 | Published individual system/orbit and spectroscopic-binary RV evidence | Individual original references, component definitions and systemic versus instantaneous RV must be checked during the actual audit | No original orbital/RV value is asserted inspected or adopted by this assessment |
 
-This is a source-role literature assessment only. No complete V ≤ 3 retained
-HIP list, external per-HIP matches, measured input differences or provider
-permissions have been executed/established here. R1 must report those honestly
-from retained source evidence and approved acquisition routes, rather than
-claiming a catalogue-level summary completed the promised source audit.
-The current admitted source remains unchanged.
+This initial source-role assessment preceded the 177-HIP inventory. The
+[current R1 disposition](#r1-retained-inventory-and-explicit-postponement)
+records the completed inventory and explicit postponement. External per-HIP
+comparison and provider permissions remain unresolved; literature findings do
+not complete that comparison. The admitted source remains unchanged.
 
 ### Corrected closure boundary and modern catalogue preservation
 
@@ -424,7 +520,7 @@ of new runtime work or a changed milestone order.
 | Ordinary regional, planisphere and other applicable chart consumers | `ChartRequest` has cluster-motion selection but no stellar-motion input. `chart_request_realization_context` requires an observer; the atlas branch of `generate_chart_request` is separately observer-free | Fernando subsequently deferred observer-dependent chart treatment until full observer functionality; atlas acceptance does not cover these public paths, whose existing modern behavior remains preserved |
 | Stellar ownership and observer refusal | `stellar_realization_sky` rejects an observer-bound sky; `Stars.realize`/`_spherical_geometry` reject non-native realization of the bound stellar view | Preserve stars as source/model/event owner and lines/labels as public-position consumers. Observer-dependent consumers are deferred until full observer functionality. Preserve source measurements and modern population; never bypass the refusal with a frozen Earth. K4b.08 records ancient/future terrestrial qualification |
 | Workload and final product reconciliation | Accepted native and dated atlas runs supply real-source workload/reuse, default compatibility and visual evidence for their exact public paths | Reuse applicable evidence; measure/accept newly selected consumers separately. Reconcile the complete applicable inventory at K5 before freeze, without treating accepted atlas gates as pending |
-| Bright-star source review | Deferred by Fernando to production integration within K4b.06; current admitted source remains unchanged | Still open. Agree bounded review/outputs when selecting that adoption work; no standalone prerequisite, new acquisition or input replacement is activated here |
+| Bright-star source review | R1 original-V ≤ 3 inventory now retained; comparison subsequently postponed by Fernando | Unfinished follow-up outside the current K4b.06 closure gate; preserve inputs/failed runs. No source replacement or acquisition is selected by this reconciliation |
 | Evaluated epoch persistence and general transport | Atlas workers already admit captured data-only inputs; source-only saved skies remain source-only, and live request/session transport refuses | Persistent evaluated catalogues, preparation/reload, nearby-epoch policy and optional companion states belong to K4b.07. They are not missing #354 worker gates |
 
 The source findings above were checked against `charts/request.py`,
@@ -432,11 +528,10 @@ The source findings above were checked against `charts/request.py`,
 `charts/atlas_sheet.py`, `objects/stars.py` and `sky/assembly.py` at the pinned
 base. This documentation review executes no new observer/product acceptance.
 
-Fernando deferred the bright-star source audit **to production Wenu integration
-within K4b.06**, not to an earlier standalone prerequisite. Its eventual scope,
-outputs and any adoption decision must be explicit, retaining original source
-identity/evidence. Keep the accepted current source for architecture wiring and
-the ability to supply improved admitted inputs later.
+The earlier placement of the bright-star audit within K4b.06 is superseded by
+Fernando’s explicit postponement recorded above. Retain its accepted sample and
+uncompleted comparison as R1, outside the current closure gate. Keep the accepted
+current source for architecture wiring and improved admitted inputs later.
 
 Fernando subsequently selected K4b.06 completion and explicitly required modern
 population/parallax preservation plus observer-dependent chart deferral, as

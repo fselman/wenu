@@ -1,5 +1,19 @@
 # Wenu developer documentation
 
+## K4b.06 observer-free closure review
+
+PR #356's corrected completion boundary is merged at `b295b88b`; clean
+synchronized Mac main and branch cleanup are confirmed after 36 documentation
+passes in 4.62 s. Fernando subsequently postponed the bright-star comparison
+and selected the observer-free consumer review. The
+[R2/R3 assessment and R4 reconciliation](kernel_migration_audit_v1.md#k4b06-observer-free-consumer-reconciliation-2026-10-28)
+identify the accepted atlas paths, their existing regional/polar rendering
+owners and observer-dependent products deferred until full observer functionality.
+R1 retains its 177-HIP inventory and failed capture evidence, with comparison
+unfinished outside the current closure gate. Modern stars/source measurements
+remain preserved. Complete documentation acceptance and Fernando's final K4b.06
+decision remain pending; no runtime change or K4b.07 activation is made here.
+
 ## K4b.06 accepted dated-axis atlas views
 
 PR #354 is accepted and merged at `d0124837`, with clean synchronized Mac main
@@ -13,8 +27,8 @@ See the [acceptance/evidence receipt](kernel_migration_audit_v1.md#accepted-date
 Native source realization, TT mean-axis geometry, dated references, derived
 layout, reports and worker identity checks retain their existing owners.
 The [remaining K4b.06 review](kernel_migration_audit_v1.md#remaining-k4b06-scope-and-bright-star-audit-placement)
-keeps other applicable consumers/final reconciliation and bright-star review
-open. Physical accuracy remains unknown; K4b.07/K4b.08 stay separate.
+is now reconciled in the closure review above; the bright-star comparison is
+explicitly postponed, not completed. Physical accuracy remains unknown; K4b.07/K4b.08 stay separate.
 
 ## Planned Earth-bound observers at ancient and future epochs
 
@@ -45,7 +59,8 @@ for this two-sheet workload. The subsequent accepted boundary is the
 [date-oriented atlas as-is review and scope definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope).
 Its concrete integration boundary was accepted with #352 after 36 Mac documentation
 passes in 4.16 s and merged at `8865ae05`; its runtime implementation is now accepted through #354 as recorded above.
-Parent K4b.06, other product/observer gates and bright-star source review remain open.
+Parent K4b.06 awaits the closure review above; observer-dependent adoption and
+the postponed R1 comparison remain explicitly deferred.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
 records a preparation tool, persistent epoch products, configurable nearby-epoch

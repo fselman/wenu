@@ -4,7 +4,11 @@
 
 The [corrected completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)
 records Fernando's explicit modern-catalogue preservation and observer-dependent
-chart deferral. No new runtime gate is executed by this definition.
+chart deferral. Fernando subsequently postponed R1 and selected the R2/R3
+assessment and R4 reconciliation. The
+[entry-point/evidence matrix](kernel_migration_audit_v1.md#k4b06-observer-free-consumer-reconciliation-2026-10-28)
+records accepted atlas coverage and explicit deferrals. No new runtime gate is
+executed by this documentation-only review.
 
 - Consumer inventory: assess already-supported observer-free public paths.
   Reuse accepted atlas receipts. Record chart types whose preparation/framing/
@@ -21,17 +25,21 @@ chart deferral. No new runtime gate is executed by this definition.
   policy is implemented in K4b.06. Existing modern observed behavior stays
   unchanged. The later full observer work must test capability/correction/event/
   resource/site handling and population preservation under its own agreed scope.
-- Source review: retain actual original-V-selected HIPs and per-HIP current/
-  alternative source evidence, including unresolved matches and component/
-  systemic-RV distinctions. Literature-only findings are not executed numerical
-  comparisons. No source acquisition/replacement follows from a test pass.
+- Source review (R1): explicitly postponed by Fernando outside this closure
+  gate. Retain the 177 original-V-selected HIP inventory and failed capture
+  evidence. External per-HIP matches, suitability/gaps and component/systemic-RV
+  comparisons remain unfinished; neither inventory counts nor literature findings
+  complete them. No acquisition/replacement follows from a test pass.
 - Final evidence: reconcile supported observer-free consumers, source/model
   availability versus modern population, workload/exact reuse and retained
-  scientific/visual results. New applicable paths require their own bounded
-  acceptance; unchanged atlas evidence is reused. Explicit observer deferral
-  can coexist with K4b.06 closure, without claiming full observer functionality.
+  scientific/visual results. Atlas-owned regional/polar rendering is covered by
+  accepted atlas specimens; shared renderer signatures alone do not qualify new
+  standalone products. New applicable paths require bounded acceptance; unchanged
+  atlas evidence is reused. Explicit R1 and observer deferrals can coexist with
+  final user-approved K4b.06 closure, without claiming comparison completion or
+  full observer functionality.
 
-For this documentation-only correction, run the complete `documentation` gate
+For this documentation-only reconciliation, run the complete `documentation` gate
 on the Mac. Local stdlib checks and pinned-tree link/inventory preflight do not
 substitute for the full archive-byte/public-import gate. No production/test/
 source/dependency/collection/default change is made here.
