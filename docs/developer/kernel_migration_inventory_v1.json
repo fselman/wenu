@@ -6468,7 +6468,7 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "cdafb1d1dd7fb986b66db30cc207b234576f9fa7",
+      "git_blob_sha": "564e64a108742e221ff48c55629f9686b4507ef8",
       "test_functions": 36,
       "marks": {
         "parametrize": 19
@@ -26887,7 +26887,7 @@
         "stellar-motion-provider": {
           "passed": 203,
           "subtests": 9,
-          "seconds": 20.0
+          "seconds": 20
         },
         "gaia-crossmatch-audit": {
           "passed": 125,
@@ -26917,12 +26917,12 @@
       "coverage": [
         [
           -16000000,
-          0.0,
+          0,
           "tcb"
         ],
         [
           21000000,
-          0.0,
+          0,
           "tcb"
         ]
       ],
@@ -27043,7 +27043,7 @@
               1356174,
               -0.0168536919838221
             ],
-            "calendar_rounding_s": 0.0,
+            "calendar_rounding_s": 0,
             "conversion_rounding_s": 4.749541939202945e-14
           },
           {
@@ -27056,7 +27056,7 @@
               1721060,
               -0.011196062335434954
             ],
-            "calendar_rounding_s": 0.0,
+            "calendar_rounding_s": 0,
             "conversion_rounding_s": 2.013278730642825e-14
           },
           {
@@ -27067,10 +27067,10 @@
             "source_uncertainty_s": null,
             "tcb": [
               -1931365,
-              0.0
+              0
             ],
-            "calendar_rounding_s": 0.0,
-            "conversion_rounding_s": 0.0
+            "calendar_rounding_s": 0,
+            "conversion_rounding_s": 0
           },
           {
             "year": 2000,
@@ -27080,10 +27080,10 @@
             "source_uncertainty_s": 0,
             "tcb": [
               2451545,
-              0.0
+              0
             ],
-            "calendar_rounding_s": 0.0,
-            "conversion_rounding_s": 0.0
+            "calendar_rounding_s": 0,
+            "conversion_rounding_s": 0
           }
         ],
         "limits": "Nominal native directions; historical dating, observer, precession and physical accuracy not certified"
@@ -27154,7 +27154,7 @@
       ],
       "sampled_1900_2100_step_10_max_equator_difference_mas": 0.6465610759538054,
       "sampled_1900_2100_step_10_max_ecliptic_difference_mas": 0.27919038136174085,
-      "diagnostic_tolerance_rad": 4.84813681109536e-09,
+      "diagnostic_tolerance_rad": 4.84813681109536e-9,
       "limits": "Measured comparison is not a physical accuracy bound or uniformly 100 microarcseconds"
     },
     "Mac_acceptance": "passed; see mac_acceptance",
@@ -27213,7 +27213,7 @@
               -0.7425255505858193,
               0.6624554742455596
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -10000,
@@ -27224,7 +27224,7 @@
               -0.4214759962052149,
               0.9067634708598727
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -1000,
@@ -27235,7 +27235,7 @@
               -0.09374372009232414,
               0.9588390426575633
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -1000,
@@ -27246,29 +27246,29 @@
               -0.4041533160606237,
               0.9146912209129033
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 2000,
             "axes": "mean-equator-equinox",
             "model_digest": "b18c898fb2052d633ce1d32a150f79ac3580b26bb4f2374be8264d92eb73464c",
             "pole_icrs": [
-              -8.056148939844682e-08,
-              -3.305556629794447e-08,
+              -8.056148939844682e-8,
+              -3.305556629794447e-8,
               0.9999999999999962
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 2000,
             "axes": "mean-ecliptic-equinox",
             "model_digest": "99a5c9d6882ef4e7b4400cbd44cf52096f50cf8714f887324f77288045d2cf79",
             "pole_icrs": [
-              -1.0206949457023484e-07,
+              -1.0206949457023484e-7,
               -0.3977769994449437,
               0.917482129914565
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 12000,
@@ -27279,7 +27279,7 @@
               -0.6318052004942217,
               0.7353813036753756
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 12000,
@@ -27290,7 +27290,7 @@
               -0.38114555921622395,
               0.9244612587790403
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           }
         ],
         "limits": "Separate TT frame equinox and native TCB time; no inferred simultaneity, historical observer or certified physical/total frame accuracy"
@@ -27318,8 +27318,19 @@
     "changed_owner_blobs": {
       "src/wenu/stellar_state.py": "442d8aefb55d9c156c0ffd58880c6b875601547c",
       "src/wenu/stellar_epoch.py": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
-      "tests/test_stellar_state.py": "cdafb1d1dd7fb986b66db30cc207b234576f9fa7",
+      "tests/test_stellar_state.py": "564e64a108742e221ff48c55629f9686b4507ef8",
       "tools/prepare_stellar_epoch.py": "897f57e94360673f4650caddc741f2f635a537cf"
+    },
+    "mac_initial_runtime": {
+      "head": "0457e560f5165daf3be170f7a74a640786ef49aa",
+      "passed": 13,
+      "failed": 2,
+      "seconds": 11.49,
+      "documentation": "not run after runtime failure",
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-focused-v1-4olbqexo",
+      "diagnostic": "~/Software/build/wenu/test/stellar-epoch-diagnostic-v1-usiyxa8p",
+      "cause": "Test-added site-packages on PYTHONPATH shadows stdlib pathlib with an obsolete installed backport.",
+      "correction": "Test-only subprocess environment preserves normal installed dependency resolution and surfaces stderr; same Mac gate pending."
     }
   }
 }

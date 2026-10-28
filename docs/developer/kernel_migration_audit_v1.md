@@ -23,6 +23,18 @@ fresh-process and CLI subprocesses. Sixteen corruption and five failure/race
 variants detect invalid data and unsafe publication. The live-realization
 selection/reuse check also passes. An initial refusal-test exception mismatch
 was corrected and the same tests rerun; failed logs remain retained.
+The first focused Mac run at `0457e560` passed 13 cases and failed the two
+subprocess cases in 11.49 s; documentation did not run. Retain
+`~/Software/build/wenu/test/stellar-epoch-focused-v1-4olbqexo` and diagnostic
+`~/Software/build/wenu/test/stellar-epoch-diagnostic-v1-usiyxa8p`.
+The diagnostic identifies test-added `site-packages` on `PYTHONPATH`: its obsolete
+`pathlib` backport shadows the standard library. The test-only correction adds
+Wenu's source root and preserves the incoming path, leaving installed dependencies
+on Python's normal site path; subprocess failures now display stdout/stderr.
+All six new functions pass direct local execution after the correction. A
+synthetic installed-pathlib trap fails both original subprocess tests and passes
+both corrected tests. No production/bundle/scientific or environment change is
+needed. The same focused Mac gate and skipped documentation gate remain pending.
 No pytest or complete Wenu astronomy stack is installed here. Full focused Mac
 and documentation gates and retained real-source preparation/reload size/time/
 scientific parity remain pending; no actual catalogue run or parent K4b.07

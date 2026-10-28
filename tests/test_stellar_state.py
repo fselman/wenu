@@ -2187,10 +2187,13 @@ with patch.object(stellar_state.StellarMotionProvider, '__init__', side_effect=A
     assert sha256(product.states_payload).hexdigest() == sys.argv[3]
 print('fresh exact reload without provider/source path')
 '''
-    paths = [str(Path(bridge.__file__).parents[1]), str(Path(wenu_kernel.__file__).parents[1])]
-    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(paths))
+    # Keep installed dependencies on Python's normal site path. Prepending
+    # site-packages can let backports shadow the standard library (e.g. pathlib).
+    paths = [str(Path(bridge.__file__).parents[1]), os.environ.get('PYTHONPATH', '')]
+    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(p for p in paths if p))
     result = subprocess.run([sys.executable, '-c', script, str(destination), digest, expected],
-        env=environment, capture_output=True, text=True, check=True)
+        env=environment, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
     assert result.stdout.strip() == 'fresh exact reload without provider/source path'
 
 
@@ -2329,10 +2332,13 @@ stop_jyear_tcb = 2050.0
 ''')
     destination = tmp_path/'command-result'
     tool = Path(__file__).resolve().parents[1]/'tools/prepare_stellar_epoch.py'
-    paths = [str(Path(bridge.__file__).parents[1]), str(Path(wenu_kernel.__file__).parents[1])]
-    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(paths))
+    # Keep installed dependencies on Python's normal site path. Prepending
+    # site-packages can let backports shadow the standard library (e.g. pathlib).
+    paths = [str(Path(bridge.__file__).parents[1]), os.environ.get('PYTHONPATH', '')]
+    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(p for p in paths if p))
     command = [sys.executable, str(tool), '--stellar-motion-config', str(config), '--destination', str(destination)]
-    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=True)
+    result = subprocess.run(command, env=environment, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
     receipt = json.loads(result.stdout)
     product = load_stellar_epoch(destination, expected_manifest_sha256=receipt['manifest_sha256'])
     assert product.instant == TimePoint(2451545, 0., 'tcb')
