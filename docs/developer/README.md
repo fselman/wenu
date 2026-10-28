@@ -1,6 +1,6 @@
 # Wenu developer documentation
 
-## K4b.06 observer-free closure review
+## K4b.06 accepted closure and K4b.07 persistence assessment
 
 PR #356's corrected completion boundary is merged at `b295b88b`; clean
 synchronized Mac main and branch cleanup are confirmed after 36 documentation
@@ -11,8 +11,16 @@ identify the accepted atlas paths, their existing regional/polar rendering
 owners and observer-dependent products deferred until full observer functionality.
 R1 retains its 177-HIP inventory and failed capture evidence, with comparison
 unfinished outside the current closure gate. Modern stars/source measurements
-remain preserved. Complete documentation acceptance and Fernando's final K4b.06
-decision remain pending; no runtime change or K4b.07 activation is made here.
+remain preserved. All 36 Mac documentation cases passed in 7.35 s at 829c4725;
+Fernando accepted the bounded result. K4b.06 is closed with those explicit
+deferrals; PR #357 final status receipt/merge is pending.
+
+Fernando then selected the [K4b.07 as-is assessment](kernel_migration_audit_v1.md#k4b07-persistence-as-is-assessment-2026-10-28).
+The [first exact-epoch persistence slice](kernel_roadmap_v0.9.5.md#k4b07-proposed-first-exact-epoch-persistence-slice)
+is proposed for concrete scope review. Existing full-input Cartesian/angular
+interfaces can supply the data, but no evaluated epoch bundle/tool or loader is
+implemented. Nearby-epoch reuse, consumer adoption and optional companion states
+remain separate; no K4b.07 runtime or observer work is activated here.
 
 ## K4b.06 accepted dated-axis atlas views
 
@@ -59,8 +67,8 @@ for this two-sheet workload. The subsequent accepted boundary is the
 [date-oriented atlas as-is review and scope definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope).
 Its concrete integration boundary was accepted with #352 after 36 Mac documentation
 passes in 4.16 s and merged at `8865ae05`; its runtime implementation is now accepted through #354 as recorded above.
-Parent K4b.06 awaits the closure review above; observer-dependent adoption and
-the postponed R1 comparison remain explicitly deferred.
+Parent K4b.06 is accepted/closed as recorded above; observer-dependent adoption
+and the postponed R1 comparison remain explicitly deferred.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
 records a preparation tool, persistent epoch products, configurable nearby-epoch

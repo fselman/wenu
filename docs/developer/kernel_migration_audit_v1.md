@@ -15,8 +15,30 @@ Fernando then asked “Can we postpone the bright-star comparison?” and select
 the proposed observer-free review with “proceed”. The roadmap now records R1
 as deferred outside the current K4b.06 closure gate, not completed or cancelled.
 This review makes no runtime, source, resource, dependency, default or collection
-change. R2/R3 findings and R4 reconciliation below await documentation acceptance
-and Fernando's final milestone decision; K4b.06 is not yet closed.
+change.
+
+Fernando accepted the bounded K4b.06 result on 2026-10-28 after all 36 Mac
+documentation cases passed in 7.35 s at
+`829c472530cc1a8d1e6eb26a2bdfa0f24a4401e9`. Retained user-reported evidence:
+`~/Software/build/wenu/test/k4b06-consumer-docs-v1-cwm51a_g`.
+R2/R3 and R4 are accepted, and K4b.06 is closed for the existing-source,
+observer-free atlas integration. R1 comparison and observer-dependent product
+adoption remain explicitly deferred; neither is claimed completed. This receipt
+adds no new runtime acceptance; PR #357 merge/cleanup remains pending.
+
+
+### Consumer and upstream astrometry boundary
+
+Fernando clarified on acceptance that proper motion/parallax/observer machinery
+is orthogonal to chart/atlas creation. Stars and shared services supply realized
+positions with coordinate/event/status/provenance; charts consume those results
+for framing, projection, labels, rendering and export. Future observer work
+completes upstream source/observer realization and consumer composition, not a
+chart-owned astrometric algorithm. Existing modern stars and measured source
+parallaxes remain protected. Source distance/parallax, observer displacement,
+finite model domains and missing-input policies require their own explicit
+admissions; no changed scientific policy or full observer implementation is
+selected by this clarification. The coordinate guide remains current.
 
 ### Public consumer disposition
 
@@ -91,10 +113,46 @@ Retained runtime/science/visual evidence is linked in the accepted receipts
 below; no propagation, rendering, timing or visual review was rerun for this
 documentation-only reconciliation. New workload claims are not inferred from
 test counts. Failed and successful runs and their dependencies remain retained.
-The complete Mac `documentation` gate and Fernando's final review remain the
-next acceptance steps. If accepted, K4b.06 can close for its existing-source,
-observer-free atlas integration with the named deferrals; that closure will not
-mean R1, ordinary observer products, physical accuracy, persistence or K5 is done.
+The complete Mac documentation gate passed and Fernando accepted this bounded
+result as recorded above. K4b.06 is closed with the named deferrals. This does
+not complete R1, observer-dependent products, physical qualification, persistence
+or K5. The status receipt and subsequent K4b.07 assessment use the complete
+documentation gate; no new runtime/science/visual pass is claimed.
+
+## K4b.07 persistence as-is assessment, 2026-10-28
+
+**Selection:** after accepting K4b.06, Fernando asked what follows in the roadmap
+and said “proceed” after the K4b.07 as-is assessment/exact-epoch scope proposal.
+This selects assessment and definition, not runtime implementation or the whole
+K4b.07 backlog. Source inspected at PR #357 head
+`829c472530cc1a8d1e6eb26a2bdfa0f24a4401e9`; main remains `b295b88b` pending
+that PR's final status receipt/merge. No new branch or runtime gate is implied.
+
+| Existing owner / actual interface | As-is capability and boundary | Persistence consequence |
+|---|---|---|
+| `stellar_enrichment.py::StellarEnrichmentSnapshot`, `load_stellar_enrichment` | Immutable original/Gaia/Hip2 bytes, fixed product names, strict finite JSON, manifest product identities and source metadata; explicitly no model adoption | Reuse validated source identity/bytes. Do not relabel this source snapshot as an evaluated epoch catalogue |
+| `stellar_state.py::StellarMotionCatalogue`, `StellarMotionRequest` | Ordered admitted full/angular/Hip2 policies on one source, explicit finite TCB domain/event; original source retained; immutable `SpaceMotionRow` or `AngularMotionRow` coefficients and source event | Model inputs already exist for lossless storage/faithful future continuation. Preserve all IDs/statuses and the exact original coefficients; do not reconstruct them from rounded directions |
+| `StellarMotionProvider(catalogue, representation='cartesian')` | Full-input catalogue exposes SI position and velocity through typed SDK batches; angular/Hip2 catalogues refuse Cartesian representation. Direction output separately exists for all admitted models | No new Cartesian numerical engine is required. Prepare direction states for chosen models plus Cartesian states where admitted; angular rows keep distinct coefficients/capabilities and measured source parallax |
+| `_StellarRealization.positions`, `stellar_motion_identity` | Public stellar view selects first available model per source HIP, queries SDK and returns angles/NaN gaps; reports exact query reuse and model/source/event identity. Realization/session caches are process-local | Reuse selection semantics at the stellar owner; a persistent product needs a public validated data contract rather than serializing private caches or live sessions |
+| `StellarMotionExecutionInput` | Captures motion document, external source directory and snapshot/design identities; each worker re-admits models and evaluates them. Live `StellarMotionRequest` transport refuses | Existing worker transport is not evaluated-state persistence or a self-contained epoch product; preserve its accepted contract |
+| `sky/native_snapshot.py` | Validated v1–v6 source-only sky reconstruction, atlas design/layer metadata, hash-bound payloads, exclusive destination/staging and completion manifest last | Reuse publication/integrity patterns, not its source-epoch schema or private generic encoder as the new scientific product. Old snapshots retain their meaning |
+| `astrometric_state.py`, SDK `DirectionState`/`CartesianState` | Same affine engine, separately typed angular/full inputs, explicit query/source/anchor events and uncertainty evidence; Cartesian temporal certificates are unsupported | Exact-event state serialization needs no kernel algorithm change. Persist known/unknown errors as returned; do not invent certificates or physical-error bounds |
+| `astrometric_coordinates.py`, kernel `TimePoint`/`TimeService` | Split-JD event/scale; explicit TCB/TDB conversion and coordinate-convention receipts; historical chronology and TT frame orientation are separate services | First slice uses the already resolved TCB request only; no implicit UTC/TT conversion or reassignment of source event |
+| `ephemeris.py`, `skyfield_ephemeris.py`, `astrometric_observation.py` | Separate resource-bound TDB target/centre states, body/segment coverage, common-event/state-convention conversion and finite modern reception admission | Earth/Solar System companion and observer products remain separately scoped. A native stellar epoch catalogue requires neither ephemeris nor observer resources |
+
+Relevant existing test owners were inspected, not rerun: `test_stellar_state.py`
+contains full Cartesian/direction axis/oracle/order, source preservation,
+angular-Cartesian refusal, process-isolation and worker transport cases;
+`test_astrometric_state.py` and kernel `test_cartesian.py` protect typed states,
+distance/velocity/source-event semantics and exact cache behavior. Atlas/native
+snapshot and source-audit tests protect their own formats. None proves the new
+epoch product exists or survives fresh-process reload.
+
+The [first-slice proposal](kernel_roadmap_v0.9.5.md#k4b07-proposed-first-exact-epoch-persistence-slice)
+is now concrete enough for scope review. It remains proposed until Fernando
+accepts its format/ownership/input/output/gate boundary. No new provider source,
+numerical model, persistent format, preparation tool, loaded-epoch consumer,
+nearby-window behavior or companion state has been implemented by this review.
 
 ## K4b.06 completion assessment, 2026-10-28
 
@@ -107,8 +165,8 @@ Fernando subsequently accepted the corrected completion scope with “accepted,
 please proceed.” The original-V ≤ 3 review and supported observer-free consumer
 reconciliation are now selected, with modern-star/parallax preservation and
 observer-dependent deferral binding. The subsequent reconciliation above supersedes the remaining-work status of
-this original selection receipt: R1 is postponed, R2/R3 assessment and R4
-reconciliation are prepared, and final acceptance remains pending. No new
+this original selection receipt: R1 is postponed and R2/R3/R4 are accepted;
+K4b.06 is closed for its bounded observer-free scope. No new
 scientific/product workload was run for either documentation review.
 
 | Existing owner | Observed source behavior | Closure consequence |
