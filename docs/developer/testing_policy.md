@@ -1,27 +1,47 @@
 # Testing policy and module independence
 
-## Proposed nearby-epoch query gate
+## Nearby-epoch query gate
 
-The [next K4b.07 scope](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
-is definition-only; run the complete documentation gate for this diff. Future
-runtime coverage belongs in the existing `tests/test_stellar_state.py` owner,
-beside exact persistence, live selection and original-coefficient numerical
-contracts. New query tests must protect both signs/equality at window boundaries,
-zero/invalid windows, exact split-JD comparison, native-scale refusal, requested/
-actual event separation, explicit fixed-window coverage disclosure, source/gap/
-model/measurement preservation and immutable/isolation/resource behavior.
-Provider/session/model reconstruction must be prohibited on the reused path.
-Advancement must agree with original admitted models, with faults that expose
-stale output, changed bindings, query-time fallback, sliding anchors and rebasing
-normalized angular motion. Existing exact `at()` and strict v1 code/hash
-protections must still pass; no watched legacy owner is changed in the proposal.
+The [accepted K4b.07 service contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+adds five tests in existing `tests/test_stellar_state.py`. The closest previous
+protection is the mixed exact-product/direct-SDK round trip; the new seam covers
+signed inclusive boundaries, zero/invalid numeric windows, exact split-JD,
+native-scale refusal, coverage disclosures, immutable rows/receipts, source
+parallaxes, ordered/empty/refused subsets and stable model/gap selection.
+Reuse prohibits provider/session/model reconstruction. Advancement compares all
+states against unchanged original-model SDK preparation at both modern/ancient
+targets. Deliberate stale, relabeled, sliding-anchor and normalized-angular-rebase
+faults must change the passing baseline. Changed admissions, coefficients and
+references refuse. Injected registration/session/evaluation failures close owned
+resources and cannot trigger source fallback.
 
-Reuse the retained accepted bundles, loading each once; compare full-population
-unchanged reuse and reciprocal J2000/J-8000 advancement with accepted target-state
-hashes, preserving all 118,218 statuses. Record initial load, reuse and advancement
-timings separately; no new preparation or blanket speedup claim. Exact runtime
-gate selection follows the eventual diff; unchanged numerical/core proofs are
-reused. No new tests, gate manifest, runtime run or visual claim is made here.
+Run `tests/test_stellar_state.py` with selection `stellar_epoch or stellar_realiz
+or stellar_sheet_borrows or stellar_motion_public_native_sheet`, then the complete
+documentation gate, with plugin autoload disabled. This adds five collected cases
+to the previous 15-case seam gate; no collection/gate manifest changes.
+Five new functions pass direct local execution with actual source/provider/kernel
+owners, together with three existing persistence regressions. At `350de788`,
+the Mac focused gate passed all 20 cases in 17.89 s (227 deselected) and complete
+documentation passed 36 in 3.37 s. Retain
+`~/Software/build/wenu/test/stellar-epoch-query-focused-v1-c56bvh_q`.
+Unchanged core/source mathematics reuse accepted numerical receipts.
+
+Then reuse the accepted bundles at
+`~/Software/build/wenu/output/stellar-epoch-acceptance-v1-ynpv71ip`, loading each
+once with its original manifest digest. Compare full-population unchanged reuse
+and reciprocal J2000/J-8000 advancement against accepted target-state hashes,
+preserving all 118,218 statuses/source bytes. Record load, reuse and advancement
+timings separately; no new preparation, blanket speedup or visual claim.
+
+That retained-product run passed at the same head. Evidence:
+`~/Software/build/wenu/output/stellar-epoch-query-acceptance-v1-yx6vdak5`.
+Both products loaded once under original manifest/code hashes, returned unchanged
+reused rows, and advanced reciprocally to the exact accepted target-state hashes.
+All 118,218 statuses, source/model identities and input bytes were preserved;
+both signed inclusive edges, six refusal cases per product, detached receipts
+and original-anchor isolation passed. External original-source access was
+prohibited. The final documentation-only receipt needs the complete documentation
+gate; no runtime/source/core change requires repeating the successful science run.
 
 ## Exact-epoch stellar persistence gate
 
@@ -2583,6 +2603,7 @@ The complete Mac gate collects 25 cases. Available documentation: 31 passed
 in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 38 active-document links/anchors pass against the full repository tree.
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
+
 
 
 

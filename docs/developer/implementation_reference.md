@@ -1,5 +1,39 @@
 # Wenu implementation reference
 
+## Nearby-epoch stellar queries
+
+Import `resolve_stellar_epoch` and `StellarEpochResolution` explicitly from
+`wenu.stellar_epoch_query`; no facade exports or chart options are added.
+`resolve_stellar_epoch(catalogue, instant, *, reuse_window_julian_years,
+identifiers=None)` takes an already validated `StellarEpochCatalogue` and resolved
+native TCB `TimePoint`. The required finite nonnegative numeric window has no
+default; bool, nonnumeric, negative and nonfinite inputs refuse. Built-in real
+numbers, `Fraction` and finite `Decimal` are accepted with exact rational window
+and split-JD comparison (365.25 SI days/year), inclusive at both boundaries.
+
+At/inside the original-anchor window the service returns unchanged saved rows;
+outside it, all original model domains must admit the target and existing public
+source admission/SDK owners evaluate original coefficients. It refuses failures
+without query-time model fallback. A resolution cannot be used as a new anchor.
+Optional identifiers are an ordered subset of unique HIP strings; unknown or
+duplicate IDs refuse and empty selections issue no SDK query.
+
+The frozen result retains the same immutable `source`; `rows()` yields detached
+JSON-compatible direction/PV/gap records and `receipt()` returns detached metadata.
+The receipt binds original manifest/source/models, saved and query code identities,
+window/value/exact rational separation, catalogue/requested/actual position events,
+selection and per-model requested-event coverage. `mode` is `reused` or `advanced`.
+Reused raw times/anchors remain at the catalogue event; approximation error at
+the requested event is unquantified, separately from saved-state evidence.
+Advancement retains original source epochs/evidence and no physical qualification.
+Resources are closed before return and failures publish no partial resolution.
+Existing v1 reader/hash guards and accepted bundle bytes are unchanged.
+At `350de788`, 20 Mac runtime and 36 documentation cases passed. Retained J2000
+and J-8000 products passed original-hash loading, unchanged reuse and reciprocal
+advancement against accepted full-state hashes, with all statuses/source bytes
+preserved. User acceptance/merge remain pending; no consumer/observer adoption.
+
+
 ## Exact-epoch stellar catalogues
 
 `wenu.stellar_epoch.prepare_stellar_epoch(request, destination)` accepts an
@@ -2953,6 +2987,7 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
 
 

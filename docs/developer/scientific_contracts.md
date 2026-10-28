@@ -1,25 +1,27 @@
 # Current scientific contracts and paused work
 
-## Proposed nearby-epoch state semantics
+## Nearby-epoch state semantics
 
-The [proposed second K4b.07 boundary](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
-defines native TCB query policy only; it is not implemented or accepted science.
-At/inside an explicitly configured fixed-position window, saved states keep
-their actual catalogue event. A separate receipt carries the requested event,
-approximation and unknown requested-event approximation error. The window is
-not an angular-error guarantee or a universal PM/physical-validity cutoff.
-Unchanged reuse is dated at its original valid event even if the requested
-event lies outside a motion-model domain; requested-event coverage is disclosed.
-No evaluation or physical validity at that requested event is implied.
+The accepted second K4b.07 contract is implemented as a candidate in
+`stellar_epoch_query.py`. At `350de788`, 20 Mac runtime and 36 documentation
+cases passed, followed by original-bundle compatibility and exact reciprocal
+all-row target-hash checks. User acceptance/merge remain pending; these results
+verify service composition and preservation, not new physical accuracy.
+At/inside an explicitly chosen inclusive Julian-year window, saved states keep
+their actual catalogue event. A detached receipt separates the requested event,
+fixed-position approximation, unquantified requested-event error and original
+saved-state evidence. A window is caller policy, not a physical validity or
+angular-error guarantee. Reuse across a model-domain boundary discloses absent
+requested-event coverage and claims no model evaluation there.
 
-Outside the window, advancement requires the original admitted model domains
-and exact preserved source/model/coefficients; states are evaluated at the
-requested event through existing services. Unsupported advancement refuses.
-Preserve full/angular/Hip2 types, source epochs, every source measurement and
-explicit gaps. Never relabel old states, reset normalized angular reference
-events or slide the catalogue anchor between calls. Native barycentric query
-policy does not supply an observer, corrections, TT axes or new uncertainty
-qualification. Current exact-reader and modern-catalogue contracts remain intact.
+Outside the window all original model domains must admit the resolved TCB target.
+Public source admission must reproduce saved admissions and every original
+coefficient/reference event before existing SDK evaluation. References must match.
+No stale fallback, normalized-vector rebasing, sliding anchor, implicit time
+conversion or fabricated Cartesian distance/RV is permitted. Full/angular/Hip2
+capabilities, model order, source measurements including parallaxes, source epochs
+and explicit gaps remain preserved. Observer/corrections, TT axes and physical
+error qualification remain separate; exact-reader semantics stay unchanged.
 
 ## Exact-epoch stellar product contract
 
@@ -1358,5 +1360,6 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and
+
 
 

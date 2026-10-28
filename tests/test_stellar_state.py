@@ -2348,3 +2348,245 @@ stop_jyear_tcb = 2050.0
     retry = subprocess.run(command, env=environment, capture_output=True, text=True)
     assert retry.returncode != 0 and 'FileExistsError' in retry.stderr
     assert (destination/'manifest.json').read_bytes() == before
+
+
+
+def _epoch_query_product(source, tmp_path):
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    request = _epoch_request(source)
+    prepare_stellar_epoch(request, tmp_path/'anchor')
+    return load_stellar_epoch(tmp_path/'anchor'), request
+
+
+def test_stellar_epoch_query_reuse_boundaries_and_native_inputs(motion_source, tmp_path):
+    """Protect inclusive signed boundaries and real split-JD, not rounded years."""
+    from dataclasses import asdict
+    from decimal import Decimal
+    from fractions import Fraction
+    from math import nextafter
+    from unittest.mock import patch
+    from wenu import stellar_epoch_query as query
+    product, request = _epoch_query_product(motion_source(), tmp_path)
+    checker = unittest.TestCase()
+    anchor = product.instant
+    def resolve(event, window=4):
+        return query.resolve_stellar_epoch(product, event, reuse_window_julian_years=window)
+    # Reuse is prohibited from reconstructing models or opening SDK resources.
+    with patch.object(query, '_restore', side_effect=AssertionError('model reconstruction')), \
+         patch.object(bridge, 'StellarMotionProvider', side_effect=AssertionError('provider')), \
+         patch.object(Kernel, 'open_session', side_effect=AssertionError('session')):
+        for sign in (-1, 1):
+            for fraction in (.125, nextafter(.125, 0. if sign > 0 else 1.)):
+                event = TimePoint(anchor.jd1 + sign*1461, fraction, 'tcb')
+                result = resolve(event)
+                assert tuple(result.rows()) == product.at(anchor)
+                receipt = result.receipt()
+                assert receipt['mode'] == 'reused'
+                assert receipt['requested_event'] == asdict(event)
+                assert receipt['actual_position_event'] == asdict(anchor)
+                assert receipt['approximation']['kind'] == 'fixed-position'
+        for window in (0, 0., Fraction(1, 7), Decimal('0.1')):
+            assert resolve(anchor, window).receipt()['mode'] == 'reused'
+    for sign in (-1, 1):
+        event = TimePoint(anchor.jd1 + sign*1461, nextafter(.125, 1. if sign > 0 else 0.), 'tcb')
+        assert resolve(event).receipt()['mode'] == 'advanced'
+    # A fraction smaller than the ULP of the summed JD must not disappear.
+    event = TimePoint(anchor.jd1, nextafter(anchor.jd2, 1.), 'tcb')
+    assert resolve(event, 0).receipt()['mode'] == 'advanced'
+    for bad in (True, False, -1, '4', None, float('nan'), float('inf'), -float('inf'), complex(1)):
+        with checker.assertRaises(ValueError):
+            resolve(anchor, bad)
+    for bad in (TimePoint(anchor.jd1, anchor.jd2, 'tdb'), None):
+        with checker.assertRaises(ValueError):
+            resolve(bad)
+    with checker.assertRaises(TypeError):
+        query.resolve_stellar_epoch(product, anchor)
+    with checker.assertRaises(ValueError):
+        query.resolve_stellar_epoch(resolve(anchor), anchor, reuse_window_julian_years=4)
+
+
+def test_stellar_epoch_query_coverage_subset_and_detached_data(motion_source, tmp_path):
+    from dataclasses import asdict, FrozenInstanceError
+    from unittest.mock import patch
+    from wenu import stellar_epoch_query as query
+    product, request = _epoch_query_product(motion_source(), tmp_path)
+    checker = unittest.TestCase()
+    event = TimePoint(3000001, 0., 'tcb')
+    # Fixed-position reuse across a domain edge discloses lack of target coverage.
+    result = query.resolve_stellar_epoch(product, event, reuse_window_julian_years=2000, identifiers=('5', '2', '4'))
+    assert [r['identifier'] for r in result.rows()] == ['5', '2', '4']
+    assert result.receipt()['actual_position_event'] == asdict(product.instant)
+    assert all(not r['contains_requested_event'] for r in result.receipt()['requested_event_model_coverage'])
+    with checker.assertRaisesRegex(ValueError, 'original stellar model domain'):
+        query.resolve_stellar_epoch(product, event, reuse_window_julian_years=0)
+    for ids in (('1', '1'), ('999',), (1,)):
+        with checker.assertRaises(ValueError):
+            query.resolve_stellar_epoch(product, product.instant, reuse_window_julian_years=0, identifiers=ids)
+    with patch.object(Kernel, 'open_session', side_effect=AssertionError('empty query')):
+        for event in (product.instant, TimePoint(2457389, 0., 'tcb')):
+            empty = query.resolve_stellar_epoch(product, event, reuse_window_julian_years=0, identifiers=())
+            assert tuple(empty.rows()) == () and empty.receipt()['identifiers'] == []
+    assert result.source is product.source
+    rows = tuple(result.rows()); rows[0]['direction']['vector'][0] = 999
+    receipt = result.receipt(); receipt['requested_event']['jd1'] = 0
+    assert tuple(result.rows())[0] != rows[0] and result.receipt() != receipt
+    with checker.assertRaises(FrozenInstanceError):
+        result.source = None
+    with checker.assertRaisesRegex(ValueError, 'Exact saved TCB'):
+        product.at(event)
+
+
+def test_stellar_epoch_query_advancement_matches_original_sdk_and_never_slides(motion_source, tmp_path):
+    """Compare all mixed-model states with the unchanged direct-SDK preparation."""
+    from dataclasses import replace
+    from unittest.mock import patch
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu import stellar_epoch_query as query
+    source = motion_source(change=dict(pmra=1e8, pmdec=-1e8, radial_velocity=None), hip2_change=dict(pmRA=1e5))
+    product, request = _epoch_query_product(source, tmp_path)
+    before = (product.manifest, product.models_payload, product.states_payload, product.source.products)
+    targets = (TimePoint(2457389, 0., 'tcb'), TimePoint(-1200955, 0., 'tcb'))
+    expected = {}
+    for i, event in enumerate(targets):
+        prepare_stellar_epoch(replace(request, instant=event), tmp_path/str(i))
+        expected[event] = tuple(load_stellar_epoch(tmp_path/str(i)).rows())
+        result = query.resolve_stellar_epoch(product, event, reuse_window_julian_years=1)
+        assert tuple(result.rows()) == expected[event]
+        assert result.receipt()['mode'] == 'advanced'
+        assert result.source is product.source
+        assert result.source.products == source.products
+        assert [r['model_index'] for r in result.rows()] == [r['model_index'] for r in product.rows()]
+        subset = query.resolve_stellar_epoch(product, event, reuse_window_julian_years=1, identifiers=('5','2','1','4'))
+        lookup = {r['identifier']: r for r in expected[event]}
+        assert tuple(subset.rows()) == tuple(lookup[i] for i in ('5','2','1','4'))
+    for event in (targets[1], product.instant, targets[0], product.instant):
+        result = query.resolve_stellar_epoch(product, event, reuse_window_julian_years=1)
+        assert tuple(result.rows()) == (product.at(product.instant) if event == product.instant else expected[event])
+    # Sliding-anchor and stale-outside-window faults must fail this successful baseline.
+    edge = TimePoint(product.instant.jd1 + 365, product.instant.jd2, 'tcb')
+    outside = TimePoint(product.instant.jd1 + 366, product.instant.jd2, 'tcb')
+    assert query.resolve_stellar_epoch(product, edge, reuse_window_julian_years=1).receipt()['mode'] == 'reused'
+    assert query.resolve_stellar_epoch(product, outside, reuse_window_julian_years=1).receipt()['mode'] == 'advanced'
+    checker = unittest.TestCase()
+    original_day = query._day
+    def assert_original_anchor():
+        assert query.resolve_stellar_epoch(product, outside, reuse_window_julian_years=1).receipt()['mode'] == 'advanced'
+    assert_original_anchor()
+    with patch.object(query, '_day', side_effect=lambda t: original_day(edge if t == product.instant else t)):
+        with checker.assertRaises(AssertionError):
+            assert_original_anchor()
+    def assert_target():
+        assert tuple(query.resolve_stellar_epoch(product, targets[0], reuse_window_julian_years=1).rows()) == expected[targets[0]]
+    assert_target()
+    with patch.object(query, '_advance', return_value=product.states_payload):
+        with checker.assertRaises(AssertionError):
+            assert_target()
+    # Saved states relabeled as the requested epoch also fail byte identity.
+    from wenu.stellar_enrichment import encode
+    relabeled = list(product.rows())
+    for row in relabeled:
+        for kind in ('direction', 'cartesian'):
+            if row[kind]:
+                row[kind]['time'] = dict(jd1=targets[0].jd1, jd2=targets[0].jd2, scale='tcb')
+                row[kind]['anchor_time'] = row[kind]['time']
+    with patch.object(query, '_advance', return_value=b''.join(encode(r)+b'\n' for r in relabeled)):
+        with checker.assertRaises(AssertionError):
+            assert_target()
+    assert before == (product.manifest, product.models_payload, product.states_payload, product.source.products)
+    values = list(result.source.records('gaia_sources_v1.jsonl'))
+    assert {r['parallax'] for r in values} >= {100., -1., 0.}
+
+
+def test_stellar_epoch_query_refuses_changed_admission_coefficients_and_rebasing(motion_source, tmp_path):
+    from dataclasses import replace
+    from unittest.mock import patch
+    from wenu import stellar_epoch_query as query
+    source = motion_source(change=dict(pmra=1e8, pmdec=-1e8, radial_velocity=None))
+    product, request = _epoch_query_product(source, tmp_path)
+    target = TimePoint(2457389, 0., 'tcb')
+    resolve = lambda: query.resolve_stellar_epoch(product, target, reuse_window_julian_years=0)
+    baseline = tuple(resolve().rows())
+    checker = unittest.TestCase()
+    original = bridge.admit_stellar_angular_motion
+    def changed(*args, **kwargs):
+        current = original(*args, **kwargs)
+        rows = list(current.rows)
+        row = rows[0]
+        rows[0] = replace(row, tangent_per_s=tuple(2*v for v in row.tangent_per_s))
+        object.__setattr__(current, 'rows', tuple(rows))
+        return current
+    with patch.object(bridge, 'admit_stellar_angular_motion', side_effect=changed):
+        with checker.assertRaisesRegex(ValueError, 'coefficients differ'):
+            resolve()
+    original_record = bridge.StellarMotionCatalogue.to_record
+    def wrong_record(current):
+        record = original_record(current); record['policies']['physical_accuracy'] = 'invented'
+        return record
+    with patch.object(bridge.StellarMotionCatalogue, 'to_record', wrong_record):
+        with checker.assertRaisesRegex(ValueError, 'admission differs'):
+            resolve()
+    original_describe = bridge.StellarMotionProvider.describe
+    def wrong_reference(provider):
+        descriptor = original_describe(provider)
+        admission = descriptor.admissions[0]
+        reference = replace(admission.reference, correction_policy='changed binding')
+        return replace(descriptor, admissions=(replace(admission, reference=reference),))
+    with patch.object(bridge.StellarMotionProvider, 'describe', wrong_reference):
+        with checker.assertRaisesRegex(ValueError, 'reference differs'):
+            resolve()
+    # Deliberately bypass reconstruction verification to simulate normalized-vector
+    # rebasing. The direct original-model comparison must detect the wrong result.
+    restore = query._restore
+    def rebased(*args):
+        restored = restore(*args)
+        angular = restored[1]
+        saved = {r['identifier']: r for r in product.rows()}
+        rows = []
+        for row in angular.rows:
+            direction = saved[row.identifier]['direction']
+            if row.unavailable_reason is None and direction is not None:
+                vector = tuple(direction['vector'])
+                dot = sum(v*t for v, t in zip(vector, row.tangent_per_s))
+                tangent = tuple(t-dot*v for v, t in zip(vector, row.tangent_per_s))
+                row = replace(row, source_epoch=product.instant, direction=vector, tangent_per_s=tangent)
+            rows.append(row)
+        object.__setattr__(angular, 'rows', tuple(rows))
+        return restored
+    with patch.object(query, '_restore', side_effect=rebased):
+        assert tuple(resolve().rows()) != baseline
+    assert tuple(resolve().rows()) == baseline
+
+
+def test_stellar_epoch_query_failure_closes_resources_and_never_falls_back(motion_source, tmp_path):
+    from unittest.mock import patch
+    from wenu import stellar_epoch_query as query
+    from wenu_kernel.kernel import KernelSession
+    product, request = _epoch_query_product(motion_source(), tmp_path)
+    target = TimePoint(2457389, 0., 'tcb')
+    baseline = tuple(query.resolve_stellar_epoch(product, target, reuse_window_julian_years=0).rows())
+    checker = unittest.TestCase()
+    for owner, name in ((Kernel, 'register'), (Kernel, 'open_session'), (KernelSession, 'evaluate')):
+        closed = []; kernels = []; sessions = []
+        kernel_close = Kernel.close
+        session_close = KernelSession.close
+        def close_kernel(kernel):
+            kernels.append(kernel)
+            return kernel_close(kernel)
+        def close_session(session):
+            sessions.append(session)
+            return session_close(session)
+        original_close = bridge.StellarMotionProvider.close
+        def close(provider):
+            closed.append(provider)
+            return original_close(provider)
+        with patch.object(bridge.StellarMotionProvider, 'close', close), \
+             patch.object(Kernel, 'close', close_kernel), \
+             patch.object(KernelSession, 'close', close_session), \
+             patch.object(owner, name, side_effect=RuntimeError('injected query failure')):
+            with checker.assertRaisesRegex(RuntimeError, 'injected query failure'):
+                query.resolve_stellar_epoch(product, target, reuse_window_julian_years=0)
+        assert len(closed) == 1  # first failed query does not try a fallback model
+        assert len(kernels) == 1 and kernels[0]._closed
+        assert len(sessions) == (1 if name == 'evaluate' else 0)
+        assert all(session._closed for session in sessions)
+        assert tuple(query.resolve_stellar_epoch(product, target, reuse_window_julian_years=0).rows()) == baseline

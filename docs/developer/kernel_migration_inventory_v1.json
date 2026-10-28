@@ -1745,6 +1745,13 @@
       "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
     },
     {
+      "path": "src/wenu/stellar_epoch_query.py",
+      "git_blob_sha": "472faf09abedddc359ea2e47dc893a393f741564",
+      "as_is_directory": "src/wenu",
+      "description": "Explicit native TCB fixed-window reuse and original-model advancement; detached resolution/receipt and short SDK lifetime, separate from immutable product codec.",
+      "baseline_relation": "Added for accepted K4b.07 query contract; not a new baseline census."
+    },
+    {
       "path": "src/wenu/stellar_research.py",
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
@@ -6468,8 +6475,8 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "564e64a108742e221ff48c55629f9686b4507ef8",
-      "test_functions": 36,
+      "git_blob_sha": "6fbe37d1970b3bf78c463696cb2be60e89b6d3ce",
+      "test_functions": 41,
       "marks": {
         "parametrize": 19
       },
@@ -6483,6 +6490,8 @@
         "astropy.coordinates",
         "collections",
         "dataclasses",
+        "decimal",
+        "fractions",
         "hashlib",
         "importlib.resources",
         "io",
@@ -6505,9 +6514,12 @@
         "wenu.sky.realization",
         "wenu.stellar_catalogue",
         "wenu.stellar_enrichment",
+        "wenu.stellar_epoch",
+        "wenu.stellar_epoch_query",
         "wenu_kernel",
         "wenu_kernel.conformance",
         "wenu_kernel.errors",
+        "wenu_kernel.kernel",
         "wenu_kernel.records"
       ],
       "baseline_relation": "Added in K3 native-stellar candidate; eight inherited ProviderConformance tests are additional to six explicit owner methods."
@@ -8648,7 +8660,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 275,
+    "production_python_files": 276,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -27403,14 +27415,74 @@
   },
   "stellar_epoch_nearby_query_definition": {
     "base_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
-    "status": "definition selected; concrete runtime boundary proposed for review",
+    "status": "contract accepted; service candidate verified by Mac focused/documentation and original-bundle reciprocal checks at 350de788; final receipt documentation and user acceptance/merge pending",
     "existing_owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py",
       "src/wenu/astrometric_state.py"
     ],
-    "proposed_owner": "stellar_epoch_query.py; query/materialization lifetime separate from strict immutable codec/publication",
     "existing_test_owner": "tests/test_stellar_state.py",
-    "limits": "No production/format/dependency/collection changes. Proposed native TCB window query only, with strict old-bundle compatibility; no later consumers/companions/observers or parent closure."
+    "limits": "No watched legacy code, source bytes, format, dependency, collection, consumer/companion/observer adoption or parent closure.",
+    "agreement_commit": "724225485a8bc26739dbba9718f5b1f898f5e116",
+    "owner": "src/wenu/stellar_epoch_query.py",
+    "local_verification": "Five new owner functions directly executed with actual providers/kernel; injected stale/relabel/sliding/rebased/binding/query faults detected. Not pytest/full Wenu acceptance.",
+    "definition_documentation_receipt": {
+      "tested_commit": "ef578cdebadcd8ed6f4516e53c6cc803980091c7",
+      "cases": 36,
+      "seconds": 6.6,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-reuse-scope-docs-v1-tz_xhims"
+    },
+    "verification": {
+      "tested_commit": "350de788e62e6067da30cbfa0aebf550bde18b2f",
+      "runtime": {
+        "cases": 20,
+        "deselected": 227,
+        "seconds": 17.89
+      },
+      "documentation": {
+        "cases": 36,
+        "seconds": 3.37
+      },
+      "focused_evidence": "~/Software/build/wenu/test/stellar-epoch-query-focused-v1-c56bvh_q",
+      "actual_evidence": "~/Software/build/wenu/output/stellar-epoch-query-acceptance-v1-yx6vdak5",
+      "recipe": {
+        "filename": "wenu_stellar_epoch_query_acceptance_v1.py",
+        "sha256": "5be79f4d1fb4ed45f651a4c8e0fdf12a364f4c4b8c95947bec281f6c27b9bc4b"
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "models_sha256": "ff58d44c10d657233a1cfd8f31fbaa74ef79ddd1b204fdbb7186b1b404fbdb4d",
+      "population": 118218,
+      "model_counts": {
+        "full-input-rectilinear": 97710,
+        "proper-motion-angular": 17395,
+        "hipparcos2-angular-fallback": 2850,
+        "unavailable": 263
+      },
+      "original_manifest_code_and_state_hashes": "passed; old bundles not rewritten",
+      "reciprocal_full_state_hashes": "exact accepted direct-SDK target payload matches",
+      "original_source_access": "prohibited",
+      "boundary_and_isolation": "passed",
+      "products": {
+        "j2000": {
+          "validated_load_seconds": 79.87201049400028,
+          "reuse_seconds_including_checks": 25.713258023999515,
+          "advancement_query_seconds": 143.62267294299818,
+          "advancement_verification_seconds": 11.869400908999523,
+          "advanced_states_sha256": "30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf",
+          "refusal_checks": 6,
+          "input_bundle_bytes_unchanged": true
+        },
+        "jminus8000": {
+          "validated_load_seconds": 72.3836608950005,
+          "reuse_seconds_including_checks": 23.400004888000694,
+          "advancement_query_seconds": 158.59600560699982,
+          "advancement_verification_seconds": 14.280871820999891,
+          "advanced_states_sha256": "ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839",
+          "refusal_checks": 6,
+          "input_bundle_bytes_unchanged": true
+        }
+      },
+      "limits": "Reuse timing includes public-row verification, not isolated resolver latency; no universal speedup, physical accuracy, consumer/observer adoption or parent closure."
+    }
   }
 }

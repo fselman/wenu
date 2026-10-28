@@ -1,5 +1,20 @@
 # Wenu current architecture
 
+## Stellar epoch query lifetime
+
+`stellar_epoch_query.py` owns explicit in-memory reuse policy, detached resolution
+and receipt, and short-lived SDK composition. It consumes an already validated
+immutable epoch catalogue. Reuse returns saved positions without reconstruction;
+advancement calls existing public source admissions and selection/providers,
+verifies original coefficients/references and closes SDK resources before return.
+It does not own a numerical engine, product codec, source cache or chart observer.
+The immutable codec's strict watched code files remain unchanged so old accepted
+products keep their original compatibility binding. At `350de788`, 20 focused
+Mac runtime and 36 documentation cases passed. Both original retained products
+passed unchanged reuse and reciprocal all-row target-hash verification; user
+acceptance/merge remain pending. No later consumer or observer scope follows.
+
+
 ## Exact-event stellar persistence candidate
 
 `stellar_epoch.py` owns the derived immutable epoch-product schema, preparation,
@@ -907,3 +922,4 @@ deterministic import/test/render routes. This is not new acquisition authority.
 Complete Mac audit/documentation acceptance is pending. After acceptance,
 Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
 independent astronomical package extraction remain separate.
+
