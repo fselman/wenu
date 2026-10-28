@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 123, 2026-10-28. **Status:** Atlas slices through #354, receipt #355 and corrected completion boundary #356 are accepted. Fernando postponed the bright-star comparison and selected the supported observer-free consumer review with “proceed”. R1 remains an explicit deferred follow-up, outside the current K4b.06 closure gate. Fernando accepted R2/R3/R4 and bounded K4b.06 closure after 36 Mac documentation passes in 7.35 s at 829c4725. PR #357 status receipt/merge remains pending. He selected the K4b.07 as-is assessment; its first exact-epoch implementation scope is proposed below, not activated. Modern stars/source measurements remain preserved; observer-dependent chart treatment stays deferred until full observer functionality. K4b.07 and later observer work remain separate.
+**Plan revision:** 124, 2026-10-28. **Status:** Atlas slices through #354, receipt #355 and corrected completion boundary #356 are accepted. Fernando postponed the bright-star comparison and selected the supported observer-free consumer review with “proceed”. R1 remains an explicit deferred follow-up, outside the current K4b.06 closure gate. Fernando accepted R2/R3/R4 and bounded K4b.06 closure after 36 Mac documentation passes in 7.35 s at 829c4725. PR #357 status receipt/merge remains pending. After #357 merge/cleanup and confirmed clean synchronized Mac main 7407ea1b, Fernando selected the documented first K4b.07 exact-epoch persistence slice with “proceed”. Its bounded implementation is selected below; acceptance and parent K4b.07 closure remain pending. Modern stars/source measurements remain preserved; observer-dependent chart treatment stays deferred until full observer functionality. K4b.07 and later observer work remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -70,7 +70,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. PR #357 final status receipt/merge pending. K4b.07 as-is assessment completed; no persistence runtime implemented |
-| Next bounded submilestone | Complete #357 status documentation/merge and clean synchronized Mac acceptance, then review/accept the [proposed first K4b.07 exact-epoch slice](#k4b07-proposed-first-exact-epoch-persistence-slice). Assessment is selected and completed; runtime implementation awaits its concrete scope agreement |
+| Next bounded submilestone | Implement the selected [first K4b.07 exact-epoch persistence slice](#k4b07-proposed-first-exact-epoch-persistence-slice) after #357 merge/cleanup and clean synchronized Mac main 7407ea1b. Exact preparation/fresh reload only; later reuse/consumer/companion/observer scopes remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -720,14 +720,18 @@ atlas/regional specimens only as each consumer becomes admitted, retain workload
 measurements and visual review, and use the established run/provenance locations.
 Persisting results does not certify physical accuracy or extend model validity.
 
-### K4b.07 proposed first exact-epoch persistence slice
+<a id="k4b07-proposed-first-exact-epoch-persistence-slice"></a>
+
+### K4b.07 first exact-epoch persistence slice
 
 **Selection/status:** Fernando selected the as-is assessment and exact-epoch
 scope definition with “proceed” after K4b.06 acceptance. The
 [assessment](kernel_migration_audit_v1.md#k4b07-persistence-as-is-assessment-2026-10-28)
 finds existing full Cartesian and angular model interfaces, but no persisted
-evaluated catalogue. The following is a **proposed** first implementation
-boundary, not an agreed new runtime queue or parent K4b.07 closure.
+evaluated catalogue. Fernando subsequently selected this first implementation boundary with “proceed”
+after #357 merge/cleanup and confirmed clean synchronized Mac main
+`7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6`. This selects only exact-epoch
+persistence and its preparation/reload gate, not parent K4b.07 closure.
 
 **Intended result and input:** an explicit offline preparation operation takes
 the existing admitted `StellarMotionRequest` (validated immutable enrichment
@@ -737,7 +741,7 @@ stored data without recreating a live provider/session or recomputing the saved
 event. A fresh process can inspect/use the exact saved results. Different-event
 queries refuse in this first slice; later reuse/advancement is separately scoped.
 
-**Proposed product contract:**
+**Selected product contract:**
 
 - A versioned immutable data-only stellar epoch bundle, distinct from source
   enrichment and native-sky snapshot schemas. Retain the original enrichment
@@ -763,18 +767,25 @@ queries refuse in this first slice; later reuse/advancement is separately scoped
   imports from data; staged validation, exclusive no-clobber destination,
   completion marker last and cleanup only of this invocation's partial output.
 
-**Proposed ownership:** keep source/model selection and SDK evaluation in
+**Selected ownership:** keep source/model selection and SDK evaluation in
 `stellar_state.py`, typed numerical motion in `astrometric_state.py` and validated
 source bytes in `stellar_enrichment.py`. A derived-product codec/preparation
 boundary has a different lifecycle/schema from immutable source admission and
 source-sky serialization; define that enduring boundary rather than changing
-their meanings or copying a private generic serializer. Exact file placement
-and public signatures are reviewed with this scope before code changes. The
+their meanings or copying a private generic serializer. The derived-product codec/preparation owner is `stellar_epoch.py`:
+`prepare_stellar_epoch(request, destination)` returns the committed manifest
+SHA256; `load_stellar_epoch(directory, expected_manifest_sha256=...)` returns a
+validated immutable data catalogue with detached `rows()`/`models()` records and
+`at(instant, identifiers=None)` exact-event access. `tools/prepare_stellar_epoch.py`
+is the explicit offline command over these operations. These do not add a chart
+request mode or top-level exports. Tests extend `tests/test_stellar_state.py`;
+the new module is justified by derived-product schema/publication lifetime,
+separate from immutable source admission and live provider sessions. The
 preparation command is maintenance work, outside deterministic rendering;
 charts/atlases remain consumers of public realized positions and never implement
 propagation, catalogue joins or parallax corrections.
 
-**Proposed smallest acceptance gate:** extend the existing stellar owner tests
+**Selected smallest acceptance gate:** extend the existing stellar owner tests
 for lossless mixed full/angular/Hip2/gap round trips; compare saved data with
 direct admitted SDK evaluation at the same event, preserving source/model
 identities and all row statuses. In a fresh process, remove access to the
@@ -790,8 +801,9 @@ comparison with measured preparation/load size/time and provenance. This slice
 does not change rendered output, so it claims no new chart/visual acceptance.
 
 **Explicit exclusions/dependencies:** first complete #357's acceptance receipt,
-merge/cleanup and confirm clean synchronized Mac at the agreed base; accept this
-concrete boundary before implementation on its own task branch. No nearby-epoch
+merge/cleanup and confirm clean synchronized Mac at the agreed base. Those
+prerequisites are now confirmed at 7407ea1b; record this selected scope before
+runtime work on its own task branch. No nearby-epoch
 window, advancement API, chart/CLI/publication-worker adoption, new stellar model,
 Earth/Solar System companion, observer work, acquisition, release or K5 freeze is
 included. Retained original coefficients enable later faithful advancement but
