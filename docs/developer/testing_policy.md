@@ -1,5 +1,37 @@
 # Testing policy and module independence
 
+## Exact-epoch stellar persistence gate
+
+Candidate implementation extends `tests/test_stellar_state.py` with six
+`stellar_epoch` functions beside existing source/provider/view protections.
+They cover mixed full/angular/Hip2/gaps, source and coefficient preservation,
+direct SDK parity, detached/immutable data, exact-event refusal, subset ordering,
+live-view selection/reuse, fresh-process loading without the original source
+path or provider/session construction, offline command/no-clobber behavior,
+sixteen byte/schema/semantic corruption faults and five publication/failure/race
+faults. The latter retains destinations created by another writer and removes
+only this invocation's partial output. Numerical oracles and core contracts are
+unchanged; their accepted receipts are reused.
+
+Run `tests/test_stellar_state.py` with selection `stellar_epoch or stellar_realiz
+or stellar_sheet_borrows or stellar_motion_public_native_sheet`, then the complete
+documentation gate, plugin autoload disabled. No gate manifest/collection or
+independent core change is introduced. All six new functions pass direct local
+execution with the existing synthetic fixture and real provider/kernel stack;
+this runtime has no pytest/full astronomy stack, so this is not a pytest or Mac
+acceptance claim. Complete Mac verification at `9ed3a7cb` then passed 15 focused
+cases in 15.81 s and all 36 documentation cases in 3.12 s, including live chart
+integration. The subsequent retained-source J2000/J-8000 cases passed all-row
+direct-SDK state-byte parity, original source/row preservation and fresh-process
+load/exact lookup while provider/session construction and original-source access
+were prohibited. Both different-event/scale checks refused for each case.
+The [receipt](kernel_migration_audit_v1.md#retained-source-exact-epoch-verification)
+records exact run/product identities, bundle sizes and distinct preparation/
+reference/load/process timings. No new chart output means no new visual
+acceptance is claimed. This final documentation-only receipt runs the complete
+documentation gate; unchanged runtime/actual-source results are reused. Final
+user acceptance and parent K4b.07's remaining scope stay separate.
+
 ## K4b.06 completion acceptance
 
 The [corrected completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)

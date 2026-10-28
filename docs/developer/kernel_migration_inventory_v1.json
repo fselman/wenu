@@ -1731,6 +1731,20 @@
       "baseline_relation": "Added by metadata-ingestion correction in PR248; source-specific facts live in data resources."
     },
     {
+      "path": "src/wenu/stellar_enrichment.py",
+      "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable multi-edition stellar source snapshot codec; standard-library only.",
+      "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
+    },
+    {
+      "path": "src/wenu/stellar_epoch.py",
+      "git_blob_sha": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
+      "as_is_directory": "src/wenu",
+      "description": "Derived immutable exact-event stellar bundle preparation/validation/reader; original source and model continuation coefficients retained separately from states.",
+      "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
+    },
+    {
       "path": "src/wenu/stellar_research.py",
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
@@ -1738,7 +1752,7 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
+      "git_blob_sha": "442d8aefb55d9c156c0ffd58880c6b875601547c",
       "as_is_directory": "src/wenu",
       "description": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
@@ -1784,13 +1798,6 @@
       "git_blob_sha": "65896806555ae4e593144975f0f0a280d28ba3c9",
       "as_is_directory": "src/wenu",
       "description": "Visibility utilities."
-    },
-    {
-      "path": "src/wenu/stellar_enrichment.py",
-      "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
-      "as_is_directory": "src/wenu",
-      "description": "Immutable multi-edition stellar source snapshot codec; standard-library only.",
-      "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
     }
   ],
   "test_side_python_files": [
@@ -6461,7 +6468,7 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "c0ac8f8fd7d765291d705a48ad1d10200c95df4f",
+      "git_blob_sha": "564e64a108742e221ff48c55629f9686b4507ef8",
       "test_functions": 36,
       "marks": {
         "parametrize": 19
@@ -7300,6 +7307,18 @@
       "git_blob_sha": "be0abcfff4af5197880fddec3f21955e3bae2973"
     },
     {
+      "path": "tools/fetch_kervella_catalogue.py",
+      "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
+    },
+    {
+      "path": "tools/fetch_stellar_astrometry.py",
+      "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd"
+    },
+    {
+      "path": "tools/gaia_crossmatch_audit.py",
+      "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a"
+    },
+    {
       "path": "tools/glossaries/wenu_en_es.json",
       "git_blob_sha": "8bface672ec471c811f1d5c034bc0812a9fac34e"
     },
@@ -7342,6 +7361,10 @@
     {
       "path": "tools/prepare_open_cluster_catalogue.py",
       "git_blob_sha": "8a57ee71288f8d73de7b1b9127ee4e59b2a3983a"
+    },
+    {
+      "path": "tools/prepare_stellar_epoch.py",
+      "git_blob_sha": "897f57e94360673f4650caddc741f2f635a537cf"
     },
     {
       "path": "tools/preview_stellar_sizes.py",
@@ -7562,18 +7585,6 @@
     {
       "path": "tools/validate_50s7d3b_lime_offline_inspection.py",
       "git_blob_sha": "68353aa56453d0f89523e04148a6079d3055ab60"
-    },
-    {
-      "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a"
-    },
-    {
-      "path": "tools/fetch_kervella_catalogue.py",
-      "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
-    },
-    {
-      "path": "tools/fetch_stellar_astrometry.py",
-      "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd"
     }
   ],
   "preserved_test_editions": [
@@ -8637,7 +8648,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 265,
+    "production_python_files": 275,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -26876,7 +26887,7 @@
         "stellar-motion-provider": {
           "passed": 203,
           "subtests": 9,
-          "seconds": 20.0
+          "seconds": 20
         },
         "gaia-crossmatch-audit": {
           "passed": 125,
@@ -26906,12 +26917,12 @@
       "coverage": [
         [
           -16000000,
-          0.0,
+          0,
           "tcb"
         ],
         [
           21000000,
-          0.0,
+          0,
           "tcb"
         ]
       ],
@@ -27032,7 +27043,7 @@
               1356174,
               -0.0168536919838221
             ],
-            "calendar_rounding_s": 0.0,
+            "calendar_rounding_s": 0,
             "conversion_rounding_s": 4.749541939202945e-14
           },
           {
@@ -27045,7 +27056,7 @@
               1721060,
               -0.011196062335434954
             ],
-            "calendar_rounding_s": 0.0,
+            "calendar_rounding_s": 0,
             "conversion_rounding_s": 2.013278730642825e-14
           },
           {
@@ -27056,10 +27067,10 @@
             "source_uncertainty_s": null,
             "tcb": [
               -1931365,
-              0.0
+              0
             ],
-            "calendar_rounding_s": 0.0,
-            "conversion_rounding_s": 0.0
+            "calendar_rounding_s": 0,
+            "conversion_rounding_s": 0
           },
           {
             "year": 2000,
@@ -27069,10 +27080,10 @@
             "source_uncertainty_s": 0,
             "tcb": [
               2451545,
-              0.0
+              0
             ],
-            "calendar_rounding_s": 0.0,
-            "conversion_rounding_s": 0.0
+            "calendar_rounding_s": 0,
+            "conversion_rounding_s": 0
           }
         ],
         "limits": "Nominal native directions; historical dating, observer, precession and physical accuracy not certified"
@@ -27202,7 +27213,7 @@
               -0.7425255505858193,
               0.6624554742455596
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -10000,
@@ -27213,7 +27224,7 @@
               -0.4214759962052149,
               0.9067634708598727
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -1000,
@@ -27224,7 +27235,7 @@
               -0.09374372009232414,
               0.9588390426575633
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": -1000,
@@ -27235,7 +27246,7 @@
               -0.4041533160606237,
               0.9146912209129033
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 2000,
@@ -27246,7 +27257,7 @@
               -3.305556629794447e-08,
               0.9999999999999962
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 2000,
@@ -27257,7 +27268,7 @@
               -0.3977769994449437,
               0.917482129914565
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 12000,
@@ -27268,7 +27279,7 @@
               -0.6318052004942217,
               0.7353813036753756
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           },
           {
             "jyear_tt": 12000,
@@ -27279,7 +27290,7 @@
               -0.38114555921622395,
               0.9244612587790403
             ],
-            "epoch_rounding_s": 0.0
+            "epoch_rounding_s": 0
           }
         ],
         "limits": "Separate TT frame equinox and native TCB time; no inferred simultaneity, historical observer or certified physical/total frame accuracy"
@@ -27290,6 +27301,96 @@
       "numerical_oracle": "Independent 80-digit Decimal application/normalization of each admitted matrix to native binary64 direction",
       "platform_identity": "Actual matrix hex components bind identity; cross-platform last-bit differences may legitimately produce different frame model IDs",
       "limits": "No certified physical/total orientation accuracy, inferred TT/TCB simultaneity or historical observer; parent/K4b.05/K4b.06/issue #326 remain separate"
+    }
+  },
+  "stellar_exact_epoch_persistence": {
+    "base_commit": "7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6",
+    "plan_commit": "12a549642d83e1a551445159e1fc2542152c0054",
+    "status": "runtime/documentation and actual-source verification complete at 9ed3a7cb; final receipt documentation and bounded user acceptance pending",
+    "owners": [
+      "src/wenu/stellar_epoch.py",
+      "src/wenu/stellar_state.py"
+    ],
+    "command": "tools/prepare_stellar_epoch.py",
+    "test_owner": "tests/test_stellar_state.py",
+    "limits": "No nearby-epoch policy, advancement, chart/worker adoption, companion states, observer work, acquisition or physical-error qualification.",
+    "local_verification": "Six new owner functions executed directly against real provider/kernel and existing synthetic source fixture; no pytest/full Wenu available.",
+    "changed_owner_blobs": {
+      "src/wenu/stellar_state.py": "442d8aefb55d9c156c0ffd58880c6b875601547c",
+      "src/wenu/stellar_epoch.py": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
+      "tests/test_stellar_state.py": "564e64a108742e221ff48c55629f9686b4507ef8",
+      "tools/prepare_stellar_epoch.py": "897f57e94360673f4650caddc741f2f635a537cf"
+    },
+    "mac_initial_runtime": {
+      "head": "0457e560f5165daf3be170f7a74a640786ef49aa",
+      "passed": 13,
+      "failed": 2,
+      "seconds": 11.49,
+      "documentation": "not run after runtime failure",
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-focused-v1-4olbqexo",
+      "diagnostic": "~/Software/build/wenu/test/stellar-epoch-diagnostic-v1-usiyxa8p",
+      "cause": "Test-added site-packages on PYTHONPATH shadows stdlib pathlib with an obsolete installed backport.",
+      "correction": "Test-only subprocess environment preserves normal installed dependency resolution and surfaces stderr; same Mac gate pending."
+    },
+    "mac_verification": {
+      "head": "9ed3a7cbca4a919cd0bc99069e1be3e41315a349",
+      "runtime_cases": 15,
+      "runtime_seconds": 15.81,
+      "documentation_cases": 36,
+      "documentation_seconds": 3.12,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-path-retry-v1-v3uifwta"
+    },
+    "actual_source_verification": {
+      "head": "9ed3a7cbca4a919cd0bc99069e1be3e41315a349",
+      "evidence": "~/Software/build/wenu/output/stellar-epoch-acceptance-v1-ynpv71ip",
+      "user_reported": true,
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "retained_rows": 118218,
+      "counts": {
+        "full_input": 97710,
+        "angular": 17395,
+        "hipparcos2": 2850,
+        "unavailable": 263
+      },
+      "original_source_unchanged": true,
+      "fresh_process_prohibitions": [
+        "original source directory access",
+        "provider construction",
+        "session creation"
+      ],
+      "exact_lookup": true,
+      "different_event_and_scale_refusals": 2,
+      "cases": {
+        "j2000": {
+          "event": {
+            "jd1": 2451545,
+            "jd2": 0.0,
+            "scale": "tcb"
+          },
+          "manifest_sha256": "5acf3da525ce708d639dcc46507ae35b52478799f07b251e61151fa44f0d1ce9",
+          "states_sha256": "ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839",
+          "bundle_bytes": 1016979111,
+          "prepare_seconds": 181.54048913400038,
+          "direct_reference_seconds": 87.93466944299871,
+          "load_seconds": 80.74213316000169,
+          "fresh_process_seconds": 104.00039620000098
+        },
+        "jminus8000": {
+          "event": {
+            "jd1": -1200955,
+            "jd2": 0.0,
+            "scale": "tcb"
+          },
+          "manifest_sha256": "fe05b6730bee3569c90072a3b942ac1b11a5c06c65d2c8d36c712c52a425c293",
+          "states_sha256": "30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf",
+          "bundle_bytes": 1017410426,
+          "prepare_seconds": 172.71050988900242,
+          "direct_reference_seconds": 91.71302118000312,
+          "load_seconds": 81.71162443699723,
+          "fresh_process_seconds": 105.2022813069998
+        }
+      },
+      "limits": "Measured full-population validation-heavy workload; no universal speedup, physical accuracy, observer/nearby-epoch/consumer adoption or parent closure claim."
     }
   }
 }

@@ -284,6 +284,35 @@ class StellarMotionExecutionInput:
         return request
 
 
+def stellar_model_selection(request, identifiers=None):
+    """Ordered first-available models and preceding gap reasons; no evaluation.
+
+    Shared by the live stellar view and derived epoch preparation. Failure of an
+    admitted model query is never a reason to choose another model.
+    """
+    if type(request) is not StellarMotionRequest:
+        raise ValueError('An admitted stellar motion request is required.')
+    ordered = tuple(row.identifier for row in request.catalogues[0].rows)
+    rows = [{row.identifier: row for row in c.rows} for c in request.catalogues]
+    if any(tuple(row.identifier for row in c.rows) != ordered for c in request.catalogues):
+        raise ValueError('Stellar model populations differ.')
+    chosen_ids = ordered if identifiers is None else tuple(str(i) for i in identifiers)
+    if len(chosen_ids) != len(set(chosen_ids)) or not set(chosen_ids) <= set(ordered):
+        raise ValueError('Unknown or duplicate stellar source identifier.')
+    result = []
+    for hip in chosen_ids:
+        reasons = []
+        selected = None
+        for index, catalogue in enumerate(request.catalogues):
+            row = rows[index][hip]
+            if row.unavailable_reason is None:
+                selected = index
+                break
+            reasons.append(catalogue.motion_policy + ':' + row.unavailable_reason)
+        result.append((hip, selected, tuple(reasons)))
+    return tuple(result)
+
+
 class _StellarRealization:
     """Request-local SDK bridge owned by a realized Stars view."""
 
@@ -335,19 +364,13 @@ class _StellarRealization:
                         'Physical accuracy unknown; no guaranteed ancient-position accuracy') + tuple(
                             'stellar-model-sha256:' + _stellar_digest(c.to_record())
                             for c in request.catalogues))
+        selection = stellar_model_selection(request, self._ids)
+        self._models = [None if selected is None else request.catalogues[selected].motion_policy
+                        for _, selected, _ in selection]
+        self._reasons = [list(reasons) for _, _, reasons in selection]
         try:
-            for catalogue in request.catalogues:
-                rows = {int(row.identifier): row for row in catalogue.rows}
-                chosen = []
-                for n, identifier in enumerate(self._ids):
-                    if self._models[n] is not None:
-                        continue
-                    row = rows[identifier]
-                    if row.unavailable_reason is not None:
-                        self._reasons[n].append(catalogue.motion_policy + ':' + row.unavailable_reason)
-                    else:
-                        chosen.append(identifier)
-                        self._models[n] = catalogue.motion_policy
+            for index, catalogue in enumerate(request.catalogues):
+                chosen = [int(hip) for hip, selected, _ in selection if selected == index]
                 if not chosen:
                     continue
                 provider = StellarMotionProvider(catalogue)
