@@ -1,5 +1,41 @@
 # Testing policy and module independence
 
+## K4b.06 completion acceptance
+
+The [corrected completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)
+records Fernando's explicit modern-catalogue preservation and observer-dependent
+chart deferral. No new runtime gate is executed by this definition.
+
+- Consumer inventory: assess already-supported observer-free public paths.
+  Reuse accepted atlas receipts. Record chart types whose preparation/framing/
+  view/export needs an observer as deferred until full observer functionality;
+  do not turn a native renderer seam into an implicitly selected new product.
+- Modern compatibility: historical/remote-epoch model limits and incomplete
+  inputs must not reduce the existing usable modern stellar population or
+  discard measured source parallaxes. Protect HIP/component/order/name/V and
+  source astrometric measurements/uncertainties/provenance. An angular-model
+  selection must not imply zero or erased parallax; missing RV alone must not
+  discard an otherwise usable measured parallax. Preserve uncertain/nonpositive
+  measurements without inventing reciprocal distances.
+- Observer deferral: no full-input-only observed product or angular-star exclusion
+  policy is implemented in K4b.06. Existing modern observed behavior stays
+  unchanged. The later full observer work must test capability/correction/event/
+  resource/site handling and population preservation under its own agreed scope.
+- Source review: retain actual original-V-selected HIPs and per-HIP current/
+  alternative source evidence, including unresolved matches and component/
+  systemic-RV distinctions. Literature-only findings are not executed numerical
+  comparisons. No source acquisition/replacement follows from a test pass.
+- Final evidence: reconcile supported observer-free consumers, source/model
+  availability versus modern population, workload/exact reuse and retained
+  scientific/visual results. New applicable paths require their own bounded
+  acceptance; unchanged atlas evidence is reused. Explicit observer deferral
+  can coexist with K4b.06 closure, without claiming full observer functionality.
+
+For this documentation-only correction, run the complete `documentation` gate
+on the Mac. Local stdlib checks and pinned-tree link/inventory preflight do not
+substitute for the full archive-byte/public-import gate. No production/test/
+source/dependency/collection/default change is made here.
+
 <a id="dated-axis-atlas-candidate-gate"></a>
 
 ## Dated-axis atlas acceptance gate

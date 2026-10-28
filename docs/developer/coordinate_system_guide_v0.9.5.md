@@ -1,5 +1,23 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Catalogue parallax and observer displacement
+
+Catalogue barycentric astrometric directions and measured parallaxes are source
+solution facts; retain their declared metadata and measurement meaning.
+Selecting a local angular proper-motion model neither establishes zero source
+parallax nor erases a measured one. Changing to an Earth/site observer is a
+separate distance-dependent transformation; the local Cartesian service's
+requirements do not redefine the catalogue reduction.
+
+Fernando's 2026-10-28 direction preserves modern stars and uses measured source
+parallaxes when no better qualified input is available. Ancient/far-future
+model unavailability must remain distinct from modern catalogue availability.
+For this milestone, observer-dependent chart treatment is deferred until full
+observer functionality, as recorded in the
+[scientific contract](scientific_contracts.md#stellar-catalogue-preservation-and-deferred-observers).
+No new parallax correction, distance inference or observer implementation is
+introduced by this clarification.
+
 ## Dated-axis atlas semantics
 
 The [accepted K4b.06 implementation](implementation_reference.md#dated-axis-atlas-views-k4b06)
