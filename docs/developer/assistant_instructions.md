@@ -194,6 +194,22 @@ Give Mac commands completely, copy/paste ready, one group at a time, then wait
 for the result. Confirm exact branch/SHA, clean state and upstream equality.
 Do not delete an old branch merely because a new task starts.
 
+### PR executive summary
+
+Every PR, including draft and documentation-only PRs, must begin its description
+with a brief plain-language executive summary. State the practical purpose,
+what changes for the user, the important scope limits, and the current
+verification/readiness status. Prefer one short paragraph or a few concise
+bullets; keep detailed implementation and evidence below it. Distinguish
+implemented work from planned or pending deliverables, and do not imply that
+written tests, ungenerated products or unrun checks have passed.
+
+Display the same executive summary directly in the Work chat when opening the
+PR, without waiting for Fernando to request it. When the PR's scope, deliverables
+or readiness materially change, update both the PR summary and its Work-chat
+summary. A PR link, title or technical change list alone is not the summary.
+Keep the summary current with the final implementation and acceptance evidence.
+
 ### Mac terminal guard
 
 Fernando also works on the separate wenu-imaging project on Linux host
