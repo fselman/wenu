@@ -1,5 +1,36 @@
 # Testing policy and module independence
 
+## Saved epoch consumer gate
+
+Closest protections are the existing native stellar view/export and complete
+serial/spawn motion-publication parity cases. New source-owner tests protect
+data-backed source/reference/photometry binding, detached results, gaps, closed
+lifetime, captured descriptor integrity, fresh admission after pickle, invalid
+documents and changed bundle bytes. Public view comparison uses original live
+models at the actual returned event and prohibits providers during consumption.
+Eight publication cases cover reused modern and advanced J-2000 data, one/two
+workers and native/dated mean-equatorial axes through real command/export/count
+owners. Existing live publication cases share the assertion helper and remain
+collected. A CLI case protects explicit routing and mutual exclusion.
+
+Run `tests/test_stellar_state.py` with selection `stellar_epoch or stellar_realiz
+or stellar_sheet_borrows or stellar_motion_public_native_sheet or
+stellar_motion_publication_serial_spawn or stellar_publication`, then
+`tests/test_atlas_cli.py` selected by `epoch_config or motion_config or
+dated_atlas or atlas_frame or atlas_sheet_default_route or
+atlas_sheet_command_runs_in_spawn`, followed by the complete documentation gate.
+Disable plugin autoload and use a fresh run/cache directory. No core, dependency,
+collection or schema-v2 configuration gate changes are introduced.
+
+Two new owner functions pass direct local execution with actual provider/kernel
+code, plus compilation of modified Python. This is not full pytest/astronomy
+execution; Mac gates remain pending. Then prepare/validate the additional actual
+J-2000 catalogue and compare serial/spawn output/actual-event live references.
+Retain modern/current and J-2000 north-cap specimens and explicit Polaris finite,
+selected, projected/unclipped evidence for visual acceptance. Preserve original
+catalogues, source measurements and established provenance directories.
+
+
 ## Nearby-epoch query gate
 
 The [accepted K4b.07 service contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)

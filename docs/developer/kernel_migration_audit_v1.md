@@ -1,5 +1,29 @@
 # Kernel migration: as-is functionality and test audit
 
+## Saved epoch consumer implementation candidate
+
+Base main `d4fb035d` is clean/synchronized on the Mac, with #359/#360 accepted
+and branches cleaned. Fernando selected the concrete consumer scope plus the
+J-2000 and Polaris-visible north-cap additions; roadmap commit `d183f81c`
+records agreement before implementation. The temporary assistant execution
+outage is resolved; the full astronomy stack/pytest is still unavailable here.
+
+Existing `Stars.realized()` accepted only live motion requests, while sheets,
+sky assembly, reports and worker/count owners already share its position
+interface. The new adapter extends that interface from resolved saved data;
+it does not change the six v1-watched source/model/core/codec owners or weaken
+their hashes. Captured query TOML binds the bundle and existing snapshot/design
+identities. Workers admit process-local data once through existing publication
+lifecycle; serial and spawned sheets carry the same scientific receipt.
+
+Modified Python compiles. Two new owner functions pass direct local execution
+with real providers/kernel: source binding/gaps/immutable results/lifetime and
+captured document/pickle/re-admission/refusal/corruption. Public sky/render and
+serial/spawn cases are written but not executed locally. Full Mac runtime,
+publication/documentation and actual catalogue/Polaris visual verification are
+pending. No new J-2000 product or polar output is claimed produced yet.
+
+
 ## K4b.07 nearby-epoch query as-is assessment, 2026-10-28
 
 **Selected work:** define the next nearby-epoch reuse/advancement slice after

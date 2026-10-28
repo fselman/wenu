@@ -1,5 +1,40 @@
 # Wenu implementation reference
 
+## Saved epoch consumers
+
+Explicit imports in `wenu.stellar_epoch_consumer`:
+
+- `StellarEpochViewInput(catalogue, instant, reuse_window_julian_years)` resolves
+  an already validated immutable epoch catalogue upstream through the existing
+  query service. The frozen input retains its resolution; it refuses pickle.
+- `StellarEpochExecutionInput.capture(path, snapshot_sha256=..., design_sha256=...)`
+  returns a small captured descriptor and admitted view input. `admit(...)`
+  verifies document/base/snapshot/design integrity, reads the pinned bundle and
+  resolves once per process. No live source/provider/session is transported.
+- `stellar_epoch_view_identity(input)` exposes original source/models plus the
+  query receipt, with `epoch` equal to the actual returned position event.
+
+`Stars.realized()` and existing sky assembly accept the new admitted input
+alongside live `StellarMotionRequest`. Source identity/reference/units/HIP and
+photometry must match the loaded source sky. The isolated position adapter reads
+only resolved data, retains unavailable rows as NaN geometry with original
+metadata and refuses use after close. Dependent lines/labels borrow those stars.
+
+`create_atlas(..., stellar_epoch_config=...)` and atlas CLI
+`--stellar-epoch-config` accept the independent query TOML described in the user
+guide. It is mutually exclusive with live `stellar_motion_config`/CLI input.
+Serial and spawn paths share the existing publication/worker lifecycle; workers
+verify snapshot/design bindings and load/query once during initialization.
+The existing native sheet route covers rectangular regional and polar owners;
+observer-dependent ordinary chart families remain excluded.
+
+Reports and publication/count provenance carry `stellar_realization.epoch_query`
+with manifest/code/source identities, requested/actual events, window, coverage
+and approximation. Visible notes identify requested and actual epochs and reuse.
+Display-axis TT orientation remains separate from native TCB position time.
+The six strict v1 watched files are unchanged. Mac and visual acceptance pending.
+
+
 ## Nearby-epoch stellar queries
 
 Import `resolve_stellar_epoch` and `StellarEpochResolution` explicitly from

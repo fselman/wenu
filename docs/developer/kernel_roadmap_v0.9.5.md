@@ -1025,12 +1025,13 @@ or fabricate a measurement.
 
 **Limits/status:** no observer-dependent chart adoption, Earth/Solar System
 companion, acquisition, source replacement, new numerical model, uncertainty
-qualification or K5 freeze. This contract is recorded before consumer runtime
-implementation. At definition time the assistant execution environment is
-unavailable; GitHub inspection/delivery works. No new runtime test, catalogue
-preparation or polar rendering is claimed executed. Existing preparation can run
-on the Mac independently; consumer implementation and full preflight remain
-pending environment availability.
+qualification or K5 freeze. This contract was recorded before consumer runtime implementation at
+`d183f81c`. The assistant execution outage is resolved. The consumer candidate
+now adds the data-backed stellar view, captured worker query input and atlas
+configuration route. Modified Python compiles and two owner
+functions pass direct local execution; full Mac owner/publication/documentation
+gates and actual J-2000/Polaris visual verification remain pending. No new
+catalogue preparation or polar rendering is claimed executed yet.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 

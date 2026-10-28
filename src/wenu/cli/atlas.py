@@ -126,8 +126,11 @@ def create_main(argv=None):
     _layout_arguments(parser)
     parser.add_argument('--config', type=Path, default=Path('atlas-v6'),
                         help='Full atlas presentation TOML path or installed style name (default atlas-v6).')
-    parser.add_argument('--stellar-motion-config', type=Path,
+    stellar = parser.add_mutually_exclusive_group()
+    stellar.add_argument('--stellar-motion-config', type=Path,
         help='Explicit stellar-motion TOML; native stellar positions only.')
+    stellar.add_argument('--stellar-epoch-config', type=Path,
+        help='Saved epoch query TOML with pinned catalogue, resolved event and explicit reuse window.')
     parser.add_argument("--atlas-frame-config", type=Path,
         help="Explicit TT mean-axis atlas-view TOML, independent of stellar motion.")
     parser.add_argument("--charts", default="all")
@@ -192,7 +195,8 @@ def create_main(argv=None):
             open_cluster_catalogue=args.open_cluster_catalogue,
             planetary_nebula_catalogue=args.planetary_nebula_catalogue,
             selection_criteria=args.selection_criteria,
-            stellar_motion_config=args.stellar_motion_config,atlas_frame_config=args.atlas_frame_config)
+            stellar_motion_config=args.stellar_motion_config,atlas_frame_config=args.atlas_frame_config,
+            stellar_epoch_config=args.stellar_epoch_config)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KernelError as exc:
@@ -202,4 +206,5 @@ def create_main(argv=None):
         return 130
     print(output)
     return 0
+
 

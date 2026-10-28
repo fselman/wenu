@@ -1,5 +1,17 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Saved positions in native chart consumers
+
+The saved-position adapter supplies the actual returned native TCB event to
+`CoordinateSpec` and the existing native realization context. A reused position
+does not acquire the requested date as its raw coordinate time. Reports and
+visible notes preserve both events and fixed-position approximation status.
+Mean-equatorial/ecliptic display axes retain their independent admitted TT
+orientation. The modern and J-2000 north-cap specimens must explicitly name
+these axes/epochs and show Polaris at its returned position, not at an assumed
+pole. This is an observer-free candidate, pending Mac/visual acceptance.
+
+
 ## Nearby-epoch event receipt
 
 The accepted [K4b.07 query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)

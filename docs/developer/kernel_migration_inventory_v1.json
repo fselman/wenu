@@ -229,13 +229,13 @@
     },
     {
       "path": "src/wenu/charts/atlas_publication.py",
-      "git_blob_sha": "ba3f589b3c03f20be93fef4bb25379591ac1c7b1",
+      "git_blob_sha": "c53e6c5f33204f90ed14524476314e7b5a11d010",
       "as_is_directory": "src/wenu/charts",
       "description": "Design-bound atlas planning and canonical chart-page publication."
     },
     {
       "path": "src/wenu/charts/atlas_sheet.py",
-      "git_blob_sha": "ec464408cbed20c8ddf9154df8c484ae98d30b9d",
+      "git_blob_sha": "6e08dbdf8f346ff98c5a1a09349880b660852108",
       "as_is_directory": "src/wenu/charts",
       "description": "Single-sheet atlas contract, composition, furniture and report service below batch publication."
     },
@@ -817,7 +817,7 @@
     },
     {
       "path": "src/wenu/cli/atlas.py",
-      "git_blob_sha": "8dcaea419634ed065d1ea5c74cacff3875542d26",
+      "git_blob_sha": "863383e669091463989f4db92629999a25a2b152",
       "as_is_directory": "src/wenu/cli",
       "description": "Installed atlas adapters for geometry, index and chart-page production."
     },
@@ -1214,7 +1214,7 @@
     },
     {
       "path": "src/wenu/objects/stars.py",
-      "git_blob_sha": "cd3490d56e6bbfd8dd7a106f593261d3bbc83e26",
+      "git_blob_sha": "63cc8606333b336bb5e39311549c3eb555778599",
       "as_is_directory": "src/wenu/objects",
       "description": "Stellar catalogue layer producing spherical point geometry."
     },
@@ -1745,6 +1745,13 @@
       "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
     },
     {
+      "path": "src/wenu/stellar_epoch_consumer.py",
+      "git_blob_sha": "bc4d23a0dae0af62a37d9dacd92fe64542cba661",
+      "as_is_directory": "src/wenu",
+      "description": "Saved-query input/captured worker admission and source-bound data-backed stellar position-view lifetime; no propagation or rendering.",
+      "baseline_relation": "Added under K4b.07 selected consumer contract d183f81c; not a new baseline census."
+    },
+    {
       "path": "src/wenu/stellar_epoch_query.py",
       "git_blob_sha": "472faf09abedddc359ea2e47dc893a393f741564",
       "as_is_directory": "src/wenu",
@@ -2174,8 +2181,8 @@
     },
     {
       "path": "tests/test_atlas_cli.py",
-      "git_blob_sha": "d5af2113fb62ffd657742d3931f3bdc24f6bfe0f",
-      "test_functions": 40,
+      "git_blob_sha": "13ed377197e54762c9302a4ccb87d2a90bd93061",
+      "test_functions": 53,
       "marks": {
         "parametrize": 28
       },
@@ -6475,8 +6482,8 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "6fbe37d1970b3bf78c463696cb2be60e89b6d3ce",
-      "test_functions": 41,
+      "git_blob_sha": "c7d22a6086d50f415fcdada17e8c183da32efed0",
+      "test_functions": 74,
       "marks": {
         "parametrize": 19
       },
@@ -8660,7 +8667,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 276,
+    "production_python_files": 277,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -27484,5 +27491,21 @@
       },
       "limits": "Reuse timing includes public-row verification, not isolated resolver latency; no universal speedup, physical accuracy, consumer/observer adoption or parent closure."
     }
+  },
+  "stellar_epoch_consumers": {
+    "status": "candidate; full Mac/actual catalogue/Polaris visual acceptance pending",
+    "base_commit": "d4fb035d456f084124b3f2f489e4695445253e54",
+    "agreement_commit": "d183f81c3f088750d4e8ea61cd6c3fd02472fdbd",
+    "owner": "src/wenu/stellar_epoch_consumer.py",
+    "test_owners": [
+      "tests/test_stellar_state.py",
+      "tests/test_atlas_cli.py"
+    ],
+    "local_verification": "Modified Python compiles; two source-owner functions directly executed using actual provider/kernel and synthetic source. Full pytest/astronomy stack unavailable.",
+    "additions": [
+      "Additional retained J-2000 catalogue",
+      "Modern/current and J-2000 north-cap specimens with finite/selected/plotted Polaris"
+    ],
+    "limits": "Six strict v1 watched files unchanged; no observer/companion/source replacement/new numerical model or parent closure."
   }
 }

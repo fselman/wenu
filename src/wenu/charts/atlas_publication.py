@@ -160,6 +160,7 @@ def _initialize_atlas_worker(directory, digest, chart_command=None,
     from wenu.sky.native_snapshot import read_native_sky_snapshot
     from wenu.sky.assembly import stellar_realization_sky
     from wenu.stellar_state import StellarMotionExecutionInput
+    from wenu.stellar_epoch_consumer import StellarEpochExecutionInput
     global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION, _WORKER_FRAME, _WORKER_DESIGN, _WORKER_FRAME_INPUT
     global _WORKER_SCOPE, _WORKER_FINALIZER
     _close_atlas_worker()
@@ -168,7 +169,7 @@ def _initialize_atlas_worker(directory, digest, chart_command=None,
         snapshot = read_native_sky_snapshot(directory, expected_manifest_sha256=digest)
         motion = None
         if motion_input is not None:
-            if type(motion_input) is not StellarMotionExecutionInput:
+            if type(motion_input) not in (StellarMotionExecutionInput, StellarEpochExecutionInput):
                 raise TypeError('Expected captured stellar execution input.')
             snapshot.require(design_sha256=design_sha256)
             motion = motion_input.admit(snapshot_sha256=snapshot.manifest_sha256,
@@ -300,7 +301,8 @@ def _read_selection_criteria(paths, catalogues):
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                  save_sky=None, from_sky=None, index=None, chart_command=None,
                  open_cluster_catalogue=None, planetary_nebula_catalogue=None,
-                 selection_criteria=(), stellar_motion_config=None, atlas_frame_config=None):
+                 selection_criteria=(), stellar_motion_config=None, atlas_frame_config=None,
+                 stellar_epoch_config=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -320,6 +322,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     from concurrent.futures import ProcessPoolExecutor, wait, FIRST_COMPLETED
     from pypdf import PdfReader, PdfWriter
     from wenu.sky.native_snapshot import prepare_native_sky_snapshot, read_native_sky_snapshot
+    if stellar_motion_config is not None and stellar_epoch_config is not None:
+        raise ValueError("Live stellar motion and saved epoch inputs are mutually exclusive.")
     _positive_integer(jobs, "jobs")
     if chart_command is not None and not callable(chart_command):
         raise TypeError("chart_command must be callable or None.")
@@ -430,6 +434,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             motion_input, motion = StellarMotionExecutionInput.capture(stellar_motion_config,
                 snapshot_sha256=digest, design_sha256=hashlib.sha256(raw).hexdigest())
             science = stellar_motion_identity(motion)
+        elif stellar_epoch_config is not None:
+            from wenu.stellar_epoch_consumer import StellarEpochExecutionInput, stellar_epoch_view_identity
+            motion_input, motion = StellarEpochExecutionInput.capture(stellar_epoch_config,
+                snapshot_sha256=digest, design_sha256=hashlib.sha256(raw).hexdigest())
+            science = stellar_epoch_view_identity(motion)
         frame_input = orientation = frame_science = None
         if atlas_frame_config is not None:
             from .atlas_sheet import AtlasFrameExecutionInput, atlas_frame_record
@@ -638,4 +647,5 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
+
 

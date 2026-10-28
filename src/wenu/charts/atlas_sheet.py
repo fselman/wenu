@@ -276,8 +276,9 @@ class AtlasSheetChartRequest:
                 raise ValueError('Frame execution input differs from its admitted orientation.')
         if self.stellar_motion is not None:
             from wenu.stellar_state import StellarMotionRequest
-            if type(self.stellar_motion) is not StellarMotionRequest:
-                raise TypeError('stellar_motion must be StellarMotionRequest.')
+            from wenu.stellar_epoch_consumer import StellarEpochViewInput
+            if type(self.stellar_motion) not in (StellarMotionRequest, StellarEpochViewInput):
+                raise TypeError('stellar_motion must be an admitted live or saved stellar input.')
 
 
 
@@ -673,8 +674,16 @@ def _draw_stellar_realization_note(figure, sky):
     time = record['epoch']
     year = 2000 + ((time['jd1'] - 2451545) + time['jd2']) / 365.25
     missing = record['model_counts'].get('unavailable', 0)
+    query = record.get('epoch_query')
+    requested = ''
+    if query is not None:
+        event = query['requested_event']
+        requested_year = 2000 + ((event['jd1'] - 2451545) + event['jd2']) / 365.25
+        requested = f"Requested J{requested_year:g} TCB; {query['mode']}; "
+        if query['mode'] == 'reused':
+            requested += 'fixed-position approximation; '
     figure.text(.5, .006,
-        f'Nominal stellar positions: J{year:g} TCB; {missing} source stars unavailable. '
+        requested + f'Nominal stellar positions: J{year:g} TCB; {missing} source stars unavailable. '
         'Physical accuracy unknown.', ha='center', va='bottom', fontsize=5)
 
 
@@ -927,3 +936,4 @@ def _ecliptic_tick_options(name, *, minor_scale, latitude_scale):
         length_points=4 if major else 2, label_rotation='parallel' if latitude else None,
         label_lane=2 if latitude else 0 if major else 1,
         style=dict(color='black',linewidth=.8,alpha=1.,linestyle='-',zorder=4))
+

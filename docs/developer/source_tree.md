@@ -172,6 +172,7 @@ concrete Wenu classes.
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`stellar_epoch.py`](../../src/wenu/stellar_epoch.py) | Immutable derived exact-epoch stellar bundle codec, admitted SDK preparation, source/coefficient/state preservation and completion-last local publication; exact-event data reload only, no observer or chart adoption. |
 | [`stellar_epoch_query.py`](../../src/wenu/stellar_epoch_query.py) | Explicit fixed-window epoch reuse, detached resolution/receipt, and verified original-model advancement through existing admission/SDK services; no codec, chart or observer ownership. |
+| [`stellar_epoch_consumer.py`](../../src/wenu/stellar_epoch_consumer.py) | Captured saved-query worker admission and data-backed stellar position-view lifetime, with source binding and report identity; no propagation or rendering. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |

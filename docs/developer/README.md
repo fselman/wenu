@@ -1,5 +1,23 @@
 # Wenu developer documentation
 
+## Saved epoch consumer candidate (K4b.07)
+
+Fernando selected observer-free saved-catalogue consumption with an additional
+J-2000 catalogue and modern/J-2000 north-polar specimens showing Polaris. The
+contract was recorded before runtime at `d183f81c`, after clean synchronized
+main `d4fb035d` and #359/#360 branch cleanup. The candidate adds a stellar-owned
+saved-position adapter, captured worker admission and explicit atlas query TOML.
+Stars, lines, labels, counts and reports use the same position view; numerical
+motion and strict v1 watched owners remain unchanged.
+See the [API](implementation_reference.md#saved-epoch-consumers),
+[gate](testing_policy.md#saved-epoch-consumer-gate) and
+[usage](../user_guide/atlas.md#saved-stellar-epoch-catalogues).
+Two new owner functions pass direct local execution; all
+modified Python compiles. Full Mac owner/publication/documentation gates and
+actual retained-product/J-2000/Polaris visual acceptance remain pending. No new
+catalogue or cap rendering is claimed yet; observers/companions remain deferred.
+
+
 ## Nearby-epoch stellar query candidate (K4b.07)
 
 Fernando accepted the native query contract with “Accepted. Proceed.” on

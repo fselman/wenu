@@ -2049,3 +2049,18 @@ def test_dated_request_binds_exact_design_sheet_page_and_primary_tick_units(tmp_
         with pytest.raises(ValueError):replace(request,**fields)
     tick=_ecliptic_tick_options('ecliptic_longitude_30',minor_scale=.75,latitude_scale=.8)
     assert tick['label']=='30°' and 'ʰ' not in tick['label']
+
+
+
+def test_atlas_epoch_config_routes_to_publication_and_refuses_live_combination(tmp_path, monkeypatch):
+    from wenu.charts import atlas_publication
+    calls=[]
+    monkeypatch.setattr(atlas_publication, 'create_atlas', lambda *a,**k: calls.append(k) or tmp_path/'manifest.json')
+    epoch=tmp_path/'epoch-query.toml'
+    assert cli.create_main(['--layout','b4-portrait','--stellar-epoch-config',str(epoch),
+        '--output-dir',str(tmp_path/'atlas')]) == 0
+    assert calls[0]['stellar_epoch_config'] == epoch
+    assert calls[0]['stellar_motion_config'] is None
+    with pytest.raises(SystemExit):
+        cli.create_main(['--layout','b4-portrait','--stellar-epoch-config',str(epoch),
+            '--stellar-motion-config','live.toml','--output-dir',str(tmp_path/'atlas')])
