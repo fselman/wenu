@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 126, 2026-10-28. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” Runtime implementation of that bounded service is selected; parent K4b.07 and later consumer/companion/observer work remain open.
+**Plan revision:** 126, 2026-10-28. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” Runtime implementation of that bounded service is selected and a candidate now exists; parent K4b.07 and later consumer/companion/observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -848,7 +848,7 @@ therefore separates query-policy lifetime from publication/codec lifetime.
 reuse_window_julian_years, identifiers=None)` will consume an already validated
 `StellarEpochCatalogue` and return an immutable `StellarEpochResolution` retaining
 the same immutable `source` snapshot, with detached `rows()` and `receipt()` data.
-The named module/class/function are accepted implementation targets, not yet current imports. The catalogue is loaded/validated explicitly
+The named module/class/function now exist in the service candidate; runtime acceptance is pending. The catalogue is loaded/validated explicitly
 once through the accepted reader; the resolver neither loads arbitrary paths nor
 introduces a global cache. It does not accept another resolution as its source.
 
@@ -956,8 +956,10 @@ atlas/worker adoption, new CLI/TOML schema or preparation command flags,
 automatic new bundle, companion state, observer/correction, acquisition,
 physical error qualification, compression/performance redesign or SDK freeze
 is included. Those remain separately reviewed K4b.07/K4b.08/K5 responsibilities.
-This definition uses only the complete documentation gate; no new runtime or
-scientific behavior is implemented or claimed accepted here.
+The definition passed the complete documentation gate before scope acceptance.
+The service candidate now has five directly executed local owner tests; full
+Mac runtime/documentation and retained-product verification remain pending.
+No runtime or physical accuracy acceptance is inferred from scope acceptance.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
@@ -3192,6 +3194,7 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
 
 
 

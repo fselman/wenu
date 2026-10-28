@@ -1745,6 +1745,13 @@
       "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
     },
     {
+      "path": "src/wenu/stellar_epoch_query.py",
+      "git_blob_sha": "472faf09abedddc359ea2e47dc893a393f741564",
+      "as_is_directory": "src/wenu",
+      "description": "Explicit native TCB fixed-window reuse and original-model advancement; detached resolution/receipt and short SDK lifetime, separate from immutable product codec.",
+      "baseline_relation": "Added for accepted K4b.07 query contract; not a new baseline census."
+    },
+    {
       "path": "src/wenu/stellar_research.py",
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
@@ -6468,8 +6475,8 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "564e64a108742e221ff48c55629f9686b4507ef8",
-      "test_functions": 36,
+      "git_blob_sha": "6fbe37d1970b3bf78c463696cb2be60e89b6d3ce",
+      "test_functions": 41,
       "marks": {
         "parametrize": 19
       },
@@ -6483,6 +6490,8 @@
         "astropy.coordinates",
         "collections",
         "dataclasses",
+        "decimal",
+        "fractions",
         "hashlib",
         "importlib.resources",
         "io",
@@ -6505,9 +6514,12 @@
         "wenu.sky.realization",
         "wenu.stellar_catalogue",
         "wenu.stellar_enrichment",
+        "wenu.stellar_epoch",
+        "wenu.stellar_epoch_query",
         "wenu_kernel",
         "wenu_kernel.conformance",
         "wenu_kernel.errors",
+        "wenu_kernel.kernel",
         "wenu_kernel.records"
       ],
       "baseline_relation": "Added in K3 native-stellar candidate; eight inherited ProviderConformance tests are additional to six explicit owner methods."
@@ -8648,7 +8660,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 275,
+    "production_python_files": 276,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -27403,14 +27415,22 @@
   },
   "stellar_epoch_nearby_query_definition": {
     "base_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
-    "status": "definition selected; concrete runtime boundary proposed for review",
+    "status": "contract accepted by Fernando with Accepted. Proceed. on 2026-10-28; service candidate implemented, Mac runtime/documentation and retained-product verification pending",
     "existing_owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py",
       "src/wenu/astrometric_state.py"
     ],
-    "proposed_owner": "stellar_epoch_query.py; query/materialization lifetime separate from strict immutable codec/publication",
     "existing_test_owner": "tests/test_stellar_state.py",
-    "limits": "No production/format/dependency/collection changes. Proposed native TCB window query only, with strict old-bundle compatibility; no later consumers/companions/observers or parent closure."
+    "limits": "No watched legacy code, source bytes, format, dependency, collection, consumer/companion/observer adoption or parent closure.",
+    "agreement_commit": "724225485a8bc26739dbba9718f5b1f898f5e116",
+    "owner": "src/wenu/stellar_epoch_query.py",
+    "local_verification": "Five new owner functions directly executed with actual providers/kernel; injected stale/relabel/sliding/rebased/binding/query faults detected. Not pytest/full Wenu acceptance.",
+    "definition_documentation_receipt": {
+      "tested_commit": "ef578cdebadcd8ed6f4516e53c6cc803980091c7",
+      "cases": 36,
+      "seconds": 6.6,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-reuse-scope-docs-v1-tz_xhims"
+    }
   }
 }

@@ -1,21 +1,20 @@
 # Wenu coordinate systems, time and astronomical objects
 
-## Proposed nearby-epoch event receipt
+## Nearby-epoch event receipt
 
-The [K4b.07 query proposal](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
-keeps catalogue, requested and actual position events distinct. Within the
-caller-selected window, unchanged states remain dated at the catalogue event;
-the requested event is context for an explicit fixed-position approximation,
-with unquantified approximation error and model coverage disclosed separately.
-Outside the window, existing original models evaluate the actual requested TCB
-event only within their admitted domains. The original source reference events
-and coefficients are never rebased to rounded saved directions.
+The accepted [K4b.07 query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
+now has a separate service candidate; Mac runtime/actual-product verification
+remain pending. Its receipt distinguishes catalogue, requested and actual
+position events. Inclusive in-window reuse leaves raw state times/anchors at the
+saved event and discloses fixed-position approximation error as unquantified.
+Requested-event coverage is disclosed even when the window crosses a model domain.
+Outside the window, original models evaluate only admitted requested TCB events.
+Original coefficients/source reference events are never rebased to saved vectors.
 
-This proposed native query takes already resolved TCB inputs; source chronology,
-explicit upstream conversions/receipts, independent TT axes and observer
-displacement/corrections retain their existing owners. No new conversion,
-observer or apparent direction is implied. The accepted exact reader remains
-unchanged; the proposal introduces no runtime behavior in this definition.
+The explicit native API takes already resolved TCB inputs. Upstream time
+conversion/receipts, independent TT axes and observer displacement/corrections
+retain existing owners. No implicit conversion or apparent direction is added.
+The exact reader and watched source/model/core/codec bytes remain unchanged.
 
 ## Catalogue parallax and observer displacement
 
@@ -51,7 +50,7 @@ labels are degrees, equatorial RA labels hours. PR #354 passed Mac and
 retained-source parity gates and user visual acceptance, merged at `d0124837`.
 See the [receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
 Scientific meanings/limits are unchanged; the first exact-epoch K4b.07 slice
-is now accepted through #358. Nearby-epoch query and K4b.08 observer work remain
+is now accepted through #358. Nearby-epoch query has the separate candidate above; K4b.08 observer work remains
 unimplemented.
 
 ## Planned Earth-bound ancient and future views
@@ -1765,4 +1764,5 @@ light time, aberration or frame qualification is introduced. Satellite TEME
 transport and observer/geocentric ITRS transforms retain their current meanings.
 Constructed custom-protocol sources remain compatible. Finite-Sun occultation,
 observer twilight and continuous contact search keep their existing mathematics.
+
 

@@ -1,17 +1,19 @@
 # Wenu developer documentation
 
-## Nearby-epoch query scope definition (K4b.07)
+## Nearby-epoch stellar query candidate (K4b.07)
 
-The first exact-epoch slice is accepted through #358, merged at `233f18b1`;
-clean synchronized Mac main and task-branch cleanup are confirmed. Fernando
-selected the next scope definition with “Proceed”. The
-[as-is assessment](kernel_migration_audit_v1.md#k4b07-nearby-epoch-query-as-is-assessment-2026-10-28)
-and [proposed native query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
-define configurable unchanged reuse inside the window and original-model
-advancement outside it, with distinct requested/actual events and strict old
-bundle compatibility. This is documentation for scope review; runtime, new
-module/API, consumers, companions and observer functionality are not activated.
-Parent K4b.07 remains open.
+Fernando accepted the native query contract with “Accepted. Proceed.” on
+2026-10-28 after 36 Mac documentation passes in 6.60 s at `ef578cde`.
+Agreement was recorded before runtime at `72422548` (PR #359).
+The separate `stellar_epoch_query.py` service now implements explicit fixed-window
+reuse or original-model advancement, with detached rows and requested/actual
+event receipts. Existing watched source/model/core/codec bytes remain unchanged.
+See the [API](implementation_reference.md#nearby-epoch-stellar-queries),
+[contract](scientific_contracts.md#nearby-epoch-state-semantics) and
+[focused gate](testing_policy.md#nearby-epoch-query-gate).
+Five new test functions pass direct local execution with real providers/kernel;
+full Mac pytest/documentation and retained-bundle reciprocal verification remain
+pending. No chart/atlas, worker, companion or observer adoption; parent remains open.
 
 ## Exact-epoch stellar persistence candidate (K4b.07)
 
@@ -666,6 +668,7 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
+
 
 
 

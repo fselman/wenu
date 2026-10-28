@@ -1,5 +1,9 @@
 # Wenu production source map
 
+`stellar_epoch_query.py` owns the separate in-memory window/result/receipt and
+short-lived original-model SDK query lifetime; the immutable codec and watched
+source/model/core owners remain unchanged. No chart or observer adoption.
+
 K4b.07's exact-epoch candidate adds `stellar_epoch.py` for the distinct derived
 product schema/validation/publication lifecycle. Source/model selection stays
 in `stellar_state.py`, original source bytes in `stellar_enrichment.py`, and
@@ -167,6 +171,7 @@ concrete Wenu classes.
 | [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup plus explicit Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admissions/providers through the shared affine engine; no acquisition or automatic consumer adoption. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`stellar_epoch.py`](../../src/wenu/stellar_epoch.py) | Immutable derived exact-epoch stellar bundle codec, admitted SDK preparation, source/coefficient/state preservation and completion-last local publication; exact-event data reload only, no observer or chart adoption. |
+| [`stellar_epoch_query.py`](../../src/wenu/stellar_epoch_query.py) | Explicit fixed-window epoch reuse, detached resolution/receipt, and verified original-model advancement through existing admission/SDK services; no codec, chart or observer ownership. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |
@@ -555,4 +560,5 @@ single-edition native-direction ingestion contract in `stellar_catalogue.py`.
 The existing offline audit owns normalization/staged local publication and its
 existing tests own corruption, source-free reload and public-command seams.
 This adds no new kernel route, provider, dependency or installed command.
+
 
