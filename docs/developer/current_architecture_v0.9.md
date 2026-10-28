@@ -156,8 +156,18 @@ layouts are 34-chart landscape, 36-chart portrait and two hemispheres.
 Layout, full chart presentation and index presentation are separate inputs.
 `atlas-v6` and `atlas-hemispheres-v2` are data presets, not scientific engines.
 Their names do not freeze the set of styles that may be installed.
-Publication uses native ICRS content, supports selected sheets, explicit saved
-sky reuse, facing reports and criteria appendices. See the
+Publication realizes source content natively and supports selected sheets,
+explicit saved-sky reuse, facing reports and criteria appendices. Accepted
+K4b.06 slices (#346/#348/#350) add explicit stellar-owned nominal TCB motion
+to Python sheets, the installed sheet command and serial/spawn publication.
+Accepted #354 adds independent finite TT mean-equatorial/ecliptic view axes,
+derived target-axis layouts, dated references and matching report furniture.
+The common geometry orientation precedes domain/projection/preparation, including
+secondary label regions; original source/design identities remain intact.
+See the [acceptance receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+Ordinary chart requests still lack this stellar-motion binding, and a realized
+stellar view refuses observer routes. Persistence and ancient/future Earth-bound
+observers remain separate K4b.07/K4b.08 work. See the
 [atlas guide](../user_guide/atlas.md) for current commands and limitations.
 
 ## Scientific state as implemented
@@ -166,8 +176,10 @@ sky reuse, facing reports and criteria appendices. See the
 `CoordinateService` owns standards-based astronomical transformations;
 provider-specific position generation remains separate.
 
-The stellar catalogue is Hipparcos. `Stars.position(instant)` returns the
-catalogue directions and ignores `instant`. Skyfield `Star` construction
+The stellar catalogue is Hipparcos. Unbound `Stars.position(instant)` returns
+the catalogue directions and ignores `instant`; the explicit realized view
+instead exposes its admitted model/event positions through that public interface.
+Default Skyfield `Star` construction
 currently supplies only right ascension and declination: no catalogue
 proper motions, parallax or radial velocity. The observed route does compute
 apparent AltAz for the requested observer/date; lack of stellar space-motion

@@ -261,11 +261,15 @@ Physical ancient-position accuracy remains unknown.
 
 ## Mean-axis atlas views
 
-The K4b.06 candidate adds an optional scientific frame document to both
+The accepted K4b.06 implementation adds an optional scientific frame document to both
 `wenu_chart atlas-sheet` and `wenu_create_atlas`. It changes axes while retaining
 a barycentric origin. It does not move stars unless the independent
 `--stellar-motion-config` is also supplied, and does not reconstruct an observer.
-Mac actual-cache and visual acceptance remain pending.
+This bounded atlas route passed Mac tests, all eight retained-source publication
+cases and user visual acceptance in PR #354, merged at `d0124837`.
+See the [acceptance receipt](../developer/kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+Physical accuracy remains unquantified; ordinary chart/observer adoption and
+K4b.07 persistence remain separate.
 
 Example `frame-jminus8000-v1.toml`:
 

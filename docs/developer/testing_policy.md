@@ -1,52 +1,48 @@
 # Testing policy and module independence
 
-## Dated-axis atlas candidate gate
+<a id="dated-axis-atlas-candidate-gate"></a>
 
-Mac gate result at `f005740d`: 143 passed and 12 landscape physical-margin
-cases failed in 278.77 s. The excerpt stops at gate 1, so documentation/tooling
-were not run. Every failure measured the same 19.9799789829 mm inner edge
-against 20 mm. The legacy test fixture used `pyplot.figure()`; GUI resize
-quantization is consistent with this signature. Production atlas sheets
-already use an explicit `Figure`/`FigureCanvasAgg` at exact physical size.
-The correction makes this test use that same canvas, forbids GUI figure
-creation within the fixture, and preserves all existing strict margin,
-attachment, collision and tick assertions. No production code or tolerance
-changes. All 24 affected parameter cases passed locally in 50.65 s; a
-reintroduced pyplot-creation fault is detected. Mac confirmation is pending.
-Retain the 143 passing runtime cases, retry the 24-case owner and then run the
-previously unexecuted documentation and complete tooling gates. The coordinate
-guide/API contracts remain current; this is a test-fixture correction only.
+## Dated-axis atlas acceptance gate
 
-The reviewed selection is `python tools/run_test_gate.py atlas-mean-axis-views --run`.
-Run the existing complete documentation and eight tooling checks separately.
+PR #354 is accepted, merged at `d0124837`; final tested head is
+`0c900da15c99e37591a1a07f5495140b3263a4a0`. Mac coverage includes all 155
+distinct focused runtime cases: retain 143 passes from the initial run and the
+corrected 24-case layout owner (82.54 s, overlapping coverage). The explicit
+Agg-canvas fixture correction passed without changing production code,
+tolerances or strict margin/attachment/collision/tick assertions. A deliberate
+pyplot-creation fault was detected locally. All 36 documentation cases passed
+in 2.89 s and all eight tooling cases in 8.593 s. Retained retry evidence:
+`~/Software/build/wenu/test/dated-atlas-canvas-retry-v1-h0bd4cv6`.
 
+The reviewed runtime selection remains
+`python tools/run_test_gate.py atlas-mean-axis-views --run`.
 Use existing coordinate-service, layer-realization, reference-grid, atlas
-design/CLI and stellar publication owners. Test the common pre-domain view
-(including secondary label regions), both mean axes, independent TT/TCB events,
-canonical reference construction, polar/wrapped layout/furniture, exact source
-design bytes, captured document/backend/matrix identity, immutable sources and
-NaN gaps. Faults that omit a view, drop a worker frame, corrupt a binding or
-claim a missing nonempty stellar SVG must fail. Retain native compatibility,
-counts, CLI/Python PNG parity, serial/spawn cleanup/refusal, PDF order/size and
-completion-last checks. This composition does not repeat unchanged full frame/
-propagation/SDK numerical qualification. New checks belong to the existing
-owners; no new production module or test-collection boundary is introduced.
+design/CLI and stellar publication owners. They protect the common pre-domain
+orientation (including secondary label regions), independent TT/TCB events,
+both mean axes, canonical references, polar/wrapped furniture, exact source/
+design/input/backend identities, NaN gaps and immutable sources. Omitted-view,
+dropped-worker-frame, corrupt-binding and missing-nonempty-SVG faults must fail.
+Retain native compatibility, counts, Python/CLI pixel parity, serial/spawn
+cleanup/refusal, PDF order/size and completion-last checks. Unchanged frame/
+propagation/SDK mathematical qualification is reused, not repeated.
 
-Local candidate evidence: the reviewed gate passed 155 cases in 171.53 s;
-all five reference-grid cases passed in the final refusal-policy follow-up
-(1.08 s). Five focused documentation checks and 738 links across 38 active
-documents passed. Six isolated tooling unit cases and all 52 selected function
-references were checked; the two repository-wide tooling checks need the full
-Mac checkout. Synthetic dated equatorial/ecliptic ordinary/polar chart/report
-PNGs were inspected; this is not retained-source visual acceptance.
-The final gate log/provenance is in disposable scratch
-`dated-atlas-checks-v1-li0vs_fg`; Mac evidence is still pending.
+Actual-cache recipe v2 passed all eight publication cases: both mean axes ×
+TT J2000/J-8000 × jobs 1/2, sheets 1 and 13, with independent TCB stellar inputs.
+Python/CLI/publication reports and chart/report PNG pixels, counts, PDF order/
+sizes and static-index disclosure matched; native before/after parity and source
+immutability passed. Fernando accepted line/label placement and the changed
+dated footprints/poles. Evidence, manifest hash and the distinction between
+user-reported Mac results and assistant inspection are in the
+[acceptance receipt](kernel_migration_audit_v1.md#accepted-dated-axis-atlas-result).
+The immutable run's original pending visual field is superseded by the PR's
+user receipt; preserve the run and dependencies. The earlier legend-fit refusal
+remains retained evidence, not a production defect or an unexecuted gate.
 
-The focused Mac gate precedes retained-source actual-cache modern/ancient
-single-sheet/serial/spawn specimens for both axes and visual review. Record
-TT equinox and TCB position event separately, source/model limitations and
-static-index frame/date uncertainty. Passing synthetic cases is not acceptance
-of physical ancient positions or Earth-bound observations.
+This accepts the bounded observer-free atlas composition, not physical ancient
+accuracy, persistence, observer adoption or parent K4b.06 closure. Later bounded
+changes choose gates from their actual diff; do not repeat the full runtime or
+actual-cache workload solely for this documentation receipt. Its gate is the
+complete `documentation` selection, including normal Mac archive/import checks.
 
 ## Native atlas stellar publication and worker gate
 
