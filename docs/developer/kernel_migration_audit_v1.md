@@ -1,5 +1,43 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.07 companion-state as-is assessment
+
+**Selected scope (K4b.07.C1):** Fernando said “proceed” after the proposal to
+assess existing ephemeris/time owners, reconcile #361 acceptance and propose the
+smallest companion contract. Base: clean synchronized Mac main `f72a2055`,
+confirmed after #361/#362 merge and local/remote branch cleanup. This is a
+documentation assessment, not authority for runtime implementation or downloads.
+
+| Existing owner | Source-verified behavior | Consequence for a saved companion |
+|---|---|---|
+| `ephemeris.py` | Frozen complete geometric PV, explicit request, provider target/centre IDs, units and resource identity/chain | Reuse this scientific vocabulary; a new persistence schema is still needed |
+| `SkyfieldEphemerisStateSource.state` | Simultaneous target-minus-centre ICRF state, AU and AU/day; resolves numeric provider IDs; borrows an open kernel/timescale | Evaluate through the existing geometric source and SDK adapter; no second propagation engine or terrestrial site is needed |
+| `resolve_skyfield_resource_identity` and coverage checks | Hashes the resolved file; filename alone does not qualify a model. Resource coverage is the intersection of all segment ranges; backend evaluation can additionally refuse | Preserve that conservative restriction for the first slice. Do not assert exact per-body coverage or extend coverage from a filename; segment/path coverage needs separate qualification |
+| `KernelEphemerisStateSource.state` | Request-scoped borrowed registration, geometric Cartesian SDK evaluation, AU↔SI transport and cleanup; temporal certification refuses | Preserve returned-state routing and resource ownership. No planetary extrapolation, cache certificate or stellar reuse policy follows |
+| `EphemerisStateRequest.instant` / Skyfield time input | Existing public request uses a string interpreted by Astropy; SDK output canonicalizes split JD | A split-JD-to-backend seam must be specified and tested before claiming exact-event persistence. Do not silently stringify with default precision or sum a large JD |
+| `TcbTdbAdapter` / SDK `TimeService` | Explicit finite-domain conversion, model-bound receipt and operation rounding bound | Link a supplied stellar TCB event to the companion TDB event explicitly; matching calendar/year labels are insufficient |
+| `convert_barycentric_batch` | Strictly admits full nominal-astrometric ICRS/solar-system-barycentre batches, source epochs and velocity; ephemeris adapter returns geometric ICRF references | This converter is not a drop-in ephemeris convention bridge. Preserve native TDB-compatible geometric PV first; do not weaken its admission or relabel references |
+| `Observer.__init__` | Resolves a site/civil time and uses a Skyfield Loader for timescale/kernel | Do not construct a dummy Observer to prepare barycentric companions. A future preparation scope must explicitly open only a caller-pinned existing local file, with networking prohibited |
+| `ErfaReceptionBackend` | Separate finite modern final-EOP/leap context with analytic EPV00 Earth/site PV | Not a substitute SPK source, historical Earth-rotation model or receipt for J-2000 observer calculations |
+| `stellar_epoch.py`, query and consumer owners | Existing immutable stellar products and independently resolved positions; all modern source measurements retained | Link a companion by manifest identity without editing accepted stellar products, watched code identities or source-only saved skies |
+
+Closest existing protections are `tests/test_ephemeris.py`,
+`tests/test_skyfield_ephemeris.py` (including returned SDK transport and borrowed
+resource tests), `tests/test_astrometric_state.py` (TCB/TDB receipts and strict
+batch conversion) and `tests/test_observer_resources.py`. They locate reusable
+contracts, not fresh runtime proof: no ephemeris/science test was run for this
+documentation assessment. The local environment lacks pytest/Astropy/Skyfield/ERFA.
+
+**Recommended next slice, proposed K4b.07.C2:** exact-event Earth-centre and Sun
+companion persistence from a caller-pinned local SPK. See the
+[proposed contract](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
+Actual local resource identity/coverage and the event-input seam must be verified
+before implementation is selected. No existing file is known here to support
+the retained J-2000 or J-8000 stellar epochs. Longer ephemerides, additional
+bodies, nonzero reuse and full observer composition remain separately reviewed.
+
+
+
 ## Saved epoch consumer implementation candidate
 
 Base main `d4fb035d` is clean/synchronized on the Mac, with #359/#360 accepted
@@ -20,8 +58,7 @@ Modified Python compiles. Two new owner functions pass direct local execution
 with real providers/kernel: source binding/gaps/immutable results/lifetime and
 captured document/pickle/re-admission/refusal/corruption. Public sky/render and
 serial/spawn cases were not executable locally; all Mac and actual-data results
-are now recorded below. Final receipt documentation and user visual acceptance/
-merge remain pending; no observer or parent closure follows.
+are now recorded below. Fernando accepted the visual result and requested merge/cleanup on 2026-10-28. PR #361 merged at `c4f7068b`; #362 then merged at `f72a2055`. Clean synchronized Mac main and both local/remote branch deletions are confirmed. The final #361 documentation gate passed all 36 cases in 7.58 s at `b9d2a806`; retain `~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye`. Original catalogues and acceptance evidence remain retained; parent K4b.07 stays open. No observer scope follows.
 
 
 ### Saved epoch consumer actual catalogue and polar receipt
@@ -72,7 +109,7 @@ assert the same physical event. Modern unchanged reuse is explicitly approximate
 
 Retain catalogue, source-sky, all reference/batch products, source dependencies,
 provenance and `comparison-v1.html`. The recipe's `visual_review: pending` is
-preserved; user visual acceptance and merge remain pending. No runtime change
+preserved as historical run content. Fernando accepted the visual result and requested merge/cleanup on 2026-10-28. PR #361 merged at `c4f7068b`; #362 then merged at `f72a2055`. Clean synchronized Mac main and both local/remote branch deletions are confirmed. The final #361 documentation gate passed all 36 cases in 7.58 s at `b9d2a806`; retain `~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye`. Original catalogues and acceptance evidence remain retained; parent K4b.07 stays open. No runtime change
 followed this successful run. The final documentation-only receipt needs the
 complete documentation gate, not another science/render run. Companion/observer
 work and parent K4b.07 closure remain separate.
@@ -4702,6 +4739,7 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
 
 

@@ -27422,7 +27422,7 @@
   },
   "stellar_epoch_nearby_query_definition": {
     "base_commit": "233f18b1a116a6201443e33c2d6606b91f2a1416",
-    "status": "contract accepted; service candidate verified by Mac focused/documentation and original-bundle reciprocal checks at 350de788; final receipt documentation and user acceptance/merge pending",
+    "status": "accepted; PR359/360 merged at d4fb035d and cleanup confirmed; later consumer slice accepted through PR361",
     "existing_owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py",
@@ -27493,7 +27493,7 @@
     }
   },
   "stellar_epoch_consumers": {
-    "status": "verified Mac runtime/documentation and actual J-2000/Polaris specimens; final receipt documentation and user visual acceptance/merge pending",
+    "status": "accepted visual/runtime/actual-product/final-doc result through PR361; merged and cleaned at main f72a2055 after PR362; parent K4b.07 open",
     "base_commit": "d4fb035d456f084124b3f2f489e4695445253e54",
     "agreement_commit": "d183f81c3f088750d4e8ea61cd6c3fd02472fdbd",
     "owner": "src/wenu/stellar_epoch_consumer.py",
@@ -27586,6 +27586,46 @@
       "serial_spawn_direct_parity": true,
       "visual_review": "pending",
       "limits": "User-reported pinned Mac evidence. Modern J2000 reuse is explicit approximation; separate TT/TCB axis labels are not a time conversion; no physical accuracy, observer/companion adoption or parent closure."
+    },
+    "merge_commit": "c4f7068b0ccdaee24bd103d2f5e31bd0d366c193",
+    "final_documentation": {
+      "commit": "b9d2a806f41434328cfb94980414921ca31f2d7e",
+      "passed": 36,
+      "seconds": 7.58,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye"
+    },
+    "user_acceptance": {
+      "date": "2026-10-28",
+      "visual_review": "accepted",
+      "merge_and_cleanup": "confirmed at main f72a2055",
+      "historical_run_record": "Original actual_run visual_review remains pending as captured; this acceptance supersedes it without rewriting retained run bytes."
     }
+  },
+  "stellar_companion_assessment": {
+    "milestone": "K4b.07.C1",
+    "base_commit": "f72a20557de7b0d86123438c15a73fcaa88b07df",
+    "status": "selected documentation assessment; C2 proposed, not selected runtime",
+    "existing_owners": [
+      "src/wenu/ephemeris.py",
+      "src/wenu/skyfield_ephemeris.py",
+      "src/wenu/ephemeris_state.py",
+      "src/wenu/astrometric_coordinates.py",
+      "src/wenu/observer.py"
+    ],
+    "test_owners": [
+      "tests/test_ephemeris.py",
+      "tests/test_skyfield_ephemeris.py",
+      "tests/test_astrometric_state.py",
+      "tests/test_observer_resources.py"
+    ],
+    "gaps": [
+      "No companion codec",
+      "Split-JD backend event seam needs qualification",
+      "Geometric ephemeris reference is not accepted by stellar nominal-astrometric convention converter",
+      "No verified ancient local SPK coverage"
+    ],
+    "proposal": "C2 exact-event Earth 399 and Sun 10 relative to SSB 0, offline pinned local resource, no nonzero reuse or observer composition",
+    "gate": "documentation",
+    "limits": "No runtime/tests/resources/dependency/build/collection change, acquisition, new numerical model, observer adoption or parent closure."
   }
 }
