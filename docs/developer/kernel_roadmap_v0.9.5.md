@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 124, 2026-10-28. **Status:** Atlas slices through #354, receipt #355 and corrected completion boundary #356 are accepted. Fernando postponed the bright-star comparison and selected the supported observer-free consumer review with “proceed”. R1 remains an explicit deferred follow-up, outside the current K4b.06 closure gate. Fernando accepted R2/R3/R4 and bounded K4b.06 closure after 36 Mac documentation passes in 7.35 s at 829c4725. #357 is merged at 7407ea1b, with clean synchronized Mac and branch cleanup confirmed. After #357 merge/cleanup and confirmed clean synchronized Mac main 7407ea1b, Fernando selected the documented first K4b.07 exact-epoch persistence slice with “proceed”. Its bounded implementation is now a candidate below; focused Mac/documentation and actual-source acceptance remain pending. Parent K4b.07 remains open. Modern stars/source measurements remain preserved; observer-dependent chart treatment stays deferred until full observer functionality. K4b.07 and later observer work remain separate.
+**Plan revision:** 124, 2026-10-28. **Status:** Atlas slices through #354, receipt #355 and corrected completion boundary #356 are accepted. Fernando postponed the bright-star comparison and selected the supported observer-free consumer review with “proceed”. R1 remains an explicit deferred follow-up, outside the current K4b.06 closure gate. Fernando accepted R2/R3/R4 and bounded K4b.06 closure after 36 Mac documentation passes in 7.35 s at 829c4725. #357 is merged at 7407ea1b, with clean synchronized Mac and branch cleanup confirmed. After #357 merge/cleanup and confirmed clean synchronized Mac main 7407ea1b, Fernando selected the documented first K4b.07 exact-epoch persistence slice with “proceed”. Its first exact-epoch slice passed 15 focused Mac cases, 36 documentation cases and retained-source J2000/J-8000 preparation/fresh-reload parity at 9ed3a7cb. Final receipt documentation and bounded user acceptance remain pending; parent K4b.07 remains open. Modern stars/source measurements remain preserved; observer-dependent chart treatment stays deferred until full observer functionality. K4b.07 and later observer work remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -69,7 +69,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. K4b.07 exact-epoch implementation candidate prepared; acceptance pending |
-| Next bounded submilestone | Implement the selected [first K4b.07 exact-epoch persistence slice](#k4b07-proposed-first-exact-epoch-persistence-slice) after #357 merge/cleanup and clean synchronized Mac main 7407ea1b. Exact preparation/fresh reload only; later reuse/consumer/companion/observer scopes remain separate |
+| Next bounded submilestone | Accept the documentation receipt and bounded first K4b.07 exact-epoch result after successful Mac and retained-source verification. Later reuse/consumer/companion/observer scopes remain separate and are not activated; parent K4b.07 stays open |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -740,12 +740,15 @@ stored data without recreating a live provider/session or recomputing the saved
 event. A fresh process can inspect/use the exact saved results. Different-event
 queries refuse in this first slice; later reuse/advancement is separately scoped.
 
-**Candidate status:** exact-event bundle/preparation/reader and offline command
-are implemented on `feat/stellar-epoch-persistence`; six new owner test functions
-pass direct local execution with real providers/kernel and constructed source
-inputs. Full pytest/Mac and real-source acceptance remain pending. Source map,
-contracts/API/testing inventory describe the candidate; no later K4b.07 scope or
-parent closure is claimed.
+**Verification status:** exact-event bundle/preparation/reader and offline
+command passed 15 focused Mac cases in 15.81 s and 36 documentation cases in
+3.12 s at `9ed3a7cb`. Both actual-source J2000/J-8000 cases preserve all 118,218
+rows and match direct SDK state bytes. Fresh load/exact lookup passed with
+original-source access and provider/session construction prohibited; changed
+events/scales refused. The [receipt](kernel_migration_audit_v1.md#retained-source-exact-epoch-verification)
+retains source/product identities, 1.02 GB bundle sizes and about 81 s validated
+load timings. Final receipt documentation/user acceptance remain pending;
+no later K4b.07 scope, performance improvement or parent closure is claimed.
 
 **Selected product contract:**
 
@@ -2855,7 +2858,7 @@ remain its separate responsibilities.
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed. Dated mean-axis atlas views accepted through #354 at d0124837 after Mac runtime/documentation/tooling, eight actual-cache publication cases and visual review; R2/R3 observer-free assessment and R4 final reconciliation accepted by Fernando on 2026-10-28 after 36 Mac documentation cases passed in 7.35 s at 829c4725; bounded K4b.06 closed. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. R1 bright-star comparison is explicitly postponed outside this closure gate and remains unfinished. Observer-dependent chart treatment is deferred until full observer functionality, with modern population/measurements preserved. K4b.07 and later observer work stay separate |
-| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; implementation candidate awaits focused Mac/documentation and actual-source acceptance. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
+| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; implementation verified through focused Mac/documentation and retained-source prepare/reload at 9ed3a7cb; final receipt/user acceptance pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
 | K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Agreed capability on 2026-10-27; detailed model/domain/product definitions and implementation pending. Separate from K4b.06 mean-axis views and K4b.07 persistence; no historical/future observer accuracy or unrestricted ephemeris coverage claim |
 
 

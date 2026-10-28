@@ -9,9 +9,15 @@ bundle, with exact-event fresh-process loading and lossless source/model/state
 records. See the [API and command](implementation_reference.md#exact-epoch-stellar-catalogues),
 [scientific limits](scientific_contracts.md#exact-epoch-stellar-product-contract)
 and [focused gate](testing_policy.md#exact-epoch-stellar-persistence-gate).
-Six new test functions passed direct local execution with real providers/kernel;
-pytest/full Wenu and Mac actual-source acceptance remain pending. No chart,
-nearby-epoch, companion or observer adoption; parent K4b.07 remains open.
+At `9ed3a7cb`, all 15 selected Mac runtime cases passed in 15.81 s and all 36
+documentation cases in 3.12 s. The retained-source J2000/J-8000 run passed
+all-row exact SDK parity and fresh reload with original-source access and
+provider/session creation prohibited. All 118,218 rows and source identities
+remain preserved. See the [verification receipt and workload costs](kernel_migration_audit_v1.md#retained-source-exact-epoch-verification):
+bundles are about 1.02 GB each; full validated load takes about 81 s on the
+measured Mac workload. Final receipt documentation and user acceptance remain
+pending. No chart, nearby-epoch, companion or observer adoption; parent K4b.07
+remains open.
 
 ## K4b.06 accepted closure and K4b.07 persistence assessment
 

@@ -27154,7 +27154,7 @@
       ],
       "sampled_1900_2100_step_10_max_equator_difference_mas": 0.6465610759538054,
       "sampled_1900_2100_step_10_max_ecliptic_difference_mas": 0.27919038136174085,
-      "diagnostic_tolerance_rad": 4.84813681109536e-9,
+      "diagnostic_tolerance_rad": 4.84813681109536e-09,
       "limits": "Measured comparison is not a physical accuracy bound or uniformly 100 microarcseconds"
     },
     "Mac_acceptance": "passed; see mac_acceptance",
@@ -27253,8 +27253,8 @@
             "axes": "mean-equator-equinox",
             "model_digest": "b18c898fb2052d633ce1d32a150f79ac3580b26bb4f2374be8264d92eb73464c",
             "pole_icrs": [
-              -8.056148939844682e-8,
-              -3.305556629794447e-8,
+              -8.056148939844682e-08,
+              -3.305556629794447e-08,
               0.9999999999999962
             ],
             "epoch_rounding_s": 0
@@ -27264,7 +27264,7 @@
             "axes": "mean-ecliptic-equinox",
             "model_digest": "99a5c9d6882ef4e7b4400cbd44cf52096f50cf8714f887324f77288045d2cf79",
             "pole_icrs": [
-              -1.0206949457023484e-7,
+              -1.0206949457023484e-07,
               -0.3977769994449437,
               0.917482129914565
             ],
@@ -27306,7 +27306,7 @@
   "stellar_exact_epoch_persistence": {
     "base_commit": "7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6",
     "plan_commit": "12a549642d83e1a551445159e1fc2542152c0054",
-    "status": "candidate; focused Mac/documentation and retained-source acceptance pending",
+    "status": "runtime/documentation and actual-source verification complete at 9ed3a7cb; final receipt documentation and bounded user acceptance pending",
     "owners": [
       "src/wenu/stellar_epoch.py",
       "src/wenu/stellar_state.py"
@@ -27331,6 +27331,66 @@
       "diagnostic": "~/Software/build/wenu/test/stellar-epoch-diagnostic-v1-usiyxa8p",
       "cause": "Test-added site-packages on PYTHONPATH shadows stdlib pathlib with an obsolete installed backport.",
       "correction": "Test-only subprocess environment preserves normal installed dependency resolution and surfaces stderr; same Mac gate pending."
+    },
+    "mac_verification": {
+      "head": "9ed3a7cbca4a919cd0bc99069e1be3e41315a349",
+      "runtime_cases": 15,
+      "runtime_seconds": 15.81,
+      "documentation_cases": 36,
+      "documentation_seconds": 3.12,
+      "evidence": "~/Software/build/wenu/test/stellar-epoch-path-retry-v1-v3uifwta"
+    },
+    "actual_source_verification": {
+      "head": "9ed3a7cbca4a919cd0bc99069e1be3e41315a349",
+      "evidence": "~/Software/build/wenu/output/stellar-epoch-acceptance-v1-ynpv71ip",
+      "user_reported": true,
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "retained_rows": 118218,
+      "counts": {
+        "full_input": 97710,
+        "angular": 17395,
+        "hipparcos2": 2850,
+        "unavailable": 263
+      },
+      "original_source_unchanged": true,
+      "fresh_process_prohibitions": [
+        "original source directory access",
+        "provider construction",
+        "session creation"
+      ],
+      "exact_lookup": true,
+      "different_event_and_scale_refusals": 2,
+      "cases": {
+        "j2000": {
+          "event": {
+            "jd1": 2451545,
+            "jd2": 0.0,
+            "scale": "tcb"
+          },
+          "manifest_sha256": "5acf3da525ce708d639dcc46507ae35b52478799f07b251e61151fa44f0d1ce9",
+          "states_sha256": "ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839",
+          "bundle_bytes": 1016979111,
+          "prepare_seconds": 181.54048913400038,
+          "direct_reference_seconds": 87.93466944299871,
+          "load_seconds": 80.74213316000169,
+          "fresh_process_seconds": 104.00039620000098
+        },
+        "jminus8000": {
+          "event": {
+            "jd1": -1200955,
+            "jd2": 0.0,
+            "scale": "tcb"
+          },
+          "manifest_sha256": "fe05b6730bee3569c90072a3b942ac1b11a5c06c65d2c8d36c712c52a425c293",
+          "states_sha256": "30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf",
+          "bundle_bytes": 1017410426,
+          "prepare_seconds": 172.71050988900242,
+          "direct_reference_seconds": 91.71302118000312,
+          "load_seconds": 81.71162443699723,
+          "fresh_process_seconds": 105.2022813069998
+        }
+      },
+      "limits": "Measured full-population validation-heavy workload; no universal speedup, physical accuracy, observer/nearby-epoch/consumer adoption or parent closure claim."
     }
   }
 }

@@ -34,16 +34,68 @@ on Python's normal site path; subprocess failures now display stdout/stderr.
 All six new functions pass direct local execution after the correction. A
 synthetic installed-pathlib trap fails both original subprocess tests and passes
 both corrected tests. No production/bundle/scientific or environment change is
-needed. The same focused Mac gate and skipped documentation gate remain pending.
-No pytest or complete Wenu astronomy stack is installed here. Full focused Mac
-and documentation gates and retained real-source preparation/reload size/time/
-scientific parity remain pending; no actual catalogue run or parent K4b.07
-acceptance is claimed. The coordinate guide remains current.
+needed. The subsequent successful Mac and retained-source verification is
+recorded below. The local environment still has no pytest/full astronomy stack;
+the Mac receipt supplies that acceptance evidence. Parent K4b.07 is not closed.
 
 See the [implemented candidate API](implementation_reference.md#exact-epoch-stellar-catalogues)
 and [focused gate](testing_policy.md#exact-epoch-stellar-persistence-gate).
 Nearby-event policy, consumer adoption, companions and observer work remain
 outside this candidate.
+
+### Retained-source exact-epoch verification
+
+At tested head `9ed3a7cbca4a919cd0bc99069e1be3e41315a349`, the corrected Mac
+gate passed all **15 selected runtime cases in 15.81 s** and all **36
+documentation cases in 3.12 s**. Retained test evidence:
+`~/Software/build/wenu/test/stellar-epoch-path-retry-v1-v3uifwta`.
+Earlier failed/diagnostic runs above remain retained; they are not acceptance
+passes. The assistant's local direct tests supplement these actual Mac gates.
+
+The offline versioned recipe `wenu_stellar_epoch_acceptance_v1.py` (SHA256
+`6159236117decb708bb873d1790d36b743ecdf030840d8ffddedf33a6ee06663`)
+then passed J2000 and J-8000 TCB preparation, all-row direct-SDK state-byte
+comparison and fresh-process reload at the same head. Evidence:
+`~/Software/build/wenu/output/stellar-epoch-acceptance-v1-ynpv71ip`.
+These are Fernando's reported terminal results from the guarded recipe;
+the assistant has not independently inspected those retained Mac files.
+
+Both cases retain all **118,218 source rows**: 97,710 full-input, 17,395 Gaia
+angular and 2,850 Hip2 angular models, plus 263 explicit gaps. There are 117,955
+evaluated directions, with physical PV only for admitted full-input rows. Gaps
+are not modern-catalogue deletions. Original source manifest SHA256 remains
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`;
+the recipe checked every original source product before/after execution and
+the clean unchanged checkout. Sources/measurements and original model/event
+identity remain bound to the saved products.
+
+| Nominal TCB epoch | Bundle bytes | Preparation (s) | Direct reference (s) | Full validated load (s) | Fresh process including lookup (s) |
+|---|---:|---:|---:|---:|---:|
+| J2000 | 1,016,979,111 | 181.540 | 87.935 | 80.742 | 104.000 |
+| J-8000 | 1,017,410,426 | 172.711 | 91.713 | 81.712 | 105.202 |
+
+These measured costs apply to this full-population validation-heavy bundle and
+Mac workload. They establish persistence/parity, not a general performance
+improvement or a chart/worker speedup. Retain original files and run dependencies;
+no cleanup, compression or format optimization is selected by this receipt.
+
+| Product identity | J2000 | J-8000 |
+|---|---|---|
+| Manifest SHA256 | `5acf3da525ce708d639dcc46507ae35b52478799f07b251e61151fa44f0d1ce9` | `fe05b6730bee3569c90072a3b942ac1b11a5c06c65d2c8d36c712c52a425c293` |
+| State payload SHA256 (also direct SDK reference) | `ee8aebdb674c888e4c01d04a76f763b635f87d65069f88b536e2ff927e550839` | `30d799e235a735c44dc7d2d9fd0ac97753ca3ce9799acf27036b92a07feda1cf` |
+
+In each fresh process, access to the original source directory, provider
+construction and session creation were prohibited. Load and exact lookup passed;
+different-event and different-scale requests both refused. This verifies
+self-contained exact-event data access without saved-event model evaluation.
+No observer, TT orientation, nearby-epoch advancement or chart adoption follows.
+Physical accuracy remains unknown; K4b.07's remaining scope stays open.
+
+Runtime and actual-source verification are complete for this first slice;
+this documentation receipt needs the complete Mac documentation gate, then
+Fernando's final bounded acceptance/merge decision. Unchanged runtime and
+actual-source evidence is reused, not rerun merely for this receipt. The
+coordinate guide remains current.
 
 ## K4b.06 observer-free consumer reconciliation, 2026-10-28
 
