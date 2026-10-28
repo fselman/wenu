@@ -1,5 +1,22 @@
 # Wenu current architecture
 
+## Saved epoch position consumption
+
+`stellar_epoch_consumer.py` owns captured query-input admission and the lifecycle
+of the data-backed stellar position view. It calls immutable bundle validation
+and the accepted query service upstream; it contains no propagation or renderer.
+`Stars.realized()` chooses the live or data-backed adapter. Existing sky assembly
+then lends the same replacement stars to lines and labels. Atlas sheets,
+publication counts and reports consume that shared view through existing owners.
+Publication workers receive a small digest-bound descriptor, verify source-sky
+and design identity and admit their own input once. Codecs, strict saved-product
+compatibility, source/model mathematics and observer ownership remain unchanged.
+The candidate passed 50 stellar/publication, 17 atlas and 36 documentation Mac
+cases at `9f7b2e9a`, then actual J-2000 preparation and saved/live/serial/spawn
+geometry/product checks with Polaris drawn in both north caps. User visual
+acceptance and merge remain pending; no observer/companion scope follows.
+
+
 ## Stellar epoch query lifetime
 
 `stellar_epoch_query.py` owns explicit in-memory reuse policy, detached resolution

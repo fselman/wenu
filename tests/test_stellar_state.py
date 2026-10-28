@@ -1794,7 +1794,8 @@ def _synthetic_publication_worker(directory, digest, command, motion_input, desi
     from os import getpid
     local = Path(directory) / f'worker-{getpid()}'
     local.mkdir()
-    sky = _motion_cli_sky(motion.catalogues[0].source, local)
+    source = motion.catalogues[0].source if type(motion) is bridge.StellarMotionRequest else motion.catalogue.source
+    sky = _motion_cli_sky(source, local)
     class SyntheticSnapshot:
         manifest_sha256 = digest
         def require(self, **kwargs):
@@ -1822,6 +1823,10 @@ def _synthetic_publication_worker(directory, digest, command, motion_input, desi
 @pytest.mark.parametrize('jobs', [1, 2])
 @pytest.mark.parametrize('frame_axes', [None, 'mean-equator-equinox', 'mean-ecliptic-equinox'])
 def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_document, monkeypatch, epoch, jobs, frame_axes):
+    _assert_stellar_publication_parity(motion_document, monkeypatch, epoch, jobs, frame_axes)
+
+
+def _assert_stellar_publication_parity(motion_document, monkeypatch, epoch, jobs, frame_axes, saved=False):
     """Synthetic snapshot seam, real command/SDK/exports/book; detects static counts."""
     from pathlib import Path
     from hashlib import sha256
@@ -1834,6 +1839,8 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
     from wenu.sky.assembly import stellar_realization_sky
     from wenu.sky import native_snapshot
     from wenu.atlas_design import AtlasBandTiling
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu.stellar_epoch_consumer import StellarEpochViewInput, stellar_epoch_view_identity
     source, directory, write = motion_document
     config = write(lambda d: d.update(target_jyear_tcb=epoch))
     root = config.parent
@@ -1869,12 +1876,28 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
         frame_config.write_bytes(_atlas_frame_document(frame_axes, -8000 if epoch == 2000 else 2000))
         orientation = load_atlas_frame(frame_config.read_bytes())
         frame_options['atlas_frame_config'] = frame_config
+    epoch_options = dict(stellar_motion_config=config)
+    motion = bridge.load_stellar_motion_request(config)
+    identity = bridge.stellar_motion_identity
+    if saved:
+        anchor = replace(motion, instant=TimePoint(2451545,0.,'tcb'))
+        epoch_directory = root/'epoch'
+        digest = prepare_stellar_epoch(anchor, epoch_directory)
+        product = load_stellar_epoch(epoch_directory, expected_manifest_sha256=digest)
+        event = motion.instant
+        window = 100 if epoch == 2000 else 0
+        if epoch == 2000:
+            event = TimePoint(event.jd1+1,event.jd2,'tcb')
+        config = root/'epoch-query.toml'
+        config.write_bytes(_epoch_consumer_document(epoch_directory,digest,event,window))
+        epoch_options = dict(stellar_epoch_config=config)
+        motion = StellarEpochViewInput(product,event,window)
+        identity = stellar_epoch_view_identity
     output = root / 'batch' 
     manifest_path = publication.create_atlas(design, output, presentation=presentation,
-        charts='22,23', jobs=jobs, from_sky=bundle, stellar_motion_config=config, index=index, **frame_options)
+        charts='22,23', jobs=jobs, from_sky=bundle, index=index, **epoch_options, **frame_options)
     manifest = json.loads(manifest_path.read_text())
-    motion = bridge.load_stellar_motion_request(config)
-    assert manifest['stellar_realization'] == dict(bridge.stellar_motion_identity(motion),
+    assert manifest['stellar_realization'] == dict(identity(motion),
         model_counts={'full-input-rectilinear':2, 'proper-motion-angular':3,
                       'hipparcos2-angular-fallback':1, 'unavailable':3})
     if orientation is not None:
@@ -1902,7 +1925,7 @@ def test_stellar_motion_publication_serial_spawn_sheet_and_count_parity(motion_d
             with Image.open(output / (stem+suffix+'.png')) as actual, Image.open(request.output_dir / (stem+suffix+'.png')) as reference:
                 np.testing.assert_array_equal(np.asarray(actual), np.asarray(reference))
         actual = json.loads((output / (stem+'_report_data.json')).read_text())['stellar_realization']
-        assert all(actual[k] == v for k,v in bridge.stellar_motion_identity(motion).items())
+        assert all(actual[k] == v for k,v in identity(motion).items())
     from pypdf import PdfReader
     pdf = PdfReader(output / 'atlas.pdf')
     if index is not None:
@@ -2590,3 +2613,117 @@ def test_stellar_epoch_query_failure_closes_resources_and_never_falls_back(motio
         assert len(sessions) == (1 if name == 'evaluate' else 0)
         assert all(session._closed for session in sessions)
         assert tuple(query.resolve_stellar_epoch(product, target, reuse_window_julian_years=0).rows()) == baseline
+
+
+
+def _epoch_consumer_document(product, digest, event, window=100):
+    return ('schema_version = 1\ndocument_kind = "wenu-stellar-epoch-query"\n'
+        f'catalogue_directory = "{product.as_posix()}"\nmanifest_sha256 = "{digest}"\n'
+        f'reuse_window_julian_years = {window}\n[instant]\njd1 = {event.jd1}\n'
+        f'jd2 = {event.jd2!r}\nscale = "{event.scale}"\n').encode()
+
+
+def test_stellar_epoch_consumer_positions_binding_and_lifetime(motion_source, tmp_path):
+    from dataclasses import FrozenInstanceError
+    from unittest.mock import patch
+    import numpy as np
+    from wenu.stellar_epoch_consumer import StellarEpochViewInput, StellarEpochRealization
+    product, original = _epoch_query_product(motion_source(), tmp_path)
+    event = TimePoint(product.instant.jd1+1, product.instant.jd2, 'tcb')
+    request = StellarEpochViewInput(product, event, 100)
+    table = pd.DataFrame({'magnitude':[r['original']['magnitude'] for r in product.source.records()]}, index=range(1,10))
+    metadata = product.source.metadata['original_metadata']
+    with patch.object(bridge, 'StellarMotionProvider', side_effect=AssertionError('consumer re-evaluated')):
+        view = StellarEpochRealization(request, table, metadata)
+        lon, lat = view.positions((5,2,4))
+        assert np.isfinite(lon[:2]).all() and np.isnan(lon[2]) and np.isnan(lat[2])
+        assert view.row_metadata((5,2,4))['stellar_motion_status'].tolist() == ['evaluated','evaluated','unavailable']
+        report = view.report()
+        assert report['epoch'] == request.resolution.receipt()['actual_position_event']
+        assert report['epoch_query']['requested_event']['jd1'] == event.jd1
+        assert report['sdk_batches_evaluated'] == 0
+        assert view.positions(())[0].size == 0
+        detached = view.report();detached['epoch']['jd1']=0
+        assert view.report()['epoch']['jd1'] != 0
+    checker=unittest.TestCase()
+    for key,value in [('catalogue','wrong'),('epoch',{'value':1900}),('units',{})]:
+        with checker.assertRaises(ValueError):
+            StellarEpochRealization(request,table,dict(metadata,**{key:value}))
+    changed=table.copy();changed.loc[1,'magnitude']=99
+    with checker.assertRaises(ValueError):StellarEpochRealization(request,changed,metadata)
+    with checker.assertRaises(FrozenInstanceError):request.instant=event
+    view.close()
+    with checker.assertRaises(ClosedSession):view.positions((1,))
+    assert tuple(request.resolution.rows()) == product.at(product.instant)
+
+
+def test_stellar_epoch_consumer_capture_worker_binding_and_refusals(motion_source, tmp_path):
+    from dataclasses import replace
+    import pickle
+    from wenu.stellar_epoch_consumer import StellarEpochExecutionInput, stellar_epoch_view_identity
+    product, original = _epoch_query_product(motion_source(), tmp_path)
+    from hashlib import sha256
+    digest=sha256(product.manifest).hexdigest()
+    document=tmp_path/'query.toml'
+    document.write_bytes(_epoch_consumer_document(tmp_path/'anchor',digest,product.instant))
+    captured, request=StellarEpochExecutionInput.capture(document,snapshot_sha256='b'*64,design_sha256='c'*64)
+    document.write_text('changed after capture')
+    restored=pickle.loads(pickle.dumps(captured))
+    second=restored.admit(snapshot_sha256='b'*64,design_sha256='c'*64)
+    assert stellar_epoch_view_identity(second) == stellar_epoch_view_identity(request)
+    assert tuple(second.resolution.rows()) == tuple(request.resolution.rows())
+    checker=unittest.TestCase()
+    with checker.assertRaises(TypeError):pickle.dumps(request)
+    for candidate in (replace(captured,document=captured.document+b'\n'),replace(captured,base_directory='/changed')):
+        with checker.assertRaisesRegex(ValueError,'binding differs'):
+            candidate.admit(snapshot_sha256='b'*64,design_sha256='c'*64)
+    with checker.assertRaises(ValueError):captured.admit(snapshot_sha256='d'*64,design_sha256='c'*64)
+    for change in (dict(manifest_sha256='0'*64),dict(unknown='field')):
+        raw=_epoch_consumer_document(tmp_path/'anchor',change.get('manifest_sha256',digest),product.instant)
+        if 'unknown' in change:raw=b'unknown = "field"\n'+raw
+        document.write_bytes(raw)
+        with checker.assertRaises(ValueError):
+            StellarEpochExecutionInput.capture(document,snapshot_sha256='b'*64,design_sha256='c'*64)
+    path=tmp_path/'anchor/states.jsonl';path.write_bytes(path.read_bytes()+b'\n')
+    with checker.assertRaises(ValueError):captured.admit(snapshot_sha256='b'*64,design_sha256='c'*64)
+
+
+def test_stellar_epoch_consumer_public_view_shares_positions_without_sdk(motion_source, tmp_path):
+    from dataclasses import replace
+    import numpy as np
+    from wenu.stellar_epoch_consumer import StellarEpochViewInput
+    from wenu.sky.assembly import stellar_realization_sky
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.constellation_lines import ConstellationLines
+    from wenu.sky.constellation_labels import ConstellationLabels
+    product, original = _epoch_query_product(motion_source(), tmp_path)
+    sky=CelestialSphere(None);sky.stars=_production_stars(product.source)
+    path=tmp_path/'lines.fab';path.write_text('Ori 1 1 2\n')
+    sky.constellation_lines=ConstellationLines(sky.stars,filename=path)
+    sky.constellation_labels=ConstellationLabels(sky.stars,min_stars=1)
+    sky._layers=[sky.stars,sky.constellation_lines,sky.constellation_labels]
+    for event,window in ((TimePoint(product.instant.jd1+1,product.instant.jd2,'tcb'),100),
+                         (TimePoint(990545,0.,'tcb'),0)):
+        request=StellarEpochViewInput(product,event,window)
+        actual=request.resolution.receipt()['actual_position_event']
+        with sky.stars.realized(replace(original,instant=TimePoint(**actual))) as live:
+            expected=live.native_positions()
+        with patch.object(bridge,'StellarMotionProvider',side_effect=AssertionError('render acquired provider')):
+            with stellar_realization_sky(sky,request) as view:
+                found=view.stars.native_positions()
+                np.testing.assert_array_equal(found.ids,expected.ids)
+                np.testing.assert_array_equal(found.lon_deg,expected.lon_deg)
+                np.testing.assert_array_equal(found.lat_deg,expected.lat_deg)
+                assert view.constellation_lines.stars is view.stars
+                assert view.constellation_labels.stars is view.stars
+                assert view.stars._stellar_realization.report()['epoch']==actual
+        with unittest.TestCase().assertRaises(ClosedSession):view.stars.native_positions()
+    assert not hasattr(sky.stars,'_stellar_realization')
+
+
+@pytest.mark.parametrize('motion_document', [dict(change=dict(ra=7.5,pmra=100.,pmdec=200.), extra_photometry={9:3.})], indirect=True)
+@pytest.mark.parametrize('epoch', [2000., -2000.])
+@pytest.mark.parametrize('jobs', [1,2])
+@pytest.mark.parametrize('frame_axes', [None,'mean-equator-equinox'])
+def test_stellar_epoch_consumer_publication_serial_spawn_parity(motion_document, monkeypatch, epoch, jobs, frame_axes):
+    _assert_stellar_publication_parity(motion_document, monkeypatch, epoch, jobs, frame_axes, saved=True)

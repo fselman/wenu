@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 126, 2026-10-28. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation and user acceptance/merge remain pending; parent K4b.07 and later consumer/companion/observer work remain open.
+**Plan revision:** 127, 2026-10-28. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration is now selected with the J-2000 catalogue/north-polar additions below; parent K4b.07 and companion/observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,10 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `233f18b1a116a6201443e33c2d6606b91f2a1416`,
-confirmed clean/synchronized on the Mac after PR #358 merge and local/remote
-branch cleanup on 2026-10-28.
+**Current accepted base:** main `d4fb035d456f084124b3f2f489e4695445253e54`,
+confirmed clean/synchronized on the Mac after PR #359/#360 merge and local/remote
+branch cleanup on 2026-10-28. Final tree `d3492decec971e794872178fbc8446c15cd14fd5`
+is identical to tested head `bc5f2b14`.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -69,7 +70,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. First K4b.07 exact-epoch slice accepted through #358/main 233f18b1, clean synchronization/cleanup confirmed; parent remains open |
-| Next bounded submilestone | Review the verified [nearby-epoch native query result](#k4b07-nearby-epoch-reuse-and-advancement-scope) after final receipt documentation; user acceptance/merge pending; existing bundles, later consumers/companions/observers and parent K4b.07 remain separate |
+| Next bounded submilestone | Review the verified [observer-free epoch consumers and J-2000/polar specimens](#k4b07-observer-free-epoch-consumers-and-polar-additions) after final receipt documentation; user visual acceptance/merge pending; existing bundles, later consumers/companions/observers and parent K4b.07 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -965,6 +966,76 @@ The service candidate passed the focused Mac/runtime/documentation and retained
 original-product verification above. This receipt changes documentation only;
 run the complete documentation gate. User acceptance/merge remain pending.
 No physical accuracy or parent closure is inferred from these service checks.
+
+## K4b.07: observer-free epoch consumers and polar additions
+
+**Agreement:** after #359/#360 merge, confirmed clean synchronized Mac main
+`d4fb035d` and task-branch cleanup, Fernando requested proceeding. The concrete
+consumer scope was explained: explicit saved bundle, requested native TCB event
+and reuse window; shared position consumption by stars/lines/labels; truthful
+requested/actual epoch reports; serial/spawn publication; parity at the actual
+position event; preserve old bundles; defer observer/companion work.
+Fernando then requested: “I would like you to add a Jminus2000 catalogue, and to
+also show the north polar cap. Polaris should be visible at least in the current
+and the Jminus2000 epochs. Please proceed with these additions.”
+This selects the observer-free consumer scope with those additions, not
+observer-dependent science or parent closure.
+
+**Deliverables and ownership:**
+- Prepare an additional self-contained `jminus2000` product at astronomical
+  Julian epoch J-2000 on the same admitted native TCB axis, from unchanged source
+  measurements and existing ordered full/angular/Hip2 models. This is an
+  additional retained product, not replacement of J2000 or J-8000, and not a
+  civil-calendar or observer-time conversion.
+- Feed validated saved-catalogue resolutions through a stellar-owned consumer
+  adapter and existing sky/atlas/regional owners. Charts, lines and labels only
+  consume returned positions. No propagation, parallax correction or catalogue
+  joining moves into chart/render code.
+- Declare bundle/source identity, requested native TCB event and explicit finite
+  reuse window upstream. Keep raw actual position epoch, source epochs,
+  reuse/advancement status and approximation/coverage disclosures truthful in
+  geometry, reports and visible specimen identification. Dated display axes
+  retain their separately admitted TT orientation and existing ownership.
+- Preserve strict v1 compatibility: do not modify the six watched
+  source/model/core/codec files merely to adopt saved positions, bypass hashes,
+  rewrite accepted bundles, or pickle live requests/providers/sessions. Existing
+  serial/spawn publication must consume verified inputs with process-local
+  ownership and no implicit acquisition.
+- Include north-polar-cap specimens for the modern/current case and J-2000.
+  State the actual stellar epoch and axes on each; do not relabel the J2000
+  reference as the date of execution. Verify Polaris (HIP 11767) is supplied by
+  its admitted source/model and appears as a finite, selected, unclipped rendered
+  star in both required caps. Choose a cap extent that includes its actual
+  returned position in the declared axes; do not move it to the pole or insert
+  a synthetic replacement. Compare the same cap/scale where practical.
+
+**Acceptance:** closest existing stellar-view, dependent-geometry, native/dates
+frame, regional/polar, publication/worker and documentation gates. Protect source
+binding, all row statuses/measurements, actual/requested event disclosures,
+modern star retention, single shared positions for stars/lines/labels, and
+serial/spawn scientific/product parity against the live route at the actual
+position event. The additional catalogue must load self-contained under its
+recorded hashes and agree with existing admitted SDK evaluation. Retain
+full-population/model/gap counts, source identities and explicit Polaris
+availability/selection/projected-position evidence. Generate the modern and
+J-2000 polar specimens for Fernando's visual review, in the established
+purpose-specific output directories with provenance. An unqualified/missing
+Polaris input is a reported failure to resolve, not authority to drop it silently
+or fabricate a measurement.
+
+**Limits/status:** no observer-dependent chart adoption, Earth/Solar System
+companion, acquisition, source replacement, new numerical model, uncertainty
+qualification or K5 freeze. This contract was recorded before consumer runtime implementation at
+`d183f81c`. The assistant execution outage is resolved. The consumer candidate
+now adds the data-backed stellar view, captured worker query input and atlas
+configuration route. At `9f7b2e9a`, 50 Mac stellar/publication cases passed in
+153.64 s, 17 atlas cases in 39.32 s and 36 documentation cases in 3.26 s. The
+actual run created/validated J-2000 with all 118,218 rows and original-model
+query parity; both modern and ancient 80-degree caps show Polaris in actual
+drawn markers, with actual-event saved/live and direct/serial/spawn agreement.
+Original inputs remain unchanged. See the [receipt](kernel_migration_audit_v1.md#saved-epoch-consumer-actual-catalogue-and-polar-receipt).
+Final receipt documentation and user visual acceptance/merge remain pending.
+This is bounded consumer verification, not parent K4b.07 closure.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
@@ -2265,6 +2336,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 127: select observer-free epoch consumers with J-2000 and north cap | Fernando’s 2026-10-28 instruction quoted in the consumer contract after main d4fb035d synchronization/cleanup | Select the described consumer integration, additional retained catalogue and modern/J-2000 Polaris-visible cap specimens; no observer/companion/source-model expansion or parent closure |
 | Revision 126: accept nearby-epoch query implementation | Fernando’s “Accepted. Proceed.” on 2026-10-28 after the clarified contract and 36 Mac documentation passes in 6.60 s at ef578cde | Select bounded query-service implementation under the contract below, including disclosed in-window reuse across model coverage boundaries. No merge/cleanup authorization, consumer/observer adoption or parent closure |
 | Revision 125: define nearby-epoch query scope | Fernando’s “Proceed” on 2026-10-28 after #358 merge/cleanup, clean synchronized Mac main 233f18b1 and the proposed next definition step | Assessment/definition only. Native TCB window/result/advancement/compatibility/gate boundary is proposed for review; no runtime, source/model/core/codec change, consumer adoption or parent closure |
 | Revision 123: accept K4b.06 and assess K4b.07 | Fernando’s 2026-10-28 “accepted” after 36 Mac documentation passes at 829c4725, his consumer/upstream-astrometry clarification, and “proceed” after the roadmap’s K4b.07 as-is/exact-epoch definition proposal | K4b.06 closes with R1/observer deferrals. K4b.07 assessment/definition only; first persistence implementation boundary is proposed for review, not selected runtime. No merge/cleanup or new observer/source/model authority follows |

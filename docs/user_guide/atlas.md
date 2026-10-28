@@ -5,6 +5,41 @@ Geometry design, standalone index and publication commands are available.
 The [kernel roadmap](../developer/kernel_roadmap_v0.9.5.md) describes future
 architecture; it does not change these commands.
 
+## Saved stellar epoch catalogues
+
+The saved-catalogue consumer candidate accepts an explicit query file through
+`--stellar-epoch-config`, as an alternative to `--stellar-motion-config`.
+It uses the existing atlas/native regional and polar pipeline. For example:
+
+```toml
+schema_version = 1
+document_kind = "wenu-stellar-epoch-query"
+catalogue_directory = "/absolute/path/to/jminus2000"
+manifest_sha256 = "REPLACE_WITH_THE_RETAINED_MANIFEST_SHA256"
+reuse_window_julian_years = 100
+
+[instant]
+jd1 = 990545
+jd2 = 0.0
+scale = "tcb"
+```
+
+The digest must be the actual 64-character bundle manifest checksum; the sample
+placeholder is deliberately not executable. The instant above is astronomical
+Julian epoch J-2000 on the native TCB coordinate, not a civil date conversion.
+The finite nonnegative reuse window is required and configurable; 100 is an
+example, not a default or physical-accuracy guarantee. At/inside it positions
+keep their saved epoch; outside it original admitted models evaluate the target.
+Reports and visible notes disclose actual/requested epochs and approximation.
+Supply a separately admitted atlas-frame file for dated TT mean axes if needed.
+All source identities/measurements stay intact; a source-sky mismatch refuses.
+Serial/spawn workers verify the captured input and their snapshot/design binding.
+Observer-dependent products remain deferred. Mac gates and actual J-2000
+preparation/render checks passed at `9f7b2e9a`. The common 80-degree modern and
+J-2000 north-cap specimens contain Polaris as an actual drawn marker; direct,
+serial and spawned output agree. User visual acceptance and merge remain pending.
+
+
 ## Commands and independent inputs
 
 | Command | Input responsibility | Output |

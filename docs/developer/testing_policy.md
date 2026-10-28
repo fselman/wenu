@@ -1,5 +1,41 @@
 # Testing policy and module independence
 
+## Saved epoch consumer gate
+
+Closest protections are the existing native stellar view/export and complete
+serial/spawn motion-publication parity cases. New source-owner tests protect
+data-backed source/reference/photometry binding, detached results, gaps, closed
+lifetime, captured descriptor integrity, fresh admission after pickle, invalid
+documents and changed bundle bytes. Public view comparison uses original live
+models at the actual returned event and prohibits providers during consumption.
+Eight publication cases cover reused modern and advanced J-2000 data, one/two
+workers and native/dated mean-equatorial axes through real command/export/count
+owners. Existing live publication cases share the assertion helper and remain
+collected. A CLI case protects explicit routing and mutual exclusion.
+
+Run `tests/test_stellar_state.py` with selection `stellar_epoch or stellar_realiz
+or stellar_sheet_borrows or stellar_motion_public_native_sheet or
+stellar_motion_publication_serial_spawn or stellar_publication`, then
+`tests/test_atlas_cli.py` selected by `epoch_config or motion_config or
+dated_atlas or atlas_frame or atlas_sheet_default_route or
+atlas_sheet_command_runs_in_spawn`, followed by the complete documentation gate.
+Disable plugin autoload and use a fresh run/cache directory. No core, dependency,
+collection or schema-v2 configuration gate changes are introduced.
+
+At `9f7b2e9a`, all selected Mac gates passed: 50 stellar/publication cases
+(208 deselected) in 153.64 s, 17 atlas cases (190 deselected) in 39.32 s and 36
+documentation cases in 3.26 s. Retain
+`~/Software/build/wenu/test/stellar-epoch-consumer-focused-v1-f6yisdg2`.
+The actual J-2000/catalogue/polar run also passed, retaining all 118,218 statuses,
+exact original-model query parity, actual-event saved/live geometry and
+direct/serial/spawn PNG/report agreement. Polaris reaches a finite selected,
+unclipped drawn marker in each cap. Evidence:
+`~/Software/build/wenu/output/epoch-consumers-acceptance-v1-lgsgoia9`.
+Original inputs were unchanged. User visual acceptance is pending. This final
+receipt changes documentation only; run the complete documentation gate, without
+repeating the successful runtime or catalogue/render workload.
+
+
 ## Nearby-epoch query gate
 
 The [accepted K4b.07 service contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)

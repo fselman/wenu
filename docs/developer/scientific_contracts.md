@@ -1,5 +1,30 @@
 # Current scientific contracts and paused work
 
+## Saved epoch consumer contract
+
+The selected observer-free consumer adapter does not add science. It binds the
+resolved source to the existing source sky before publishing positions. All
+source identities, photometry and measurements remain preserved; unavailable
+model rows remain explicit gaps with NaN geometry, not deleted source entries.
+Coordinate geometry and reports use actual position time; requested time and
+the fixed-position approximation remain separately visible. Dated TT axes are
+not observer time or a covert TCB conversion. Consumers perform no new motion,
+parallax correction or source selection after resolution.
+
+The additional J-2000 product is now validated against the original-model query
+path with unchanged source bytes and all 118,218 statuses. The modern specimen
+requests 2026-10-28 on native TCB, reusing actual J2000 positions under the explicit
+100-year policy; its mean axes are independently declared for that date on TT.
+The ancient specimen uses J-2000 stellar TCB positions and independently declared
+J-2000 TT axes. Matching numeric date labels imply no physical time conversion.
+Polaris is finite, selected, inside the viewport and present in a drawn marker
+in both caps, without replacement or moving it to the pole. Its recorded target-
+axis declinations are +89.3747262476918 and +67.56518205779696 degrees; their
+difference describes coordinates in different axes, not physical stellar travel.
+Runtime and actual-product checks passed; user visual acceptance is pending.
+Observer-dependent charts, companions and physical-error qualification stay deferred.
+
+
 ## Nearby-epoch state semantics
 
 The accepted second K4b.07 contract is implemented as a candidate in

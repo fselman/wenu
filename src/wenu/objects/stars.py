@@ -224,14 +224,16 @@ class Stars(AstronomicalObject):
         """
         from copy import copy
         from wenu.stellar_state import StellarMotionRequest, _StellarRealization
-        if type(motion) is not StellarMotionRequest:
-            raise TypeError('motion must be StellarMotionRequest.')
+        from wenu.stellar_epoch_consumer import StellarEpochViewInput, StellarEpochRealization
+        if type(motion) not in (StellarMotionRequest, StellarEpochViewInput):
+            raise TypeError('motion must be an admitted live or saved stellar input.')
         if getattr(self, '_stellar_realization', None) is not None:
             raise ValueError('A realized stellar view cannot be rebound.')
         source = getattr(self, 'source_catalog', None)
         if source is None:
             raise RuntimeError('Stellar realization requires a loaded source.')
-        realization = _StellarRealization(motion, source, self.catalogue_metadata.to_record())
+        owner = StellarEpochRealization if type(motion) is StellarEpochViewInput else _StellarRealization
+        realization = owner(motion, source, self.catalogue_metadata.to_record())
         try:
             view = copy(self)
             view._stellar_realization = realization
@@ -682,3 +684,4 @@ class Stars(AstronomicalObject):
             int(hip_id): index
             for index, hip_id in enumerate(self.hip_df.index)
         }
+
