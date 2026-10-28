@@ -58,3 +58,7 @@ In particular:
     order must be discussed with Fernando, explicitly agreed, and documented in
     the roadmap before implementation. Do not silently add or activate work.
     Follow [roadmap control](docs/developer/assistant_instructions.md#roadmap-control-mandatory-before-implementation).
+15. Include a short plain-language executive summary in every PR, including
+    draft and documentation PRs, and display the same summary in the Work chat
+    when opening the PR or materially updating its scope/status. Follow the
+    [PR executive summary rule](docs/developer/assistant_instructions.md#pr-executive-summary).
