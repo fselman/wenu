@@ -1,5 +1,20 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Dated-axis atlas candidate semantics
+
+The [K4b.06 implementation candidate](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
+adds explicit barycentric mean-equatorial/ecliptic view axes at a TT equinox,
+independently of stellar TCB evaluation. Source layers still realize natively;
+the shared source-to-view seam re-expresses both drawn geometry and secondary
+label-placement regions before projection/preparation. Output specifications
+preserve source facts separately from frame provenance; no observer translation
+or apparent correction is implied. Source ICRS designs remain unchanged while
+derived sheet identities declare target-axis numerical placement. Canonical
+dated grids/poles use the same mean-frame policy; source-fixed Galactic
+references, boundaries and shapes retain their meaning. Ecliptic longitude
+labels are degrees, equatorial RA labels hours. Mac actual-cache/visual
+acceptance remains pending; K4b.07/K4b.08 capabilities are not activated.
+
 ## Planned Earth-bound ancient and future views
 
 The [K4b.08 observer milestone](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs)
@@ -15,15 +30,11 @@ supply a horizon or establish observer accuracy. No new observer CLI is provided
 
 ## Proposed date-oriented atlas integration
 
-The [K4b.06 as-is review and scope proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
-does not introduce a current atlas frame option. `LongTermFrame` already owns
-qualified TT mean-axis orientation; the atlas currently requires native ICRS,
-and its design sheet centres are ICRS. A derived target-axis layout, common
-pre-domain geometry orientation, dated reference grids and truthful furniture
-were accepted as scope in #352; runtime implementation remains pending. Projection alignment alone does not perform that change.
-Stellar TCB evaluation stays independent; no conversion follows from matching
-Julian-year labels. Explicitly fixed reference geometry retains its source
-meaning. The accepted definition does not itself implement runtime integration.
+The [K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
+was accepted in #352. The implementation candidate described above now adds
+its explicit frame option and derived-layout boundary; Mac actual-cache and
+visual acceptance remain pending. The original native-only as-is findings
+remain in the linked migration audit as the pre-implementation assessment.
 
 ## Stellar-owned native realization in K4b.06
 

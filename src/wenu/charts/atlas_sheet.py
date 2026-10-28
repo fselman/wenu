@@ -26,6 +26,8 @@ class AtlasSheetChart:
     page: object
     label_selection: tuple | None = None
     outside_mask_constellations: tuple | None = None
+    orientation: object | None = None
+    frame_input: object | None = None
 
     @property
     def projection(self):
@@ -68,6 +70,8 @@ class AtlasSheetChart:
         context = options.get("realization_context")
         if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
             raise ValueError("Atlas sheets require explicit native ICRS realization.")
+        if context.orientation is not self.orientation:
+            raise ValueError('Atlas chart and realization frame differ.')
         if options.get("observer") is not None:
             raise ValueError("Atlas sheets do not admit an observer.")
         if self.sheet.boundary_kind == 'hemisphere':
@@ -235,6 +239,10 @@ class AtlasSheetChartRequest:
     presentation: object
     output_dir: object
     stellar_motion: object | None = None
+    orientation: object | None = None
+    frame_input: object | None = None
+    design_sha256: str | None = None
+    design_bytes: bytes | None = None
 
     def __post_init__(self):
         from pathlib import Path
@@ -244,6 +252,28 @@ class AtlasSheetChartRequest:
         if not isinstance(self.presentation, AtlasChartPresentation):
             raise TypeError("Atlas sheet requests require AtlasChartPresentation.")
         object.__setattr__(self, "output_dir", Path(self.output_dir))
+        if self.orientation is not None:
+            import re
+            from wenu.astrometric_coordinates import LongTermFrame
+            import hashlib
+            from wenu.atlas_design import AtlasBandTiling
+            if type(self.orientation) is not LongTermFrame or not isinstance(self.design_bytes,bytes):
+                raise ValueError('Dated sheets require an admitted frame and exact source design bytes.')
+            digest=hashlib.sha256(self.design_bytes).hexdigest()
+            if self.design_sha256 is not None and self.design_sha256 != digest:
+                raise ValueError('Dated sheet design hash differs from its exact bytes.')
+            design=AtlasBandTiling.from_json(self.design_bytes.decode('utf-8'))
+            if self.page != design.geometry.page or self.sheet not in design.geometry.sheets:
+                raise ValueError('Dated sheet/page differs from its original design bytes.')
+            object.__setattr__(self,'design_sha256',digest)
+        if self.frame_input is not None:
+            if (type(self.frame_input) is not AtlasFrameExecutionInput or self.orientation is None
+                    or self.frame_input.design_bytes != self.design_bytes):
+                raise ValueError('Frame execution input differs from the sheet request.')
+            admitted=self.frame_input.admit(design_sha256=self.design_sha256,
+                snapshot_sha256=self.frame_input.snapshot_sha256)
+            if atlas_frame_record(admitted) != atlas_frame_record(self.orientation):
+                raise ValueError('Frame execution input differs from its admitted orientation.')
         if self.stellar_motion is not None:
             from wenu.stellar_state import StellarMotionRequest
             if type(self.stellar_motion) is not StellarMotionRequest:
@@ -312,6 +342,18 @@ def _atlas_report_data(chart, sky, composition, rendering):
         stars=dict(statistics=None if statistics is None else asdict(statistics),
                    reference_range=reference_range),
         report=dict(status="reserved", sections=[], inventory_status="not_generated"))
+    if getattr(chart, "orientation", None) is not None:
+        data['atlas_frame'] = atlas_frame_record(chart.orientation)
+        if getattr(chart, "frame_input", None) is not None:
+            import hashlib
+            data['atlas_frame_execution_input_sha256'] = chart.frame_input.integrity_sha256
+            data['atlas_frame_document_sha256'] = hashlib.sha256(chart.frame_input.document).hexdigest()
+        data['derived_view'] = chart.sheet.record()
+        data['center'] = dict(coordinate_system=chart.orientation.axes,
+            longitude_deg=chart.sheet.center_ra_deg, latitude_deg=chart.sheet.center_dec_deg,
+            longitude_defined=abs(chart.sheet.center_dec_deg)!=90,
+            pole_meridian_longitude_deg=chart.sheet.pole_meridian_ra_deg,
+            equinox_tt=data['atlas_frame']['equinox'])
     realization = getattr(sky.stars, '_stellar_realization', None)
     if realization is not None:
         data['stellar_realization'] = realization.report()
@@ -350,6 +392,7 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
     figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
     FigureCanvasAgg(figure)
     _draw_stellar_realization_note(figure, sky)
+    _draw_atlas_frame_note(figure, getattr(chart, "orientation", None))
     left = page.outer_mm / page.width_mm
     bottom = page.bottom_mm / page.height_mm
     width = page.useful_width_mm / page.width_mm
@@ -375,11 +418,20 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         dec = Angle(chart.sheet.center_dec_deg * u.deg).to_string(
             unit=u.deg, sep="dms", precision=0, pad=True, alwayssign=True)
         title = f"Centre: ICRS\nRA {ra}\nDec {dec}"
-        if not data["center"]["ra_defined"]:
+        if abs(chart.sheet.center_dec_deg) == 90:
             meridian = Angle(chart.sheet.pole_meridian_ra_deg * u.deg).to_string(
                 unit=u.hourangle, sep="hms", precision=0, pad=True)
             title = ("Centre: ICRS\nRA undefined (pole)"
                      f"\nDec {dec}\nMeridian {meridian}")
+        if getattr(chart, "orientation", None) is not None:
+            f=chart.orientation
+            if f.axes == 'mean-ecliptic-equinox':
+                lon=('undefined (pole)' if abs(chart.sheet.center_dec_deg)==90 else f'{chart.sheet.center_ra_deg:g}°')
+                title=f'Mean ecliptic\nJ{f.backend_jyear_tt:g} TT\nLon {lon}\nLat {chart.sheet.center_dec_deg:+g}°'
+                if abs(chart.sheet.center_dec_deg)==90:
+                    title+=f'\nMeridian {chart.sheet.pole_meridian_ra_deg:g}°'
+            else:
+                title=title.replace('ICRS',f'Mean equator J{f.backend_jyear_tt:g} TT')
         plan = ChartLegendPlan("regional",
             LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
@@ -505,11 +557,22 @@ def _atlas_grid_options(chart, presentation):
     from .request_grids import equatorial_grid_mark_options
     marks = replace(_atlas_grid_marks(presentation), grid_ra_step_hours=
         presentation.grid_polar_ra_step_hours if abs(chart.sheet.center_dec_deg) == 90 else presentation.grid_ra_step_hours)
-    return equatorial_grid_mark_options(chart, marks)
+    options=equatorial_grid_mark_options(chart, marks)
+    if getattr(chart, "orientation", None) is not None and chart.orientation.axes == 'mean-ecliptic-equinox':
+        from functools import partial
+        configured=options.pop('equatorial_grid')
+        configured['geometry']={
+            {'ra':'longitude','dec':'latitude','ra_ticks':'longitude_ticks','dec_ticks':'latitude_ticks'}[k]:v
+            for k,v in configured['geometry'].items()}
+        ticks=partial(_ecliptic_tick_options, minor_scale=marks.grid_minor_label_scale,
+            latitude_scale=marks.grid_dec_label_scale)
+        configured['render']['boundary_ticks']=dict(tick_meridians=ticks,tick_parallels=ticks)
+        return {'ecliptic_grid':configured}
+    return options
 
 
 
-def _atlas_frame_widths(style, presentation, *, circular=False):
+def _atlas_frame_widths(style, presentation, *, circular=False, longitude_degrees=False):
     allowance = 2 * (style.canvas.grid_label_band_padding_points + style.canvas.grid_label_band_linewidth / 2)
     # A Dec string lies along its projected parallel, rather than along the
     # vertical edge. Budget its worst rotated extent once from the font.
@@ -525,6 +588,8 @@ def _atlas_frame_widths(style, presentation, *, circular=False):
         ra_font = FontProperties(size=presentation.grid_label_fontsize)
         ra_extent = max(sum(measure.get_text_width_height_descent(f'{hour}ʰ', ra_font, ismath=False)[:2])
                         for hour in range(24))
+        if longitude_degrees:
+            ra_extent = max(sum(measure.get_text_width_height_descent(f'{v}°', ra_font, ismath=False)[:2]) for v in range(0,360,15))
         thickness = (max(extent, ra_extent) + allowance) * presentation.grid_frame_width_scale
         return thickness, thickness
     return ((presentation.grid_label_fontsize + allowance) * presentation.grid_frame_width_scale,
@@ -534,7 +599,8 @@ def _atlas_frame_widths(style, presentation, *, circular=False):
 
 def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
     """Interior Dec text on the actual grid meridian nearest page vertical."""
-    if 'equatorial_grid' not in presentation.layers or getattr(renderer, '_grid_label_band', None) is None:
+    system = 'ecliptic' if getattr(chart, "orientation", None) is not None and chart.orientation.axes == 'mean-ecliptic-equinox' else 'equatorial'
+    if system+'_grid' not in presentation.layers or getattr(renderer, '_grid_label_band', None) is None:
         return
     import numpy as np
     pole = chart.sheet.center_dec_deg
@@ -550,7 +616,7 @@ def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
     view = chart.viewport
     from wenu.sky.semantic_identity import semantic_layer_identity
     grid_layer = next(record.layer for record in rendering.layers
-        if getattr(record.layer, 'coordinate_system', None) == 'equatorial')
+        if getattr(record.layer, 'coordinate_system', None) == system)
     identity = semantic_layer_identity(grid_layer)
     keep = np.isfinite(x) & np.isfinite(y) & (x > view.x_min) & (x < view.x_max) & (y > view.y_min) & (y < view.y_max)
     for px, py, dec in zip(x[keep], y[keep], decs[keep]):
@@ -583,8 +649,8 @@ def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
 
 
 
-def _atlas_grid_layout(page, style, presentation, *, circular=False):
-    horizontal, vertical = _atlas_frame_widths(style, presentation, circular=circular)
+def _atlas_grid_layout(page, style, presentation, *, circular=False, longitude_degrees=False):
+    horizontal, vertical = _atlas_frame_widths(style, presentation, circular=circular, longitude_degrees=longitude_degrees)
     horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
     available_width = page.useful_width_mm - 2 * vertical
     available_height = page.useful_height_mm - 2 * horizontal
@@ -657,8 +723,13 @@ def _render_atlas_sheet(request, sky):
     context = (LayerRealizationContext(NATIVE_ICRS_SPEC) if spec is None else
         LayerRealizationContext(NATIVE_ICRS_SPEC, evaluation_instant=spec.instant,
                                 evaluation_time_scale=spec.time_scale))
+    context=replace(context,orientation=request.orientation)
     sheet, page, presentation, directory = request.sheet, request.page, request.presentation, request.output_dir
-    chart = AtlasSheetChart(sheet, page)
+    if request.orientation is not None:
+        from wenu.atlas_design import AtlasMeanAxisSheet
+        sheet=AtlasMeanAxisSheet(sheet,request.design_sha256,
+            request.orientation.model.configuration_digest,request.orientation.axes)
+    chart = AtlasSheetChart(sheet, page, orientation=request.orientation,frame_input=request.frame_input)
     composition = compose_chart(chart, style=presentation.style,
         style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale,
             stellar_magnitude_sizing=presentation.stellar_magnitude_sizing),
@@ -690,8 +761,9 @@ def _render_atlas_sheet(request, sky):
             planetary_nebula_linewidth=presentation.planetary_nebula_linewidth,
             planetary_nebula_alpha=1.0)))
     circular = sheet.boundary_kind == 'hemisphere'
+    longitude_degrees=request.orientation is not None and request.orientation.axes == 'mean-ecliptic-equinox'
     axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation,
-                                               circular=circular)
+                                               circular=circular,longitude_degrees=longitude_degrees)
     grid_options = {}
     if 'open_clusters' in presentation.layers:
         grid_options['open_clusters'] = dict(geometry=dict(
@@ -709,7 +781,7 @@ def _render_atlas_sheet(request, sky):
         grid_options["nonstellar"] = dict(geometry=dict(labels_only=True),
             render=dict(draw_markers=False, draw_labels=True,
                 label_style=dict(fontsize=presentation.messier_label_fontsize, color="black", alpha=1.0)))
-    if "equatorial_grid" in presentation.layers:
+    if ("ecliptic_grid" if longitude_degrees else "equatorial_grid") in presentation.layers:
         composition = replace(composition, style=grid_style)
         grid_options.update(_atlas_grid_options(chart, presentation))
     # Keep the existing 100-dpi layout metrics independent of GUI/Retina scaling.
@@ -718,13 +790,14 @@ def _render_atlas_sheet(request, sky):
     FigureCanvasAgg(figure)
     ax = figure.add_axes(axes_bounds)
     _draw_stellar_realization_note(figure, sky)
+    _draw_atlas_frame_note(figure, request.orientation)
     ax.set_xticks([])
     ax.set_yticks([])
     _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
     try:
         renderer = MatplotlibRenderer(ax)
         horizontal, vertical = _atlas_frame_widths(composition.style, presentation,
-                                                  circular=circular)
+                                                  circular=circular,longitude_degrees=longitude_degrees)
         renderer.configure_grid_label_frame(horizontal_points=horizontal,
             vertical_points=vertical, polar=abs(sheet.center_dec_deg) == 90)
         first = presentation.formats[0]
@@ -750,3 +823,107 @@ def _render_atlas_sheet(request, sky):
         plt.close(figure)
 
 
+
+
+def atlas_frame_record(orientation):
+    """Data-only identity including the paired dated reference constructions."""
+    from dataclasses import asdict
+    from wenu.coordinate_service import mean_reference_frame
+    from wenu.astrometric_coordinates import LONG_TERM_FRAME_POLICY
+    return dict(axes=orientation.axes, policy=LONG_TERM_FRAME_POLICY,
+        equinox=asdict(orientation.equinox), validity=asdict(orientation.validity),
+        frame_sha256=orientation.model.configuration_digest,
+        backend_versions=list(orientation.backend_versions),
+        backend_jyear_tt=orientation.backend_jyear_tt,epoch_rounding_s=orientation.epoch_rounding_s,
+        provenance=list(orientation.provenance),
+        reference_frames={axes:dict(frame_sha256=f.model.configuration_digest,
+            matrix_hex=[[x.hex() for x in row] for row in f.matrix])
+            for axes in ('mean-equator-equinox','mean-ecliptic-equinox')
+            for f in (mean_reference_frame(orientation,axes),)},
+        physical_error_rad=None, numerical_error_rad=None,
+        origin='solar-system-barycenter', reference_policy='dated-mean-poles-and-grids/1')
+
+
+def load_atlas_frame(data):
+    """Read a closed scientific frame document, independently of style/motion."""
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
+    from wenu.astrometric_coordinates import LongTermFrame
+    from wenu_kernel.records import TimePoint, TimeSpan
+    values=tomllib.loads(data.decode('utf-8'))
+    if (set(values) != {'schema_version','document_kind','axes','model_policy','equinox','start','stop'}
+            or type(values['schema_version']) is not int or values['schema_version'] != 1
+            or values['document_kind'] != 'wenu-atlas-frame'):
+        raise ValueError('Unsupported atlas frame document.')
+    def point(name):
+        v=values[name]
+        if not isinstance(v,dict) or set(v) != {'jd1','jd2','scale'} or v['scale'] != 'tt':
+            raise ValueError('Frame equinox and finite domain require explicit two-part TT.')
+        return TimePoint(v['jd1'],v['jd2'],v['scale'])
+    return LongTermFrame(equinox=point('equinox'), validity=TimeSpan(point('start'),point('stop')),
+        axes=values['axes'],model_policy=values['model_policy'])
+
+
+def _frame_digest(value):
+    import hashlib, json
+    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+
+
+@dataclass(frozen=True)
+class AtlasFrameExecutionInput:
+    """Captured bytes and identities only; each process reconstructs admission."""
+    document: bytes
+    design_bytes: bytes
+    design_sha256: str
+    snapshot_sha256: str
+    frame_record_sha256: str
+    integrity_sha256: str
+
+    @classmethod
+    def capture(cls, path, *, design_bytes, snapshot_sha256):
+        import hashlib
+        if not isinstance(design_bytes,bytes):
+            raise TypeError('Exact source design bytes are required.')
+        design_sha256=hashlib.sha256(design_bytes).hexdigest()
+        data=Path(path).read_bytes()
+        frame=load_atlas_frame(data)
+        record=_frame_digest(atlas_frame_record(frame))
+        identity=_frame_digest([hashlib.sha256(data).hexdigest(),design_sha256,snapshot_sha256,record])
+        result=cls(data,design_bytes,design_sha256,snapshot_sha256,record,identity)
+        result.admit(design_sha256=design_sha256,snapshot_sha256=snapshot_sha256)
+        return result,frame
+
+    def admit(self, *, design_sha256, snapshot_sha256):
+        import hashlib, re
+        if (not isinstance(self.document,bytes) or not isinstance(self.design_bytes,bytes)
+                or hashlib.sha256(self.design_bytes).hexdigest() != self.design_sha256
+                or any(not isinstance(v,str) or not re.fullmatch('[0-9a-f]{64}',v)
+                    for v in (self.design_sha256,self.snapshot_sha256,self.frame_record_sha256,self.integrity_sha256))
+                or (self.design_sha256,self.snapshot_sha256) != (design_sha256,snapshot_sha256)
+                or self.integrity_sha256 != _frame_digest([hashlib.sha256(self.document).hexdigest(),
+                    self.design_sha256,self.snapshot_sha256,self.frame_record_sha256])):
+            raise ValueError('Atlas frame execution input identity mismatch.')
+        frame=load_atlas_frame(self.document)
+        if _frame_digest(atlas_frame_record(frame)) != self.frame_record_sha256:
+            raise ValueError('Atlas frame backend/matrix differs from captured input.')
+        return frame
+
+
+def _draw_atlas_frame_note(figure, orientation):
+    if orientation is not None:
+        figure.text(.5,.017,f'{orientation.axes}: J{orientation.backend_jyear_tt:g} TT; '
+            'barycentric nominal directions; physical accuracy unknown.',
+            ha='center',va='bottom',fontsize=5)
+
+
+def _ecliptic_tick_options(name, *, minor_scale, latitude_scale):
+    latitude=name.startswith('ecliptic_latitude_')
+    value=float(name.removeprefix('ecliptic_latitude_' if latitude else 'ecliptic_longitude_'))
+    major=latitude or abs(value/15-round(value/15))<1e-10
+    return dict(label=(f'{value:+g}°' if latitude else f'{value:g}°') if major else None,
+        font_scale=latitude_scale if latitude else 1 if major else minor_scale,
+        length_points=4 if major else 2, label_rotation='parallel' if latitude else None,
+        label_lane=2 if latitude else 0 if major else 1,
+        style=dict(color='black',linewidth=.8,alpha=1.,linestyle='-',zorder=4))

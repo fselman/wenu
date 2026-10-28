@@ -13,6 +13,220 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "atlas-mean-axis-views": {
+      "scope": "K4b.06 opt-in observer-free dated mean-axis atlas views across geometry, references, derived layout, reports and serial/spawn publication.",
+      "limits": "Existing admitted frame/stellar models and canonical owners only. Constructed source/snapshot seams; retained-source Mac actual-cache and visual acceptance separate. No new observer, chronology, persistence, source acquisition, physical-error claim, generic kernel or dependency. Preserve native defaults; do not repeat unchanged full SDK/propagation/frame-oracle gates.",
+      "selections": [
+        {
+          "node": "tests/test_coordinate_service.py::test_points_match_astropy_and_preserve_semantics",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_icrs_galactic_round_trip_is_coincident",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_curves_preserve_segmentation_closure_and_semantics",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_polygons_preserve_ring_topology",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_grid_preserves_component_names_and_component_semantics",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_altaz_requires_explicit_observation_context",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_altaz_matches_astropy_for_explicit_observation",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_unsupported_coordinate_contracts_fail_explicitly",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_reference_frames_match_astropy",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_mean_axis_geometry_preserves_native_semantics_and_matches_admitted_vectors",
+          "reason": "Preserve existing astronomical geometry routes and qualify the added mean-axis carrier seam, inverse, source metadata, gaps and double-orientation refusal."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_realization_context_is_immutable_and_normalized",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_only_explicit_static_icrs_context_allows_absent_observer",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_native_icrs_rejects_misidentified_geometry_before_projection",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_realization_context_rejects_incomplete_scientific_identity",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_draw_chart_without_context_keeps_the_exact_legacy_layer_call",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_default_realization_adapter_preserves_unmigrated_layers",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_controlled_provider_enters_before_projection_through_service",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_draw_chart_rejects_an_untyped_realization_context",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_native_epoch_guard_rejects_mismatched_layer_time_before_projection",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_mean_view_is_applied_once_before_guard_prepare_and_render",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_layer_realization.py::test_dated_label_region_preparation_uses_the_common_view_seam",
+          "reason": "Retain source/observer context behavior and assert one orientation before guard/preparation, including secondary label-region geometry and an omitted-view fault."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py::test_make_curves_routes_native_geometry_through_coordinate_service",
+          "reason": "Preserve native grid behavior and verify dated paired grids, ticks, poles and cardinal points without source mutation or observer fallback."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py::test_fixed_native_reference_grids_are_local_and_reject_observer_choices",
+          "reason": "Preserve native grid behavior and verify dated paired grids, ticks, poles and cardinal points without source mutation or observer fallback."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py::test_native_equatorial_tick_curves_keep_exact_cadence_and_local_state",
+          "reason": "Preserve native grid behavior and verify dated paired grids, ticks, poles and cardinal points without source mutation or observer fallback."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py::test_constructed_native_planes_consume_shared_results_and_refusals",
+          "reason": "Preserve native grid behavior and verify dated paired grids, ticks, poles and cardinal points without source mutation or observer fallback."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py::test_dated_mean_grids_poles_and_cardinals_share_tt_without_mutating_fixed_sources",
+          "reason": "Preserve native grid behavior and verify dated paired grids, ticks, poles and cardinal points without source mutation or observer fallback."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_sheet_adapter_preserves_exact_json_projection_viewport_and_paper",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_requested_portrait_review_sheets_render_through_chart_command",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_grid_ra_spacing_and_minute_label_switch",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_worker_invokes_chart_entry_and_reuses_worker_sky",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_command_runs_in_spawn_workers_without_an_observer",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_default_route_uses_wenu_chart",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_sheet_executor_consumes_public_render_result_and_preserves_scope",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_motion_config_uses_existing_publication_execution_owner",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_frame_document_capture_rejects_wrong_scale_domain_bytes_and_backend",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_dated_sheet_cli_and_python_share_frame_geometry_reports_and_pixels",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_dated_atlas_publication_without_motion_keeps_counts_and_validates_frame",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_dated_atlas_dropped_worker_frame_refuses_completion",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_frame_worker_scope_refuses_snapshot_mismatch_and_clears_frame",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_empty_stellar_svg_requires_checksum_bound_zero_report",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_dated_request_binds_exact_design_sheet_page_and_primary_tick_units",
+          "reason": "Retain native sheet/furniture/public-command behavior; qualify captured frame/design/backend bindings, both axes and epochs, CLI/Python pixels, no-motion books, workers, counts, empty fields and dropped-frame refusal."
+        },
+        {
+          "node": "tests/test_atlas_design.py::test_mean_axis_layout_is_derived_without_relabelling_icrs_design",
+          "reason": "Bind a separately identified target-axis numerical layout while retaining original ICRS design/projection/footprint semantics."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_motion_document_cli_route_and_cleanup",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_motion_document_cli_fresh_process",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_motion_document_cannot_override_prepared_request",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_motion_publication_serial_spawn_sheet_and_count_parity",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_publication_worker_scope_cleanup_and_refusal",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_motion_publication_failure_has_no_completion",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        },
+        {
+          "node": "tests/test_stellar_state.py::test_stellar_publication_rejects_returned_epoch_or_cleanup_failure",
+          "reason": "Retain existing motion CLI and publication lifetimes; combine independent TT frame and TCB stellar events with serial/spawn/direct-sheet, counts, pixel, PDF and cleanup/refusal checks."
+        }
+      ]
+    },
     "stellar-enrichment-contract": {
       "scope": "K4a.01 full retained stellar population, visual photometry and explicit-ID/vertex/naming selection contracts before Gaia enrichment.",
       "limits": "Design contract, source-bound census and regression evidence only. No production, provider, source bytes, dependencies, SDK, acquisition/matching, astrometric model, snapshot format or renderer change. K4a.02 onward and K5 remain separate; no catalogue download or output export.",

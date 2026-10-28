@@ -370,12 +370,43 @@ class CelestialPoints(GeometricalObject):
             return super().realize(context, observer, **options)
         if options:
             raise TypeError("Celestial points accept no native geometry options.")
-        coordinates = [self._to_icrs(point.coord) for point in self._points]
+        coordinates = [self._dated_reference(point, context.orientation)
+            if context.orientation is not None else self._to_icrs(point.coord)
+            for point in self._points]
         return SphericalPoints(
             lon_deg=np.asarray([c.lon_deg[0] for c in coordinates]),
             lat_deg=np.asarray([c.lat_deg[0] for c in coordinates]),
             coordinate_spec=ICRS_ASTROMETRIC_SPEC,
-            labels=[point.label for point in self._points], metadata=self._style_metadata())
+            labels=[point.label for point in self._points], metadata={**self._style_metadata(),
+                'source_reference_coordinates':tuple((self._native_spec(p.coord),
+                    float(p.coord.spherical.lon.deg),float(p.coord.spherical.lat.deg)) for p in self._points),
+                'reference_policy':('dated-mean-poles-and-cardinals/1' if context.orientation is not None else 'fixed')})
+
+    @classmethod
+    def _dated_reference(cls, point, orientation):
+        """Explicit atlas policy for canonical poles/cardinals; Galactic stays fixed.
+
+        Arbitrary selected points refuse rather than infer a dated physical role
+        from their labels. Source points and their styles are never mutated.
+        """
+        from wenu.coordinate_service import mean_reference_frame, mean_frame_spec
+        coord=point.coord
+        if coord.frame.name == 'galactic':
+            return cls._to_icrs(coord)
+        lon=float(coord.spherical.lon.deg)%360
+        lat=float(coord.spherical.lat.deg)
+        if coord.frame.name == 'icrs' and lon == 0 and abs(lat) == 90:
+            axes='mean-equator-equinox'
+        elif (coord.frame.name == 'barycentricmeanecliptic'
+              and str(coord.frame.equinox) in {'J2000','J2000.0','J2000.000'}
+              and ((lon == 0 and abs(lat) == 90) or (lat == 0 and lon in (0,90,180,270)))):
+            axes='mean-ecliptic-equinox'
+        else:
+            raise ValueError('Dated atlas celestial references support canonical poles/cardinals only.')
+        frame=mean_reference_frame(orientation,axes)
+        native=SphericalPoints(lon_deg=[lon],lat_deg=[lat],coordinate_spec=mean_frame_spec(frame),
+            metadata={'fixed_source_reference_spec':cls._native_spec(coord)})
+        return CoordinateService().orient_geometry(native,frame,inverse=True)
 
     @staticmethod
     def _native_spec(coord):

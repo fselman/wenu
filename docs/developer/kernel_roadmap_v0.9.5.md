@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 116, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. PR #352's date-oriented atlas scope is accepted and merged at `8865ae05` after 36 Mac documentation passes; implementation remains pending. K4b.08 now records separately agreed ancient/future Earth-bound observer capability; detailed model/product slices remain pending.
+**Plan revision:** 117, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. PR #352's date-oriented atlas scope is accepted and merged at `8865ae05` after 36 Mac documentation passes; the selected implementation is now a candidate with Mac actual-cache/visual acceptance pending. K4b.08 now records separately agreed ancient/future Earth-bound observer capability; detailed model/product slices remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,9 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
-confirmed clean/synchronized on the Mac after PR #352 merge. Task-branch cleanup
-has not been reported.
+**Current accepted base:** main `7d0f7425dd9b129f466594fc9cde222545b3c598`,
+confirmed clean/synchronized on the Mac after PR #353 merge and cleanup of both
+#352/#353 task branches.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -69,7 +69,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #350 native atlas publication/worker slice accepted, merged and cleaned up; all Mac gates, actual-cache serial/spawn/single-sheet parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | K4b.06 [date-oriented atlas scope](#k4b06-proposed-date-oriented-atlas-view-scope) accepted in #352; implementation pending a selection/receipt. Current task records [K4b.08 Earth-bound observers](#k4b08-earth-bound-observers-at-ancient-and-future-epochs) as separately agreed capability, not activated runtime. K4b.07 and other K4b.06 scopes remain separate |
+| Next bounded submilestone | K4b.06 [date-oriented atlas scope](#k4b06-proposed-date-oriented-atlas-view-scope) accepted in #352; implementation selected by Fernando's “Proceed” after #353 merge/cleanup. The dated-axis runtime candidate awaits Mac/visual acceptance. [K4b.08 Earth-bound observers](#k4b08-earth-bound-observers-at-ancient-and-future-epochs) remain separately agreed capability, not activated runtime. K4b.07 and other K4b.06 scopes remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -85,6 +85,15 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 ## K4b.06: proposed date-oriented atlas view scope
 
+**Implementation selection, 2026-10-27:** after PR #353 merge, Fernando
+confirmed clean synchronized main `7d0f7425dd9b129f466594fc9cde222545b3c598`
+and local/remote cleanup of both documentation branches, then said “Proceed”
+to the accepted #352 dated-axis atlas implementation. Implement only this
+K4b.06 boundary and its required runtime/Mac/visual gates below. K4b.07 and
+K4b.08 stay separately pending. This selection receipt is committed before
+runtime edits. It establishes authorization, not product acceptance; candidate
+implementation status is recorded below.
+
 **Selection:** after PR #351 acceptance-receipt merge/cleanup and clean synchronized
 Mac main `07a03aece766c86f316722200a03253550fbdfb7`, Fernando requested:
 “Proceed after as-is review of current code, architecture, and roadmap.”
@@ -94,9 +103,10 @@ identify missing product seams. Fernando accepted #352 and requested its merge;
 all 36 Mac documentation cases passed in 4.16 s at `7d79b5dea037748f21f8d61a9bffa8b6c138afc6`.
 Evidence: `~/Software/build/wenu/test/date-atlas-scope-docs-v1-486mfcjh`.
 Merged at `8865ae053a60b9fd70a7739460a82e6b9615e55d`; clean synchronized Mac main
-is confirmed. The following boundary is accepted scope, not implemented runtime
-or a new prerequisite for K5. The original heading/link is retained for continuity.
-Parent K4b.06 remains open. No runtime option or schema is introduced by this plan.
+is confirmed. The following boundary is accepted scope, with candidate implementation
+described below, not accepted runtime or a new prerequisite for K5. The original heading/link is retained for continuity.
+Parent K4b.06 remains open. The definition itself introduced no runtime option;
+the subsequent candidate adds the separate frame document below.
 
 **Accepted scoped result:** opt-in observer-free single-sheet and multi-sheet atlas
 views in either qualified mean-equator/equinox or mean-ecliptic/equinox axes,
@@ -158,6 +168,15 @@ footprints; it does not provide the proposed target-coordinate atlas tiling.
   unless independently qualified for the requested view; disclose their actual
   frame/date rather than claiming that concatenation regenerates them.
 
+**Implementation candidate:** the [as-built candidate API](implementation_reference.md#dated-axis-atlas-views-k4b06-candidate)
+and [usage](../user_guide/atlas.md#mean-axis-atlas-views) now cover this boundary.
+Local gate: 155 focused cases passed; the final reference-policy owner follow-up
+passed five cases. The [testing record](testing_policy.md#dated-axis-atlas-candidate-gate)
+distinguishes these constructed-input checks from Mac acceptance.
+Mac runtime/documentation, retained-source actual-cache and visual acceptance
+remain pending. Canonical reference-policy refusals and unknown physical errors
+stay explicit; no parent closure or K4b.07/K4b.08 implementation is claimed.
+
 **Required runtime acceptance:** extend closest existing coordinate, realization, atlas
 design/request/publication and stellar owner tests. Protect against an omitted
 or doubled orientation, wrong TT scale/domain, mismatched worker frame, partially
@@ -172,8 +191,8 @@ qualified-domain single-sheet/serial/spawn specimens for both axes, with report,
 PNG, PDF order/size and visual acceptance. Report TT frame and TCB stellar events
 separately, along with unchanged source/model limitations.
 
-**Limits and order:** scope agreement was given with #352; a committed
-implementation-selection receipt still precedes runtime changes. Other regional/planisphere/observer adoption, nutation, Earth
+**Limits and order:** scope agreement was given with #352; implementation selection
+was committed at `37e070900e8d3c6048e88aed528b28b9c1d87110` before runtime changes. Other regional/planisphere/observer adoption, nutation, Earth
 orientation/EOP, historical clock reconstruction, new chronology syntax,
 Solar System translation, acquisition, physical-model accuracy, bright-star
 source audit, persistent evaluated catalogues and package extraction are excluded.
@@ -2812,5 +2831,6 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
 
 

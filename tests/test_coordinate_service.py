@@ -405,3 +405,51 @@ def test_reference_frames_match_astropy(source_spec, source_frame):
     np.testing.assert_allclose(
         transformed.lat_deg, expected.lat.to_value(u.deg), atol=1e-10
     )
+
+
+
+@pytest.mark.parametrize('axes',['mean-equator-equinox','mean-ecliptic-equinox'])
+@pytest.mark.parametrize('kind',['points','curves','polygons','grid'])
+def test_mean_axis_geometry_preserves_native_semantics_and_matches_admitted_vectors(axes,kind):
+    """Protect the common geometry seam, not a new frame-model qualification."""
+    from dataclasses import replace
+    from wenu.astrometric_coordinates import LongTermFrame,LONG_TERM_FRAME_POLICY
+    from wenu_kernel.records import TimePoint,TimeSpan
+    frame=LongTermFrame(equinox=TimePoint(-1200955,0.,'tt'),
+        validity=TimeSpan(TimePoint(-1200956,0.,'tt'),TimePoint(2451546,0.,'tt')),
+        axes=axes,model_policy=LONG_TERM_FRAME_POLICY)
+    spec=replace(ICRS_ASTROMETRIC_SPEC,instant='independent-TCB-event',time_scale='tcb',epoch='source epoch')
+    lon=np.array([359.9,17.,np.nan,0.]);lat=np.array([10.,-30.,np.nan,90.])
+    common=dict(coordinate_spec=spec,ids=['a','b'],labels=['A','B'],metadata={'retained':'source'})
+    if kind=='points':
+        g=SphericalPoints(lon,lat,coordinate_spec=spec,ids=['a','b','c','d'],metadata=common['metadata'])
+    else:
+        owner=SphericalPolygons if kind=='polygons' else SphericalCurves
+        g=owner((lon,lon[[0,1,3]] if kind=='polygons' else lon[:2]),
+            (lat,lat[[0,1,3]] if kind=='polygons' else lat[:2]),**common)
+        if kind=='grid':g=SphericalGrid({'reference':g},coordinate_spec=spec,metadata={'grid':'retained'})
+    service=CoordinateService();result=service.orient_geometry(g,frame)
+    item=result['reference'] if kind=='grid' else result
+    original=g['reference'] if kind=='grid' else g
+    actual_lon=item.lon_deg if kind=='points' else item.lon_deg[0]
+    actual_lat=item.lat_deg if kind=='points' else item.lat_deg[0]
+    def xyz(a,b):
+        a,b=np.deg2rad(a),np.deg2rad(b)
+        return np.array([np.cos(b)*np.cos(a),np.cos(b)*np.sin(a),np.sin(b)]).T
+    valid=np.isfinite(lon)
+    expected=np.array([frame.rotate(tuple(map(float,v))) for v in xyz(lon[valid],lat[valid])])
+    np.testing.assert_allclose(xyz(actual_lon[valid],actual_lat[valid]),expected,atol=6e-16)
+    assert np.isnan(actual_lon[2]) and np.isnan(actual_lat[2])
+    assert item.coordinate_spec.instant==spec.instant and item.coordinate_spec.time_scale=='tcb'
+    assert item.coordinate_spec.equinox.endswith(' TT') and item.coordinate_spec.epoch=='source epoch'
+    assert item.metadata['source_coordinate_spec']==spec and item.metadata['retained']=='source'
+    np.testing.assert_array_equal(item.ids,original.ids)
+    assert result is not g and item.metadata is not original.metadata
+    back=service.orient_geometry(result,frame,inverse=True)
+    restored=back['reference'] if kind=='grid' else back
+    a=restored.lon_deg if kind=='points' else restored.lon_deg[0]
+    b=restored.lat_deg if kind=='points' else restored.lat_deg[0]
+    np.testing.assert_allclose(xyz(a[valid],b[valid]),xyz(lon[valid],lat[valid]),atol=7e-16)
+    with pytest.raises(ValueError,match='matching barycentric'):
+        service.orient_geometry(result,frame)
+    np.testing.assert_array_equal(original.lon_deg if kind=='points' else original.lon_deg[0],lon)

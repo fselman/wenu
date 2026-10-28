@@ -1063,7 +1063,7 @@ def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path,
 @pytest.mark.parametrize("orientation", ["landscape", "portrait"])
 @pytest.mark.parametrize("minute_labels_visible", [False, True])
 def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
-        request_data, polar, lines_visible, orientation, minute_labels_visible, tmp_path):
+        request_data, polar, lines_visible, orientation, minute_labels_visible, tmp_path, monkeypatch):
     import matplotlib.pyplot as plt
     import numpy as np
     from wenu import CelestialSphere
@@ -1102,7 +1102,17 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     horizontal, vertical = _atlas_frame_widths(style, presentation)
     assert horizontal == pytest.approx(baseline*1.5)
     composition = replace(composition,style=style)
-    fig = plt.figure()
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    # Match production atlas-sheet physical geometry. A GUI manager can round
+    # set_size_inches() to device pixels (observed on Mac landscape pages).
+    # Keep every margin, attachment, collision and tick assertion strict.
+    def refuse_gui_figure(*args, **kwargs):
+        raise AssertionError("Physical atlas layout must not depend on pyplot GUI sizing.")
+    monkeypatch.setattr(plt, "figure", refuse_gui_figure)
+    fig = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4), dpi=100)
+    FigureCanvasAgg(fig)
+    assert fig.canvas.manager is None
     renderer = MatplotlibRenderer(fig.add_axes(bounds))
     renderer.configure_grid_label_frame(horizontal_points=horizontal,
         vertical_points=vertical, polar=bool(polar))
@@ -1787,3 +1797,255 @@ def test_atlas_motion_config_uses_existing_publication_execution_owner(tmp_path,
     assert calls[0]['stellar_motion_config'] == motion
     assert calls[0]['jobs'] == 2
     assert callable(calls[0]['chart_command'])
+
+
+def _atlas_frame_document(axes='mean-equator-equinox', year=-8000):
+    from fractions import Fraction
+    day=Fraction(2451545)+(Fraction(year)-2000)*Fraction('365.25')
+    whole=(day+Fraction(1,2)).__floor__();small=float(day-whole)
+    return (f'schema_version = 1\ndocument_kind = "wenu-atlas-frame"\naxes = "{axes}"\n'
+        'model_policy = "vcw2011-2012-erfa"\n'
+        f'[equinox]\njd1 = {whole}\njd2 = {small}\nscale = "tt"\n'
+        '[start]\njd1 = -1200956\njd2 = 0.0\nscale = "tt"\n'
+        '[stop]\njd1 = 2451546\njd2 = 0.0\nscale = "tt"\n').encode()
+
+
+def _dated_atlas_test_sky():
+    """Constructed local inputs; no source fixture or ephemeris acquisition."""
+    import pandas as pd
+    from astropy.coordinates import BarycentricMeanEcliptic
+    from astropy.time import Time
+    from wenu import CelestialSphere
+    from wenu.objects.stars import Stars
+    stars=Stars(None,magnitude_limit=6)
+    stars.source_catalog=native_table(pd.DataFrame(dict(ra_hours=[1.,15.],dec_degrees=[30.,-60.],
+        magnitude=[2.,4.],is_constellation_vertex=[False,False]),index=[11,12]))
+    stars.catalog=stars.source_catalog.copy()
+    sky=CelestialSphere(None);sky.stars=sky.add(stars)
+    sky.add_equatorial_grid(frame='icrs',equinox='J2000',samples=73,include_equator=True)
+    sky.add_ecliptic_grid(equinox='J2000',samples=73,include_ecliptic=True)
+    points=sky.add_points();ecliptic=BarycentricMeanEcliptic(equinox=Time('J2000'))
+    for pole in ('north','south'):
+        points.add_equatorial_pole(pole).add_ecliptic_pole(pole,frame=ecliptic)
+    points.add_ecliptic_cardinal_points(frame=ecliptic)
+    return sky
+
+
+def _dated_atlas_test_worker(directory,digest,command,motion_input,design_sha256,frame_input):
+    """Replace synthetic snapshot decoding only; real frame binding and workers."""
+    from wenu.sky import native_snapshot
+    from wenu.charts import atlas_publication as publication
+    class SyntheticSnapshot:
+        manifest_sha256=digest
+        def require(self,**kwargs): assert kwargs['design_sha256']==design_sha256
+        def make_sky(self):return _dated_atlas_test_sky()
+    original=native_snapshot.read_native_sky_snapshot
+    native_snapshot.read_native_sky_snapshot=lambda *a,**k:SyntheticSnapshot()
+    try:
+        publication._initialize_atlas_worker(directory,digest,command,motion_input,design_sha256,frame_input)
+    finally:
+        native_snapshot.read_native_sky_snapshot=original
+
+
+def _dated_atlas_drop_frame_command(argv,**kwargs):
+    from wenu.cli.chart import main
+    kwargs['atlas_request']=replace(kwargs['atlas_request'],orientation=None,frame_input=None)
+    return main(argv,**kwargs)
+
+
+def test_atlas_frame_document_capture_rejects_wrong_scale_domain_bytes_and_backend(tmp_path,monkeypatch):
+    import erfa, numpy as np
+    from wenu.charts.atlas_sheet import AtlasFrameExecutionInput,load_atlas_frame
+    from wenu_kernel.errors import KernelError
+    path=tmp_path/'frame.toml';path.write_bytes(_atlas_frame_document())
+    captured,frame=AtlasFrameExecutionInput.capture(path,design_bytes=b'original design bytes',snapshot_sha256='b'*64)
+    path.write_bytes(_atlas_frame_document(year=2000))
+    assert captured.admit(design_sha256=hashlib.sha256(b'original design bytes').hexdigest(),snapshot_sha256='b'*64)==frame
+    for bad in (replace(captured,document=path.read_bytes()),replace(captured,design_sha256='c'*64)):
+        with pytest.raises(ValueError,match='identity mismatch'):
+            bad.admit(design_sha256=hashlib.sha256(b'original design bytes').hexdigest(),snapshot_sha256='b'*64)
+    for content in (_atlas_frame_document().replace(b'"tt"',b'"tcb"',1),
+                    _atlas_frame_document(year=-9000),_atlas_frame_document()+b'unknown = true\n'):
+        with pytest.raises((ValueError,KernelError)):
+            load_atlas_frame(content)
+    evaluate=erfa.ltpb
+    def fault(year):
+        angle=.01
+        return np.array([[np.cos(angle),-np.sin(angle),0],[np.sin(angle),np.cos(angle),0],[0,0,1]])@evaluate(year)
+    monkeypatch.setattr(erfa,'ltpb',fault)
+    with pytest.raises(ValueError,match='backend/matrix'):
+        captured.admit(design_sha256=hashlib.sha256(b'original design bytes').hexdigest(),snapshot_sha256='b'*64)
+
+
+@pytest.mark.parametrize('axes',['mean-equator-equinox','mean-ecliptic-equinox'])
+@pytest.mark.parametrize('year',[2000,-8000])
+def test_dated_sheet_cli_and_python_share_frame_geometry_reports_and_pixels(tmp_path,monkeypatch,axes,year):
+    import json,numpy as np
+    from PIL import Image
+    from wenu.resources import configuration_preset_path
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest,AtlasChartPresentation,load_atlas_frame
+    from wenu.charts.request_generation import generate_chart_request
+    from wenu.cli.chart import main
+    from wenu.sky import native_snapshot
+    from wenu.sky.celestial_sphere import CelestialSphere
+    design=configuration_preset_path('b4-portrait',kind='atlas-layout');raw=design.read_bytes()
+    atlas=AtlasBandTiling.from_json(raw.decode());digest=hashlib.sha256(raw).hexdigest()
+    frame_path=tmp_path/'frame.toml';frame_path.write_bytes(_atlas_frame_document(axes,year))
+    presentation=AtlasChartPresentation(layers=('stars','equatorial_grid','ecliptic_grid','celestial_points'),
+        dpi=36,legend_fontsize=6,report_label_scale=1)
+    config=tmp_path/'style.toml';config.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
+        'layers=["stars","equatorial_grid","ecliptic_grid","celestial_points"]\n'
+        'dpi=36\nlegend_fontsize=6\nreport_label_scale=1\n')
+    sky=_dated_atlas_test_sky();original=sky.stars.source_catalog.copy(deep=True)
+    class SyntheticSnapshot:
+        manifest_sha256='b'*64
+        def require(self,**kwargs):assert kwargs['design_sha256']==digest
+        def make_sky(self):return sky
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda *a,**k:SyntheticSnapshot())
+    rendered=[];draw=CelestialSphere.draw_chart
+    def capture(self,**kwargs):
+        result=draw(self,**kwargs);rendered.append(result);return result
+    monkeypatch.setattr(CelestialSphere,'draw_chart',capture)
+    # Polar and ordinary fields exercise different boundary/furniture owners.
+    for number in (1,13):
+        out=tmp_path/f'cli-{number}'
+        assert main(['atlas-sheet','--design',str(design),'--config',str(config),
+            '--from-sky',str(tmp_path/'synthetic-snapshot'),'--atlas-frame-config',str(frame_path),
+            '--chart-number',str(number),'--output-dir',str(out),'--debug'])==0
+        request=AtlasSheetChartRequest(atlas.geometry.sheets[number-1],atlas.geometry.page,
+            presentation,tmp_path/f'python-{number}',orientation=load_atlas_frame(frame_path.read_bytes()),design_sha256=digest,design_bytes=raw)
+        generate_chart_request(request,sky=sky)
+        stem=f'chart-{number:02d}'
+        for suffix in ('','_report'):
+            with Image.open(out/(stem+suffix+'.png')) as a,Image.open(request.output_dir/(stem+suffix+'.png')) as b:
+                np.testing.assert_array_equal(np.asarray(a),np.asarray(b))
+        report=json.loads((out/(stem+'_report_data.json')).read_text())
+        assert report['center']['coordinate_system']==axes
+        assert report['center']['equinox_tt']['scale']=='tt'
+        assert report['derived_view']['source_design_sha256']==digest
+        assert report['derived_view']['source_sheet_id']==request.sheet.sheet_id
+        assert report['sheet_id']!=request.sheet.sheet_id
+        assert 'ra_deg' not in report['center'] and 'stellar_realization' not in report
+    assert all(r.spherical.coordinate_spec.frame==axes for result in rendered for r in result.layers)
+    import pandas as pd
+    pd.testing.assert_frame_equal(sky.stars.source_catalog,original)
+    assert not hasattr(sky.stars,'_stellar_realization')
+
+
+@pytest.mark.parametrize('jobs',[1,2])
+@pytest.mark.parametrize('axes',['mean-equator-equinox','mean-ecliptic-equinox'])
+def test_dated_atlas_publication_without_motion_keeps_counts_and_validates_frame(tmp_path,monkeypatch,jobs,axes):
+    import json
+    from wenu.charts import atlas_publication as publication
+    from wenu.charts.atlas_sheet import AtlasChartPresentation,atlas_frame_record,load_atlas_frame
+    from wenu.resources import configuration_preset_path
+    from wenu.sky import native_snapshot
+    from wenu.charts.stellar_sizing_report import catalogue_star_counts
+    design=configuration_preset_path('b4-portrait',kind='atlas-layout')
+    digest=hashlib.sha256(design.read_bytes()).hexdigest();sky=_dated_atlas_test_sky()
+    class SyntheticSnapshot:
+        manifest_sha256='b'*64
+        def require(self,**kwargs):assert kwargs['design_sha256']==digest
+        def make_sky(self):return sky
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda *a,**k:SyntheticSnapshot())
+    if jobs==2:monkeypatch.setattr(publication,'_initialize_atlas_worker',_dated_atlas_test_worker)
+    frame_path=tmp_path/'frame.toml';frame_path.write_bytes(_atlas_frame_document(axes))
+    frame=load_atlas_frame(frame_path.read_bytes())
+    presentation=AtlasChartPresentation(layers=('stars','equatorial_grid','ecliptic_grid','celestial_points'),
+        formats=('png','pdf','svg'),dpi=36,legend_fontsize=6,report_label_scale=1)
+    expected=catalogue_star_counts(sky.stars,presentation.star_magnitude_limit)[0]
+    path=publication.create_atlas(design,tmp_path/'book',presentation=presentation,
+        charts='1,13',jobs=jobs,from_sky=tmp_path/'synthetic',atlas_frame_config=frame_path)
+    data=json.loads(path.read_text());assert data['atlas_frame']==atlas_frame_record(frame)
+    counts=json.loads((path.parent/'atlas-star-counts.json').read_text())
+    assert counts['selected_count']==expected['selected_count']==2
+    assert counts['provenance']['atlas_frame']==data['atlas_frame']
+    assert 'stellar_realization' not in data
+    assert data['charts']==[1,13] and len(data['derived_views'])==2
+    with pytest.raises(ValueError):
+        publication.create_atlas(design,path.parent,presentation=presentation,charts='1',
+            jobs=1,from_sky=tmp_path/'synthetic',atlas_frame_config=frame_path)
+
+
+@pytest.mark.parametrize('jobs',[1,2])
+def test_dated_atlas_dropped_worker_frame_refuses_completion(tmp_path,monkeypatch,jobs):
+    from wenu.charts import atlas_publication as publication
+    from wenu.charts.atlas_sheet import AtlasChartPresentation
+    from wenu.resources import configuration_preset_path
+    from wenu.sky import native_snapshot
+    design=configuration_preset_path('b4-portrait',kind='atlas-layout')
+    digest=hashlib.sha256(design.read_bytes()).hexdigest();sky=_dated_atlas_test_sky()
+    class SyntheticSnapshot:
+        manifest_sha256='b'*64
+        def require(self,**kwargs):assert kwargs['design_sha256']==digest
+        def make_sky(self):return sky
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda *a,**k:SyntheticSnapshot())
+    if jobs==2:monkeypatch.setattr(publication,'_initialize_atlas_worker',_dated_atlas_test_worker)
+    frame=tmp_path/'frame.toml';frame.write_bytes(_atlas_frame_document())
+    with pytest.raises(ValueError,match='different frame or derived layout'):
+        publication.create_atlas(design,tmp_path/'failed',
+            presentation=AtlasChartPresentation(layers=('stars',),dpi=36,legend_fontsize=6,report_label_scale=1),
+            charts='1,13',jobs=jobs,from_sky=tmp_path/'synthetic',atlas_frame_config=frame,
+            chart_command=_dated_atlas_drop_frame_command)
+    assert not (tmp_path/'failed').exists()
+    assert not hasattr(sky.stars,'_stellar_realization')
+
+
+def test_atlas_frame_worker_scope_refuses_snapshot_mismatch_and_clears_frame(tmp_path,monkeypatch):
+    from wenu.charts import atlas_publication as publication
+    from wenu.charts.atlas_sheet import AtlasFrameExecutionInput
+    from wenu.sky import native_snapshot
+    frame=tmp_path/'frame.toml';frame.write_bytes(_atlas_frame_document())
+    captured,_=AtlasFrameExecutionInput.capture(frame,design_bytes=b'original design bytes',snapshot_sha256='b'*64)
+    class SyntheticSnapshot:
+        manifest_sha256='b'*64
+        def require(self,**kwargs):pass
+        def make_sky(self):return _dated_atlas_test_sky()
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda *a,**k:SyntheticSnapshot())
+    try:
+        publication._initialize_atlas_worker(tmp_path,'b'*64,None,None,hashlib.sha256(b'original design bytes').hexdigest(),captured)
+        assert publication._WORKER_FRAME.model.configuration_digest
+        with pytest.raises(ValueError,match='identity mismatch'):
+            publication._initialize_atlas_worker(tmp_path,'b'*64,None,None,'c'*64,captured)
+        assert publication._WORKER_FRAME is None and publication._WORKER_SKY is None
+    finally:publication._close_atlas_worker()
+
+
+def test_empty_stellar_svg_requires_checksum_bound_zero_report(tmp_path):
+    import json
+    from wenu.charts.stellar_sizing_report import analyze
+    svg=tmp_path/'chart-01.svg'
+    svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="100mm" height="100mm" viewBox="0 0 100 100"/>')
+    report=tmp_path/'chart-01_report_data.json'
+    def bind(count):
+        report.write_text(json.dumps({'stars':{'statistics':{'visible_count':count}}}))
+        manifest=dict(document_kind='wenu-atlas-chart-batch',presentation={'layers':['stars']},
+            products={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (svg,report)})
+        (tmp_path/'manifest.json').write_text(json.dumps(manifest))
+    bind(1)
+    with pytest.raises(ValueError,match='No Wenu stellar semantic layer'):
+        analyze([svg],tmp_path/'bad',show_magnitudes=False)
+    bind(0)
+    report.write_text(report.read_text()+' ')
+    with pytest.raises(ValueError,match='No Wenu stellar semantic layer'):
+        analyze([svg],tmp_path/'tampered',show_magnitudes=False)
+    bind(0)
+    analyze([svg],tmp_path/'empty',show_magnitudes=False)
+    assert (tmp_path/'empty_summary.json').exists()
+
+
+def test_dated_request_binds_exact_design_sheet_page_and_primary_tick_units(tmp_path):
+    from wenu.charts.atlas_sheet import (AtlasSheetChartRequest,AtlasChartPresentation,
+        load_atlas_frame,_ecliptic_tick_options)
+    from wenu.resources import configuration_preset_path
+    raw=configuration_preset_path('b4-portrait',kind='atlas-layout').read_bytes()
+    atlas=AtlasBandTiling.from_json(raw.decode())
+    request=AtlasSheetChartRequest(atlas.geometry.sheets[0],atlas.geometry.page,
+        AtlasChartPresentation(),tmp_path,orientation=load_atlas_frame(_atlas_frame_document()),design_bytes=raw)
+    assert request.design_sha256==hashlib.sha256(raw).hexdigest()
+    for fields in (dict(design_sha256='a'*64),dict(design_bytes=None),
+                   dict(sheet=replace(request.sheet,position_angle_deg=1.)),
+                   dict(page=replace(request.page,width_mm=request.page.width_mm+1))):
+        with pytest.raises(ValueError):replace(request,**fields)
+    tick=_ecliptic_tick_options('ecliptic_longitude_30',minor_scale=.75,latitude_scale=.8)
+    assert tick['label']=='30°' and 'ʰ' not in tick['label']

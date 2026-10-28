@@ -125,6 +125,67 @@ class CoordinateService:
             metadata=dict(geometry.metadata),
         )
 
+    def orient_geometry(self, geometry, orientation, *, inverse=False):
+        """Re-express geometry on admitted mean axes; never propagate a source.
+
+        The inverse solves the actual near-orthogonal matrix, rather than
+        assuming its transpose is exact. NaN slots and ragged topology survive.
+        Source specifications remain separately available in copied metadata.
+        """
+        from dataclasses import replace
+        from wenu.astrometric_coordinates import LongTermFrame
+        from wenu.coordinates import PositionStatus
+        if type(orientation) is not LongTermFrame or type(inverse) is not bool:
+            raise TypeError('An admitted LongTermFrame and boolean inverse are required.')
+        if not isinstance(geometry, (SphericalPoints, SphericalCurves, SphericalPolygons, SphericalGrid)):
+            raise TypeError('Unsupported spherical geometry.')
+        source = geometry.coordinate_spec
+        self._validate_spec(source)
+        identity = orientation.model.configuration_digest
+        expected = orientation.axes if inverse else 'icrs'
+        if (source.frame != expected or source.origin != 'solar-system-barycenter'
+                or source.position_status != PositionStatus.ASTROMETRIC
+                or source.corrections or (inverse and identity not in source.provenance)):
+            raise ValueError('Mean-axis geometry requires matching barycentric astrometric axes.')
+        target = replace(source, frame='icrs' if inverse else orientation.axes,
+            equinox=None if inverse else f'JD({orientation.equinox.jd1},{orientation.equinox.jd2.hex()}) TT',
+            provenance=source.provenance + (identity,))
+        metadata = dict(geometry.metadata)
+        metadata['source_coordinate_spec'] = source
+        metadata['view_frame_sha256'] = identity
+        if isinstance(geometry, SphericalGrid):
+            return replace(geometry, components={name:self.orient_geometry(curve, orientation, inverse=inverse)
+                for name,curve in geometry.components.items()}, coordinate_spec=target, metadata=metadata)
+        matrix = np.asarray(orientation.matrix)
+        def coordinates(lon, lat):
+            lon,lat=np.asarray(lon,dtype=float),np.asarray(lat,dtype=float)
+            if lon.shape != lat.shape or np.any(np.isinf(lon)) or np.any(np.isinf(lat)):
+                raise ValueError('Malformed spherical direction arrays.')
+            valid=np.isfinite(lon) & np.isfinite(lat)
+            if np.any(np.abs(lat[valid])>90):
+                raise ValueError('Latitude outside the sphere.')
+            longitude,latitude=np.full(lon.shape,np.nan),np.full(lat.shape,np.nan)
+            a,b=np.deg2rad(lon[valid]),np.deg2rad(lat[valid])
+            xyz=np.array((np.cos(b)*np.cos(a),np.cos(b)*np.sin(a),np.sin(b)))
+            xyz=np.linalg.solve(matrix,xyz) if inverse else matrix @ xyz
+            norms=np.linalg.norm(xyz,axis=0)
+            if np.any(~np.isfinite(norms)) or np.any(norms==0):
+                raise ValueError('Invalid mean-axis direction.')
+            xyz=xyz/norms
+            longitude[valid]=np.rad2deg(np.arctan2(xyz[1],xyz[0]))%360
+            latitude[valid]=np.rad2deg(np.arctan2(xyz[2],np.hypot(xyz[0],xyz[1])))
+            return longitude,latitude
+        if isinstance(geometry,SphericalPoints):
+            lon,lat=coordinates(geometry.lon_deg,geometry.lat_deg)
+        else:
+            pairs=[coordinates(a,b) for a,b in zip(geometry.lon_deg,geometry.lat_deg)]
+            lon,lat=tuple(a for a,b in pairs),tuple(b for a,b in pairs)
+        fields=dict(lon_deg=lon,lat_deg=lat,coordinate_spec=target,metadata=metadata,
+            ids=_copy(geometry.ids),names=_copy(geometry.names),labels=_copy(geometry.labels))
+        if isinstance(geometry,SphericalCurves):
+            fields['closed']=geometry.closed.copy()
+        return replace(geometry,**fields)
+
     def transform_observer_geometry(
         self,
         geometry: SphericalGeometry,
@@ -314,3 +375,23 @@ def _annotate_coordinate_system(geometry, coordinate_system):
     if isinstance(geometry, SphericalGrid):
         for component in geometry.components.values():
             _annotate_coordinate_system(component, coordinate_system)
+
+
+def mean_reference_frame(orientation, axes):
+    """Paired mean reference at the same explicit TT event/domain/policy."""
+    from wenu.astrometric_coordinates import LongTermFrame, LONG_TERM_FRAME_POLICY
+    if type(orientation) is not LongTermFrame:
+        raise TypeError('Expected admitted LongTermFrame.')
+    return orientation if orientation.axes == axes else LongTermFrame(
+        equinox=orientation.equinox, validity=orientation.validity,
+        axes=axes, model_policy=LONG_TERM_FRAME_POLICY)
+
+
+def mean_frame_spec(orientation):
+    """Reference coordinates used to construct dated grids, never source states."""
+    from wenu.coordinates import PositionStatus
+    return CoordinateSpec(frame=orientation.axes, origin='solar-system-barycenter',
+        position_status=PositionStatus.ASTROMETRIC,
+        equinox=f'JD({orientation.equinox.jd1},{orientation.equinox.jd2.hex()}) TT',
+        provider='wenu mean reference geometry',
+        provenance=(orientation.model.configuration_digest,))
