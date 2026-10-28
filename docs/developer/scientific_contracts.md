@@ -1,5 +1,27 @@
 # Current scientific contracts and paused work
 
+## Exact-epoch stellar product contract
+
+The first K4b.07 candidate persists existing admitted nominal states at one
+resolved TCB event; it introduces no numerical model or new physical accuracy.
+All source identities/measurements/photometry/uncertainties/provenance remain
+verbatim, including measured parallaxes for angular models and absent RV.
+Full-input models may supply separately typed SI PV; angular models retain
+original direction/tangent coefficients, with no fabricated distance or velocity.
+Original source/model reference events and domains are retained without rebasing
+normalized angular models. Requested/evaluated/anchor events and source events
+remain distinct records. Measurement/physical/numerical error evidence is stored
+as returned; unknown channels remain unknown. No certificate is invented.
+
+The reader verifies data and provides exact-event access only; different-event
+and different-scale use refuses. Persistence does not make a historical model
+gap into a deletion from the modern catalogue, replace source facts, apply an
+observer/parallax correction, orient TT axes or extend model/resource validity.
+The configurable fixed-position window and model-faithful advancement remain
+future separately scoped K4b.07 work. Earth/Solar System and full observer
+functionality stay separate. Local persistence implies no redistribution right.
+The coordinate guide's existing time/frame/parallax meanings remain current.
+
 ## Stellar catalogue preservation and deferred observers
 
 **User direction, 2026-10-28:** no decision for ancient/far-future maps may cause

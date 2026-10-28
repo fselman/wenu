@@ -1731,6 +1731,20 @@
       "baseline_relation": "Added by metadata-ingestion correction in PR248; source-specific facts live in data resources."
     },
     {
+      "path": "src/wenu/stellar_enrichment.py",
+      "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable multi-edition stellar source snapshot codec; standard-library only.",
+      "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
+    },
+    {
+      "path": "src/wenu/stellar_epoch.py",
+      "git_blob_sha": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
+      "as_is_directory": "src/wenu",
+      "description": "Derived immutable exact-event stellar bundle preparation/validation/reader; original source and model continuation coefficients retained separately from states.",
+      "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
+    },
+    {
       "path": "src/wenu/stellar_research.py",
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
@@ -1738,7 +1752,7 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
+      "git_blob_sha": "442d8aefb55d9c156c0ffd58880c6b875601547c",
       "as_is_directory": "src/wenu",
       "description": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
@@ -1784,13 +1798,6 @@
       "git_blob_sha": "65896806555ae4e593144975f0f0a280d28ba3c9",
       "as_is_directory": "src/wenu",
       "description": "Visibility utilities."
-    },
-    {
-      "path": "src/wenu/stellar_enrichment.py",
-      "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
-      "as_is_directory": "src/wenu",
-      "description": "Immutable multi-edition stellar source snapshot codec; standard-library only.",
-      "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
     }
   ],
   "test_side_python_files": [
@@ -6461,7 +6468,7 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "c0ac8f8fd7d765291d705a48ad1d10200c95df4f",
+      "git_blob_sha": "cdafb1d1dd7fb986b66db30cc207b234576f9fa7",
       "test_functions": 36,
       "marks": {
         "parametrize": 19
@@ -7300,6 +7307,18 @@
       "git_blob_sha": "be0abcfff4af5197880fddec3f21955e3bae2973"
     },
     {
+      "path": "tools/fetch_kervella_catalogue.py",
+      "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
+    },
+    {
+      "path": "tools/fetch_stellar_astrometry.py",
+      "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd"
+    },
+    {
+      "path": "tools/gaia_crossmatch_audit.py",
+      "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a"
+    },
+    {
       "path": "tools/glossaries/wenu_en_es.json",
       "git_blob_sha": "8bface672ec471c811f1d5c034bc0812a9fac34e"
     },
@@ -7342,6 +7361,10 @@
     {
       "path": "tools/prepare_open_cluster_catalogue.py",
       "git_blob_sha": "8a57ee71288f8d73de7b1b9127ee4e59b2a3983a"
+    },
+    {
+      "path": "tools/prepare_stellar_epoch.py",
+      "git_blob_sha": "897f57e94360673f4650caddc741f2f635a537cf"
     },
     {
       "path": "tools/preview_stellar_sizes.py",
@@ -7562,18 +7585,6 @@
     {
       "path": "tools/validate_50s7d3b_lime_offline_inspection.py",
       "git_blob_sha": "68353aa56453d0f89523e04148a6079d3055ab60"
-    },
-    {
-      "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a"
-    },
-    {
-      "path": "tools/fetch_kervella_catalogue.py",
-      "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
-    },
-    {
-      "path": "tools/fetch_stellar_astrometry.py",
-      "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd"
     }
   ],
   "preserved_test_editions": [
@@ -8637,7 +8648,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 265,
+    "production_python_files": 275,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -27290,6 +27301,25 @@
       "numerical_oracle": "Independent 80-digit Decimal application/normalization of each admitted matrix to native binary64 direction",
       "platform_identity": "Actual matrix hex components bind identity; cross-platform last-bit differences may legitimately produce different frame model IDs",
       "limits": "No certified physical/total orientation accuracy, inferred TT/TCB simultaneity or historical observer; parent/K4b.05/K4b.06/issue #326 remain separate"
+    }
+  },
+  "stellar_exact_epoch_persistence": {
+    "base_commit": "7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6",
+    "plan_commit": "12a549642d83e1a551445159e1fc2542152c0054",
+    "status": "candidate; focused Mac/documentation and retained-source acceptance pending",
+    "owners": [
+      "src/wenu/stellar_epoch.py",
+      "src/wenu/stellar_state.py"
+    ],
+    "command": "tools/prepare_stellar_epoch.py",
+    "test_owner": "tests/test_stellar_state.py",
+    "limits": "No nearby-epoch policy, advancement, chart/worker adoption, companion states, observer work, acquisition or physical-error qualification.",
+    "local_verification": "Six new owner functions executed directly against real provider/kernel and existing synthetic source fixture; no pytest/full Wenu available.",
+    "changed_owner_blobs": {
+      "src/wenu/stellar_state.py": "442d8aefb55d9c156c0ffd58880c6b875601547c",
+      "src/wenu/stellar_epoch.py": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
+      "tests/test_stellar_state.py": "cdafb1d1dd7fb986b66db30cc207b234576f9fa7",
+      "tools/prepare_stellar_epoch.py": "897f57e94360673f4650caddc741f2f635a537cf"
     }
   }
 }

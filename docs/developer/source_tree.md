@@ -1,5 +1,13 @@
 # Wenu production source map
 
+K4b.07's exact-epoch candidate adds `stellar_epoch.py` for the distinct derived
+product schema/validation/publication lifecycle. Source/model selection stays
+in `stellar_state.py`, original source bytes in `stellar_enrichment.py`, and
+numerical motion in `astrometric_state.py`/the SDK. The offline
+[`prepare_stellar_epoch.py`](../../tools/prepare_stellar_epoch.py) command delegates
+to that owner; it is not an installed chart command or acquisition operation.
+Existing source-sky snapshots and chart/atlas contracts remain unchanged.
+
 The accepted K4b.06 dated-axis atlas slice (#354) extends existing owners: `coordinate_service.py`
 re-expresses spherical geometry; `sky/realization.py` owns the common source-to-view
 seam consumed by the sphere and secondary constellation-label regions.
@@ -158,6 +166,7 @@ concrete Wenu classes.
 | [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
 | [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup plus explicit Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admissions/providers through the shared affine engine; no acquisition or automatic consumer adoption. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
+| [`stellar_epoch.py`](../../src/wenu/stellar_epoch.py) | Immutable derived exact-epoch stellar bundle codec, admitted SDK preparation, source/coefficient/state preservation and completion-last local publication; exact-event data reload only, no observer or chart adoption. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |

@@ -1,5 +1,47 @@
 # Wenu implementation reference
 
+## Exact-epoch stellar catalogues
+
+`wenu.stellar_epoch.prepare_stellar_epoch(request, destination)` accepts an
+existing admitted `StellarMotionRequest` and returns the committed manifest
+SHA256. It evaluates the selected existing models through the SDK, stores
+direction and admitted full-input Cartesian states, preserves all original
+source bytes and original coefficients, validates staged data and publishes a
+new bundle without replacement. The completion `manifest.json` is linked last.
+
+`load_stellar_epoch(directory, expected_manifest_sha256=None)` validates fixed
+payload names, schema, sizes/hashes, code/source/model/event/row/reference
+bindings and typed states, returning `StellarEpochCatalogue`. It constructs no
+provider or session and recomputes no saved-event state. Pin the expected digest
+when identifying a specific product; unpinned hashes provide internal integrity,
+not source authentication. Payloads above 1 GiB and symlink payloads are refused.
+
+The frozen catalogue retains immutable `source`, `manifest`, `models_payload`
+and `states_payload` bytes. `instant` is the saved split-JD TCB event; `rows()`
+iterates detached per-HIP data, `models()` returns detached original model
+coefficients/admissions/references, and `at(instant, identifiers=None)` returns
+detached rows in source order or the requested unique HIP-string order. Unknown
+or duplicate HIPs and any different event/scale refuse. Rows expose identifier,
+selected model index, status/reasons, direction record and optional distinct
+Cartesian record. Gaps carry no state and angular models carry no physical PV.
+No live objects are deserialized from data. Exact reader compatibility currently
+requires identical code digests for the fixed source/model/core/codec owners;
+changed code refuses rather than silently treating old numerical output as new.
+
+Run the explicit offline maintenance command from an installed/source checkout:
+
+```bash
+python tools/prepare_stellar_epoch.py --stellar-motion-config motion.toml --destination NEW_DIRECTORY
+```
+
+The existing TOML supplies local source/model/domain/event inputs; this command
+does not acquire data, resolve an observer or implement a second propagation
+engine. It prints destination and manifest digest. This is not an additional
+installed Wenu entry point, chart mode or top-level facade export. Original
+source snapshots and source-only saved skies retain their existing schemas.
+Nearby-event reuse/advancement, epoch-product chart/worker adoption and optional
+Earth/Solar System companions remain separate K4b.07 scopes.
+
 <a id="dated-axis-atlas-views-k4b06-candidate"></a>
 
 ## Dated-axis atlas views (K4b.06)

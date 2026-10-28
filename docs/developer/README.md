@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## Exact-epoch stellar persistence candidate (K4b.07)
+
+After #357 merge/cleanup and confirmed clean synchronized Mac main `7407ea1b`,
+Fernando selected the first exact-epoch persistence slice with “proceed”. The
+candidate supplies offline preparation and a self-contained immutable local
+bundle, with exact-event fresh-process loading and lossless source/model/state
+records. See the [API and command](implementation_reference.md#exact-epoch-stellar-catalogues),
+[scientific limits](scientific_contracts.md#exact-epoch-stellar-product-contract)
+and [focused gate](testing_policy.md#exact-epoch-stellar-persistence-gate).
+Six new test functions passed direct local execution with real providers/kernel;
+pytest/full Wenu and Mac actual-source acceptance remain pending. No chart,
+nearby-epoch, companion or observer adoption; parent K4b.07 remains open.
+
 ## K4b.06 accepted closure and K4b.07 persistence assessment
 
 PR #356's corrected completion boundary is merged at `b295b88b`; clean
@@ -17,10 +30,9 @@ deferrals; PR #357 final status receipt/merge is pending.
 
 Fernando then selected the [K4b.07 as-is assessment](kernel_migration_audit_v1.md#k4b07-persistence-as-is-assessment-2026-10-28).
 The [first exact-epoch persistence slice](kernel_roadmap_v0.9.5.md#k4b07-proposed-first-exact-epoch-persistence-slice)
-is proposed for concrete scope review. Existing full-input Cartesian/angular
-interfaces can supply the data, but no evaluated epoch bundle/tool or loader is
-implemented. Nearby-epoch reuse, consumer adoption and optional companion states
-remain separate; no K4b.07 runtime or observer work is activated here.
+was subsequently selected after #357 merge/cleanup; the implementation
+candidate above now uses the existing full-input Cartesian/angular interfaces. Nearby-epoch reuse, consumer adoption and optional companion states
+remain separate; no later K4b.07 or observer scope is activated here.
 
 ## K4b.06 accepted dated-axis atlas views
 

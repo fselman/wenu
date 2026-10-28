@@ -1,5 +1,19 @@
 # Wenu current architecture
 
+## Exact-event stellar persistence candidate
+
+`stellar_epoch.py` owns the derived immutable epoch-product schema, preparation,
+strict reader and completion-last publication lifecycle. It is separate from
+`stellar_enrichment.py`'s original source schema and `sky/native_snapshot.py`'s
+source-only sky reconstruction. `stellar_state.py::stellar_model_selection`
+shares ordered first-available admission between live stellar views and epoch
+preparation; query failure still cannot select a fallback. Preparation uses
+existing typed SDK direction/Cartesian providers. The reader performs no model
+evaluation or provider/session construction. No kernel/numerical, chart,
+renderer, observer, installed command, dependency or collection change occurs.
+The maintenance command delegates to this owner; later consumers will use their
+public stellar/state interfaces, not implement astrometry in rendering code.
+
 **As-is baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b` (2026-10-17).
 This document describes implemented behavior. The proposed kernel and package
 architecture lives separately in the [roadmap](kernel_roadmap_v0.9.5.md).

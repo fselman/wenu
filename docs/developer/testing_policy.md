@@ -1,5 +1,30 @@
 # Testing policy and module independence
 
+## Exact-epoch stellar persistence gate
+
+Candidate implementation extends `tests/test_stellar_state.py` with six
+`stellar_epoch` functions beside existing source/provider/view protections.
+They cover mixed full/angular/Hip2/gaps, source and coefficient preservation,
+direct SDK parity, detached/immutable data, exact-event refusal, subset ordering,
+live-view selection/reuse, fresh-process loading without the original source
+path or provider/session construction, offline command/no-clobber behavior,
+sixteen byte/schema/semantic corruption faults and five publication/failure/race
+faults. The latter retains destinations created by another writer and removes
+only this invocation's partial output. Numerical oracles and core contracts are
+unchanged; their accepted receipts are reused.
+
+Run `tests/test_stellar_state.py` with selection `stellar_epoch or stellar_realiz
+or stellar_sheet_borrows or stellar_motion_public_native_sheet`, then the complete
+documentation gate, plugin autoload disabled. No gate manifest/collection or
+independent core change is introduced. All six new functions pass direct local
+execution with the existing synthetic fixture and real provider/kernel stack;
+this runtime has no pytest/full astronomy stack, so this is not a pytest or Mac
+acceptance claim. Existing live chart integration remains for the focused Mac
+gate. Retained-source Mac prepare/fresh-reload/science parity, size/time and
+provenance acceptance remain pending. No new chart output means no new visual
+acceptance is claimed. Parent K4b.07 and later reuse/consumer/companion scopes
+remain open.
+
 ## K4b.06 completion acceptance
 
 The [corrected completion boundary](kernel_roadmap_v0.9.5.md#k4b06-completion-boundary-2026-10-28)

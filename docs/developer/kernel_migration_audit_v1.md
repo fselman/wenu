@@ -1,5 +1,38 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.07 exact-epoch persistence candidate, 2026-10-28
+
+**Base and selection:** #357 merged at `7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6`;
+Fernando confirmed clean synchronized Mac main, local/remote task-branch cleanup
+and then said “proceed” after the proposed first exact-epoch scope. The selected
+scope was committed before runtime implementation at
+`12a549642d83e1a551445159e1fc2542152c0054` on `feat/stellar-epoch-persistence`.
+
+The distinct derived-product lifecycle is owned by `stellar_epoch.py`, with an
+explicit offline maintenance command. Existing live realization and persistence
+now share the stellar owner's ordered availability selection; failures never
+trigger query-time source fallback. Preparation uses real SDK direction/PV
+queries and preserves the original source manifest/products and all model
+coefficients. Reader validation/exact lookup constructs no provider/session and
+does not propagate the saved event. No source/numerical/core/observer or chart
+semantics, dependencies, installed entry points or collection settings change.
+
+Six new owner test functions pass direct local execution using the existing
+synthetic source fixture and actual stellar/provider/kernel modules, including
+fresh-process and CLI subprocesses. Sixteen corruption and five failure/race
+variants detect invalid data and unsafe publication. The live-realization
+selection/reuse check also passes. An initial refusal-test exception mismatch
+was corrected and the same tests rerun; failed logs remain retained.
+No pytest or complete Wenu astronomy stack is installed here. Full focused Mac
+and documentation gates and retained real-source preparation/reload size/time/
+scientific parity remain pending; no actual catalogue run or parent K4b.07
+acceptance is claimed. The coordinate guide remains current.
+
+See the [implemented candidate API](implementation_reference.md#exact-epoch-stellar-catalogues)
+and [focused gate](testing_policy.md#exact-epoch-stellar-persistence-gate).
+Nearby-event policy, consumer adoption, companions and observer work remain
+outside this candidate.
+
 ## K4b.06 observer-free consumer reconciliation, 2026-10-28
 
 **Selected IDs:** K4b.06.R2/R3 assessment and R4 reconciliation. GitHub main is

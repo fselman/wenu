@@ -2056,3 +2056,289 @@ def test_stellar_publication_rejects_returned_epoch_or_cleanup_failure(motion_do
             stellar_motion_config=config, presentation=publication.AtlasChartPresentation(layers=('stars',),dpi=36))
     assert not (root/'batch').exists()
     assert not list(root.glob('.wenu-atlas-pages-*'))
+
+
+
+def _epoch_request(source):
+    return _production_motion(source, TimePoint(2451545, .125, 'tcb'))
+
+
+def test_stellar_epoch_selection_matches_live_realization(motion_source, tmp_path):
+    import pandas as pd
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu_kernel.errors import ClosedSession
+    request = _epoch_request(motion_source())
+    source = request.catalogues[0].source
+    stars = tuple(source.records())
+    table = pd.DataFrame({'magnitude': [s['original']['magnitude'] for s in stars]},
+                         index=list(range(1, 10)))
+    for selected in (tuple(range(1, 10)), (8, 1, 5, 4), ()):
+        live = bridge._StellarRealization(request, table.loc[list(selected)], source.metadata['original_metadata'])
+        try:
+            metadata = live.row_metadata(selected)
+            selection = bridge.stellar_model_selection(request, selected)
+            assert list(metadata['stellar_motion_model']) == [
+                None if i is None else request.catalogues[i].motion_policy for _, i, _ in selection]
+            assert list(metadata['stellar_motion_reason']) == [
+                ';'.join(reasons) if i is None else '' for _, i, reasons in selection]
+            live.positions(selected)
+            live.positions(selected)
+            if selected:
+                assert live.report()['exact_batch_reuses'] > 0
+        finally:
+            live.close()
+        with unittest.TestCase().assertRaises(ClosedSession):
+            live.positions(selected)
+    destination = tmp_path/'selection'
+    prepare_stellar_epoch(request, destination)
+    result = load_stellar_epoch(destination)
+    assert [(r['identifier'], r['model_index'], tuple(r['reasons'])) for r in result.rows()] == list(
+        bridge.stellar_model_selection(request))
+
+
+def test_stellar_epoch_mixed_roundtrip_matches_direct_sdk_and_preserves_sources(motion_source, tmp_path):
+    from dataclasses import asdict, FrozenInstanceError
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu_kernel.records import ObjectKey
+    request = _epoch_request(motion_source())
+    destination = tmp_path/'epoch'
+    digest = prepare_stellar_epoch(request, destination)
+    product = load_stellar_epoch(destination, expected_manifest_sha256=digest)
+    rows = product.at(request.instant)
+    assert [r['identifier'] for r in rows] == list(map(str, range(1, 10)))
+    assert [r['model_index'] for r in rows] == [0, 1, 1, None, 2, 0, None, 1, None]
+    assert [r['identifier'] for r in rows if r['cartesian'] is not None] == ['1', '6']
+    assert product.source.manifest == request.catalogues[0].source.manifest
+    assert product.source.products == request.catalogues[0].source.products
+    sources = {s['source_id']: s for s in product.source.records('gaia_sources_v1.jsonl')}
+    assert sources['9007199254740994']['parallax'] == 100.  # missing RV is not zero parallax
+    assert sources['9007199254740995']['parallax'] == -1.   # retain measured negative value
+    assert sources['9007199254741000']['parallax'] == 0.
+    for index, catalogue in enumerate(request.catalogues):
+        for representation in ('direction', 'cartesian') if index == 0 else ('direction',):
+            provider = bridge.StellarMotionProvider(catalogue, representation=representation)
+            admission = provider.describe().admissions[0]
+            chosen = [r for r in rows if r['model_index'] == index]
+            query = StateQuery(admission.catalogue, admission.model,
+                tuple(ObjectKey('hipparcos:' + r['identifier']) for r in chosen),
+                (request.instant,), admission.reference,
+                AccuracyRequest(metric='euclidean_norm') if representation == 'cartesian' else AccuracyRequest(),
+                require_velocity=representation == 'cartesian')
+            with Kernel(references=(admission.reference,)) as kernel:
+                kernel.register(provider, ownership='owned')
+                with kernel.open_session(SessionPolicy((admission.catalogue,))) as session:
+                    direct = session.evaluate(query)
+            for row, state in zip(chosen, direct.states, strict=True):
+                assert row[representation] == json.loads(json.dumps(asdict(state)))
+        stored = product.models()[index]
+        for row, original in zip(stored['coefficients'], catalogue.rows, strict=True):
+            assert row['source_epoch'] == (None if original.source_epoch is None else
+                [original.source_epoch.jd1, original.source_epoch.jd2, original.source_epoch.scale])
+            assert row['initial'] == (None if original.unavailable_reason else
+                list(original.position_m if index == 0 else original.direction))
+            assert row['derivative'] == (None if original.unavailable_reason else
+                list(original.velocity_m_s if index == 0 else original.tangent_per_s))
+    assert [r['identifier'] for r in product.at(request.instant, ('5', '2'))] == ['5', '2']
+    detached = product.at(request.instant, ('1',))[0]
+    detached['direction']['vector'][0] = 999.
+    assert product.at(request.instant, ('1',))[0] != detached
+    checker = unittest.TestCase()
+    with checker.assertRaises(FrozenInstanceError):
+        product.states_payload = b'changed'
+    for instant in (TimePoint(2451545, .126, 'tcb'), TimePoint(2451545, .125, 'tdb'), None):
+        with checker.assertRaisesRegex(ValueError, 'Exact saved TCB event'):
+            product.at(instant)
+    for ids in (('1', '1'), ('999',), (1,)):
+        with checker.assertRaises(ValueError):
+            product.at(request.instant, ids)
+
+
+def test_stellar_epoch_fresh_process_load_needs_no_source_path_or_provider(motion_source, tmp_path):
+    import os
+    from pathlib import Path
+    import shutil
+    import subprocess
+    import sys
+    import wenu_kernel
+    from wenu.stellar_enrichment import load_stellar_enrichment
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from hashlib import sha256
+    source = motion_source()
+    external = tmp_path/'original-source'
+    external.mkdir()
+    for name, raw in source.products:
+        (external/name).write_bytes(raw)
+    (external/'source_manifest_v1.json').write_bytes(source.manifest)
+    request = _epoch_request(load_stellar_enrichment(external))
+    destination = tmp_path/'epoch'
+    digest = prepare_stellar_epoch(request, destination)
+    expected = sha256(load_stellar_epoch(destination).states_payload).hexdigest()
+    shutil.rmtree(external)
+    script = '''
+import sys
+from hashlib import sha256
+from unittest.mock import patch
+from wenu import stellar_state
+from wenu_kernel import Kernel
+from wenu.stellar_epoch import load_stellar_epoch
+with patch.object(stellar_state.StellarMotionProvider, '__init__', side_effect=AssertionError('provider constructed')), patch.object(Kernel, 'open_session', side_effect=AssertionError('session created')):
+    product = load_stellar_epoch(sys.argv[1], expected_manifest_sha256=sys.argv[2])
+    assert len(product.at(product.instant)) == 9
+    assert sha256(product.states_payload).hexdigest() == sys.argv[3]
+print('fresh exact reload without provider/source path')
+'''
+    paths = [str(Path(bridge.__file__).parents[1]), str(Path(wenu_kernel.__file__).parents[1])]
+    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(paths))
+    result = subprocess.run([sys.executable, '-c', script, str(destination), digest, expected],
+        env=environment, capture_output=True, text=True, check=True)
+    assert result.stdout.strip() == 'fresh exact reload without provider/source path'
+
+
+def test_stellar_epoch_rejects_corruption_and_semantic_mismatches(motion_source, tmp_path):
+    from pathlib import Path
+    import shutil
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu.stellar_enrichment import decode, encode, identity
+    checker = unittest.TestCase()
+    original = tmp_path/'baseline'
+    digest = prepare_stellar_epoch(_epoch_request(motion_source()), original)
+    def reseal(root, name, raw):
+        (root/name).write_bytes(raw)
+        manifest = decode((root/'manifest.json').read_bytes())
+        manifest['products'][name] = identity(raw)
+        (root/'manifest.json').write_bytes(encode(manifest))
+    faults = ('hip', 'priority', 'event', 'reference', 'units', 'angular_pv', 'gap',
+              'coefficient', 'model_order', 'schema', 'missing', 'truncated', 'source',
+              'state_bytes', 'duplicate_json', 'symlink')
+    for fault in faults:
+        root = tmp_path/fault
+        shutil.copytree(original, root)
+        rows = [decode(line) for line in (root/'states.jsonl').read_bytes().splitlines()]
+        if fault == 'hip': rows[0]['identifier'] = '999'
+        elif fault == 'priority': rows[0]['model_index'] = 1
+        elif fault == 'event': rows[0]['direction']['time']['jd2'] = .126
+        elif fault == 'reference': rows[0]['direction']['reference']['origin_id'] = 'earth'
+        elif fault == 'units': rows[0]['direction']['reference']['units'] = 'deg'
+        elif fault == 'angular_pv': rows[1]['cartesian'] = rows[0]['cartesian']
+        elif fault == 'gap': rows[3]['direction'] = rows[0]['direction']
+        elif fault == 'coefficient':
+            models = decode((root/'models.json').read_bytes())
+            models[0]['coefficients'][0]['derivative'][0] += 1.
+            reseal(root, 'models.json', encode(models))
+        elif fault == 'model_order':
+            manifest = decode((root/'manifest.json').read_bytes())
+            manifest['motion_identity']['model_order'].reverse()
+            (root/'manifest.json').write_bytes(encode(manifest))
+        elif fault == 'schema':
+            manifest = decode((root/'manifest.json').read_bytes())
+            manifest['schema'] = 'unknown/999'
+            (root/'manifest.json').write_bytes(encode(manifest))
+        elif fault == 'missing': (root/'models.json').unlink()
+        elif fault == 'truncated':
+            reseal(root, 'states.jsonl', (root/'states.jsonl').read_bytes()[:-1])
+        elif fault == 'source':
+            raw = (root/'source/stars_v1.jsonl').read_bytes().replace(b'"magnitude":2.0', b'"magnitude":3.0')
+            assert raw != (root/'source/stars_v1.jsonl').read_bytes()
+            reseal(root, 'source/stars_v1.jsonl', raw)
+        elif fault == 'state_bytes':
+            (root/'states.jsonl').write_bytes((root/'states.jsonl').read_bytes().replace(b'"evaluated"', b'"altered"', 1))
+        elif fault == 'duplicate_json':
+            (root/'manifest.json').write_bytes(b'{"schema":"x",' + (root/'manifest.json').read_bytes()[1:])
+        elif fault == 'symlink':
+            (root/'models.json').unlink()
+            (root/'models.json').symlink_to(original/'models.json')
+        if fault in ('hip', 'priority', 'event', 'reference', 'units', 'angular_pv', 'gap'):
+            reseal(root, 'states.jsonl', b''.join(encode(r)+b'\n' for r in rows))
+        with checker.assertRaises((ValueError, OSError), msg=fault):
+            load_stellar_epoch(root)
+        with checker.assertRaises((ValueError, OSError), msg='pinned ' + fault):
+            load_stellar_epoch(root, expected_manifest_sha256=digest)
+
+
+def test_stellar_epoch_publication_refusal_and_partial_cleanup(motion_source, tmp_path):
+    from unittest.mock import patch
+    from pathlib import Path
+    import os
+    from wenu import stellar_epoch
+    checker = unittest.TestCase()
+    request = _epoch_request(motion_source())
+    existing = tmp_path/'existing'
+    existing.mkdir()
+    (existing/'unique-input').write_bytes(b'preserve me')
+    with checker.assertRaises(FileExistsError):
+        stellar_epoch.prepare_stellar_epoch(request, existing)
+    assert (existing/'unique-input').read_bytes() == b'preserve me'
+    from wenu_kernel.errors import ProviderEvaluationError
+    for fault in ('evaluation', 'link', 'manifest_link', 'validation', 'race'):
+        destination = tmp_path/fault
+        original_link = os.link
+        def failing_link(src, dst):
+            if fault == 'link' or Path(dst).name == 'manifest.json':
+                raise RuntimeError('injected publication failure')
+            return original_link(src, dst)
+        original_loader = stellar_epoch.load_stellar_epoch
+        def staged_load(*args, **kwargs):
+            result = original_loader(*args, **kwargs)
+            if fault == 'race':
+                destination.mkdir()
+                (destination/'unique-input').write_bytes(b'other owner')
+            return result
+        if fault == 'evaluation':
+            context = patch.object(bridge.StellarMotionProvider, 'evaluate', side_effect=RuntimeError('injected evaluation failure'))
+        elif fault == 'validation':
+            context = patch.object(stellar_epoch, 'load_stellar_epoch', side_effect=RuntimeError('injected validation failure'))
+        elif fault == 'race':
+            context = patch.object(stellar_epoch, 'load_stellar_epoch', side_effect=staged_load)
+        else:
+            context = patch.object(os, 'link', side_effect=failing_link)
+        with context, checker.assertRaises((RuntimeError, FileExistsError, ProviderEvaluationError)):
+            stellar_epoch.prepare_stellar_epoch(request, destination)
+        if fault == 'race':
+            assert (destination/'unique-input').read_bytes() == b'other owner'
+        else:
+            assert not destination.exists()
+        assert not list(tmp_path.glob('.wenu-stellar-epoch-*'))
+
+
+def test_stellar_epoch_offline_preparation_command(motion_source, tmp_path):
+    from hashlib import sha256
+    from pathlib import Path
+    import os
+    import subprocess
+    import sys
+    import wenu_kernel
+    from wenu.stellar_epoch import load_stellar_epoch
+    source = motion_source()
+    directory = tmp_path/'source'
+    directory.mkdir()
+    for name, raw in source.products:
+        (directory/name).write_bytes(raw)
+    (directory/'source_manifest_v1.json').write_bytes(source.manifest)
+    config = tmp_path/'motion.toml'
+    config.write_text('''schema_version = 1
+document_kind = "wenu-stellar-motion-request"
+source_directory = "source"
+target_jyear_tcb = 2000.0
+source_manifest_sha256 = "''' + sha256(source.manifest).hexdigest() + '''"
+[[models]]
+motion_policy = "proper-motion-angular"
+distance_policy = "not-used"
+radial_velocity_policy = "not-used"
+start_jyear_tcb = -8001.0
+stop_jyear_tcb = 2050.0
+''')
+    destination = tmp_path/'command-result'
+    tool = Path(__file__).resolve().parents[1]/'tools/prepare_stellar_epoch.py'
+    paths = [str(Path(bridge.__file__).parents[1]), str(Path(wenu_kernel.__file__).parents[1])]
+    environment = dict(os.environ, PYTHONPATH=os.pathsep.join(paths))
+    command = [sys.executable, str(tool), '--stellar-motion-config', str(config), '--destination', str(destination)]
+    result = subprocess.run(command, env=environment, capture_output=True, text=True, check=True)
+    receipt = json.loads(result.stdout)
+    product = load_stellar_epoch(destination, expected_manifest_sha256=receipt['manifest_sha256'])
+    assert product.instant == TimePoint(2451545, 0., 'tcb')
+    assert len(product.at(product.instant)) == 9
+    assert all(row['cartesian'] is None for row in product.rows())
+    before = (destination/'manifest.json').read_bytes()
+    retry = subprocess.run(command, env=environment, capture_output=True, text=True)
+    assert retry.returncode != 0 and 'FileExistsError' in retry.stderr
+    assert (destination/'manifest.json').read_bytes() == before
