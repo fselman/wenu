@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 124, 2026-10-28. **Status:** Atlas slices through #354, receipt #355 and corrected completion boundary #356 are accepted. Fernando postponed the bright-star comparison and selected the supported observer-free consumer review with “proceed”. R1 remains an explicit deferred follow-up, outside the current K4b.06 closure gate. Fernando accepted R2/R3/R4 and bounded K4b.06 closure after 36 Mac documentation passes in 7.35 s at 829c4725. #357 is merged at 7407ea1b, with clean synchronized Mac and branch cleanup confirmed. After #357 merge/cleanup and confirmed clean synchronized Mac main 7407ea1b, Fernando selected the documented first K4b.07 exact-epoch persistence slice with “proceed”. Its first exact-epoch slice passed 15 focused Mac cases, 36 documentation cases and retained-source J2000/J-8000 preparation/fresh-reload parity at 9ed3a7cb. Final receipt documentation and bounded user acceptance remain pending; parent K4b.07 remains open. Modern stars/source measurements remain preserved; observer-dependent chart treatment stays deferred until full observer functionality. K4b.07 and later observer work remain separate.
+**Plan revision:** 126, 2026-10-28. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” Runtime implementation of that bounded service is selected; parent K4b.07 and later consumer/companion/observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `7407ea1b1a57a27b8175bb6dfaa76ed1b46264d6`,
-confirmed clean/synchronized on the Mac after PR #357 merge and local/remote
+**Current accepted base:** main `233f18b1a116a6201443e33c2d6606b91f2a1416`,
+confirmed clean/synchronized on the Mac after PR #358 merge and local/remote
 branch cleanup on 2026-10-28.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
@@ -68,8 +68,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. K4b.07 exact-epoch implementation candidate prepared; acceptance pending |
-| Next bounded submilestone | Accept the documentation receipt and bounded first K4b.07 exact-epoch result after successful Mac and retained-source verification. Later reuse/consumer/companion/observer scopes remain separate and are not activated; parent K4b.07 stays open |
+| Current bounded result | K4b.06 accepted/closed by Fernando after 36 Mac documentation passes at 829c4725; R1 and observer-dependent adoption explicitly deferred. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. First K4b.07 exact-epoch slice accepted through #358/main 233f18b1, clean synchronization/cleanup confirmed; parent remains open |
+| Next bounded submilestone | Implement the [accepted nearby-epoch native query boundary](#k4b07-nearby-epoch-reuse-and-advancement-scope), selected by Fernando with “Accepted. Proceed.” on 2026-10-28 after the 36-case Mac documentation gate; existing bundles, later consumers/companions/observers and parent K4b.07 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -624,8 +624,8 @@ scope does not acquire persistence or additional observer science.
 scope and its independent acceptance. Before activating K4b.07, assess the
 existing stellar, Cartesian, ephemeris, time and observer owners and agree its
 bounded implementation sequence. Exact-epoch publication/reload/parity is the
-first proposed implementation slice; nearby-epoch reuse and applicable consumer/
-companion adoption follow separately reviewed boundaries. This does not silently
+first implementation slice, now accepted through #358; nearby-epoch reuse and
+applicable consumer/companion adoption follow separately reviewed boundaries. This does not silently
 reorder remaining K4b.06 obligations or make all optional observer capabilities
 prerequisites for a native stellar catalogue. Reconcile the accepted format and
 public interfaces at K5 before freezing/extracting affected contracts.
@@ -640,8 +640,8 @@ reference event needed for faithful continuation. Do not fabricate physical
 distance or velocity for angular-only rows, reset a normalized angular model's
 reference epoch, or repeatedly propagate rounded exported directions. Determine
 which stellar Cartesian capabilities are actually exposed and qualify any
-necessary adapter extension; full Cartesian persistence is not already supplied
-by the existing stellar direction interface.
+necessary adapter extension; accepted #358 now persists the separately typed
+full-input Cartesian interface, independently of the stellar direction interface.
 
 The manifest binds payload bytes, source/model/resource identities and policies,
 original and evaluated epochs, time scales, frame/origin/units/status, domains,
@@ -747,8 +747,10 @@ rows and match direct SDK state bytes. Fresh load/exact lookup passed with
 original-source access and provider/session construction prohibited; changed
 events/scales refused. The [receipt](kernel_migration_audit_v1.md#retained-source-exact-epoch-verification)
 retains source/product identities, 1.02 GB bundle sizes and about 81 s validated
-load timings. Final receipt documentation/user acceptance remain pending;
-no later K4b.07 scope, performance improvement or parent closure is claimed.
+load timings. Final receipt head `84e04236` passed 36 Mac documentation cases
+in 6.67 s; Fernando requested merge/cleanup. #358 is merged at `233f18b1`,
+with clean synchronized Mac and branch cleanup confirmed. This accepts only the
+first exact-epoch slice; no later scope, speedup or parent closure is claimed.
 
 **Selected product contract:**
 
@@ -818,6 +820,144 @@ Earth/Solar System companion, observer work, acquisition, release or K5 freeze i
 included. Retained original coefficients enable later faithful advancement but
 do not activate it. Those capabilities retain the parent K4b.07/K4b.08 scope and
 their separately reviewed gates; K4b.07 itself stays open.
+
+## K4b.07: nearby-epoch reuse and advancement scope
+
+**Selection/status:** after #358 acceptance/merge and confirmed clean synchronized
+Mac main `233f18b1a116a6201443e33c2d6606b91f2a1416`, Fernando said “Proceed”
+after the proposed next step of defining configurable nearby-epoch reuse and
+advancement. This selects the as-is assessment and concrete scope definition.
+Fernando explicitly accepted the concrete contract below on 2026-10-28 with
+“Accepted. Proceed.” after clarification of window reuse, actual versus requested
+epochs and reuse across model-domain boundaries. The Mac documentation gate
+passed 36 cases in 6.60 seconds at `ef578cde`; retained evidence is
+`~/Software/build/wenu/test/stellar-epoch-reuse-scope-docs-v1-tz_xhims`.
+This selects bounded runtime implementation; it neither closes the parent nor
+selects later consumers/companions. Runtime acceptance remains pending.
+
+**As-is prerequisite:** the accepted immutable v1 catalogue exposes source/model
+coefficients, exact saved-event rows and hashes. Its `at()` rejects other events;
+the strict reader binds complete source/model/core/codec file identities.
+Changing those files would invalidate the accepted J2000/J-8000 products.
+The [assessment](kernel_migration_audit_v1.md#k4b07-nearby-epoch-query-as-is-assessment-2026-10-28)
+therefore separates query-policy lifetime from publication/codec lifetime.
+
+### Accepted native query contract
+
+`wenu.stellar_epoch_query.resolve_stellar_epoch(catalogue, instant, *,
+reuse_window_julian_years, identifiers=None)` will consume an already validated
+`StellarEpochCatalogue` and return an immutable `StellarEpochResolution` retaining
+the same immutable `source` snapshot, with detached `rows()` and `receipt()` data.
+The named module/class/function are accepted implementation targets, not yet current imports. The catalogue is loaded/validated explicitly
+once through the accepted reader; the resolver neither loads arbitrary paths nor
+introduces a global cache. It does not accept another resolution as its source.
+
+The required window is a finite nonnegative numeric count of Julian years
+(365.25 SI days); Booleans, NaN/infinity, negative and nonnumeric values refuse.
+There is no implicit 100-year default: 100 is a configurable example. The first
+native query accepts an explicitly resolved TCB `TimePoint` only. A differing
+scale refuses; upstream admitted `TimeService` conversion and its outer request
+receipt remain separate, never an implicit year-label conversion in this API.
+Compare absolute split-JD TCB separation with the window using exact rational
+values of the admitted numbers, including equality at either boundary. Do not
+compare rounded Julian-year labels or update the anchor after each call.
+
+| Condition against the original catalogue event | Returned states | Receipt and execution |
+|---|---|---|
+| Same event, or separation at/inside the configured window | Stored directions/PV/gaps unchanged, with their original saved `time`/`anchor_time`; original source epochs unchanged | `mode=reused`; requested event distinct from actual position event; explicit fixed-position approximation. No provider/session construction or model reconstruction |
+| Separation outside the window and original model domains support the target | Existing admitted models evaluated at the actual requested TCB event; source epochs/coefficients/order retained | `mode=advanced`; actual position event equals requested event. Existing stellar selection/provider and kernel services perform evaluation |
+| Unsupported outside-window event/model/resource, changed binding or failed query | No partial resolution | Refuse; never silently keep stale positions, choose another source/model after a query failure or fabricate a missing measurement |
+
+Zero window reuses only the same event. In-window fixed-position reuse describes
+a saved state at its valid saved event; it does not claim model evaluation or
+physical validity at the requested event. If a window crosses an original model
+domain boundary, the saved state can still be returned unchanged under that
+explicit approximation, with requested-event model coverage disclosed in the
+receipt. Advancement beyond the window must be admitted by all supplied model
+domains under the existing common-request contract. This distinction preserves
+the user-directed fixed-window rule without extending a motion model's domain.
+
+The receipt binds input epoch-manifest digest, source/model identities and order,
+query-policy/code identity, catalogue event, requested event, actual position
+event, window/value/units, exact separation and reused/advanced mode. For reuse,
+it declares the fixed-position approximation and unquantified requested-event
+approximation error separately from saved-state error evidence. It discloses
+requested-event model coverage. For advancement, returned typed states retain
+the existing admitted evidence and requested event; physical errors remain
+unknown where unqualified. There is no new angular certificate or numerical
+zero-error claim. A caller-selected window is not replaced by mandatory angular
+error certification or an automatic proper-motion cutoff.
+
+### Accepted ownership and compatibility
+
+`stellar_epoch_query.py` will own the in-memory query policy/result/receipt and
+short-lived SDK composition. This is an enduring query/materialization boundary,
+separate from `stellar_epoch.py`'s immutable product schema/publication/strict
+reader lifecycle. Keep the existing watched source/model/core/codec files and
+v1 format unchanged in this slice; accepted bundles must load with their original
+manifest hashes and strict code binding. No compatibility allowlist, hash bypass,
+schema migration, re-publication or source-catalogue replacement is proposed.
+Use an explicit module import, with no new facade/top-level exports.
+
+For advancement, reconstruct admitted catalogues through the existing public
+stellar admission functions using the bundle's preserved source bytes and
+saved explicit policies/domains. Require reconstructed admissions and every
+original coefficient/reference event to match the saved models before querying.
+Then use `stellar_model_selection`, `StellarMotionProvider` and typed kernel
+queries for the selected full/angular/Hip2 models. This reuses source admission
+and the existing affine engine, not a second propagation algorithm or a new
+restore-from-arbitrary-data capability. No original external cache is needed.
+Never initialize an angular model from its normalized saved direction or rebase
+any model at a rounded intermediate epoch.
+
+The resolver preserves the full source population/order/components/photometry,
+all measured astrometry including parallaxes and uncertainties/provenance, and
+the accepted first-available model choices/gaps. It may return an explicitly
+requested ordered subset of unique source HIP strings; unknown/duplicate IDs
+refuse. An empty subset validates inputs and returns empty data/receipt without
+an SDK query. Closing a provider/session after advancement must leave the result
+usable; any partial failure closes owned resources and leaves input bytes and
+other resolutions untouched. Repeated queries always use the original catalogue
+anchor and original model coefficients; no sliding window or mutable cross-call
+state. Exact-reader `at()` semantics remain unchanged.
+
+### Acceptance and exclusions
+
+Extend `tests/test_stellar_state.py` beside exact persistence, live realization
+and independent angular/full model cases. Protect both signs and exact window
+boundaries, just-inside/just-outside events, zero/invalid windows, native-scale
+refusal, precise split-JD arithmetic and the coverage distinction above. Reuse
+must match the saved row/state bytes and refuse injected provider/session/model
+reconstruction. Advancement must match direct original-model SDK results for
+mixed full/angular/Hip2/gap populations, including high-motion cases where
+rebasing a normalized angular model gives a different result. Check stable
+source/model choices, source events, measured parallax, immutable input/result
+data, ordered/empty/invalid subsets, independence of alternating requests and
+no fallback on a query/domain/binding failure. A deliberately sliding anchor,
+relabeled saved state, forced old position outside the window or rebased model
+must fail its successful baseline. Test owned-resource cleanup and result
+usability after close. Retain old exact-reader and live-view contracts.
+
+On the Mac, reuse the two accepted bundles under
+`~/Software/build/wenu/output/stellar-epoch-acceptance-v1-ynpv71ip` without
+rewriting them. Load each once with its original manifest digest; verify full
+in-window row/state identity and both requested/actual event fields. Advance
+J-8000 → J2000 and J2000 → J-8000 and compare all returned state bytes with the
+already accepted target bundle/direct-SDK reference hashes. This covers both
+directions without repeating preparation or lower-level numerical proofs.
+Retain all 118,218 statuses and source bytes, boundary/refusal/isolation results,
+code identity and separate load/reuse/advancement size/time/provenance receipts.
+Run the closest changed-owner/old exact/live consumer gates and complete
+documentation gate; unchanged kernel/source mathematics reuse their accepted
+receipts. No new chart output means no new visual claim at this service boundary.
+
+This accepted slice adds a Python query contract only. No configurable chart/
+atlas/worker adoption, new CLI/TOML schema or preparation command flags,
+automatic new bundle, companion state, observer/correction, acquisition,
+physical error qualification, compression/performance redesign or SDK freeze
+is included. Those remain separately reviewed K4b.07/K4b.08/K5 responsibilities.
+This definition uses only the complete documentation gate; no new runtime or
+scientific behavior is implemented or claimed accepted here.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
@@ -2118,6 +2258,8 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 126: accept nearby-epoch query implementation | Fernando’s “Accepted. Proceed.” on 2026-10-28 after the clarified contract and 36 Mac documentation passes in 6.60 s at ef578cde | Select bounded query-service implementation under the contract below, including disclosed in-window reuse across model coverage boundaries. No merge/cleanup authorization, consumer/observer adoption or parent closure |
+| Revision 125: define nearby-epoch query scope | Fernando’s “Proceed” on 2026-10-28 after #358 merge/cleanup, clean synchronized Mac main 233f18b1 and the proposed next definition step | Assessment/definition only. Native TCB window/result/advancement/compatibility/gate boundary is proposed for review; no runtime, source/model/core/codec change, consumer adoption or parent closure |
 | Revision 123: accept K4b.06 and assess K4b.07 | Fernando’s 2026-10-28 “accepted” after 36 Mac documentation passes at 829c4725, his consumer/upstream-astrometry clarification, and “proceed” after the roadmap’s K4b.07 as-is/exact-epoch definition proposal | K4b.06 closes with R1/observer deferrals. K4b.07 assessment/definition only; first persistence implementation boundary is proposed for review, not selected runtime. No merge/cleanup or new observer/source/model authority follows |
 | Revision 122: postpone R1 and select R2/R3/R4 reconciliation | Fernando’s 2026-10-28 “Can we postpone the bright-star comparison?” followed by “proceed” after the observer-free review proposal; clean synchronized Mac main b295b88b confirmed | Preserve R1 as an unfinished follow-up outside this closure gate. Assess existing consumers, record observer-dependent deferrals and reconcile accepted atlas evidence. Documentation only; no new runtime family, observer/source adoption, parent closure or K4b.07 activation |
 | Revision 96: select K4b.05 closure review | Fernando's 2026-10-24 “Proceed” after PR #337 merge/cleanup and confirmed clean synchronized main 3506bb23 | Reconcile existing requirements/evidence/gaps and propose one concrete next gate; assessment/documentation only. No parent closure, changed order, new science/error policy or K4b.06 adoption. |
@@ -2858,7 +3000,7 @@ remain its separate responsibilities.
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed. Dated mean-axis atlas views accepted through #354 at d0124837 after Mac runtime/documentation/tooling, eight actual-cache publication cases and visual review; R2/R3 observer-free assessment and R4 final reconciliation accepted by Fernando on 2026-10-28 after 36 Mac documentation cases passed in 7.35 s at 829c4725; bounded K4b.06 closed. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. R1 bright-star comparison is explicitly postponed outside this closure gate and remains unfinished. Observer-dependent chart treatment is deferred until full observer functionality, with modern population/measurements preserved. K4b.07 and later observer work stay separate |
-| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; implementation verified through focused Mac/documentation and retained-source prepare/reload at 9ed3a7cb; final receipt/user acceptance pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
+| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; accepted through #358/main 233f18b1 after focused Mac/documentation and retained-source prepare/reload; clean synchronization/cleanup confirmed. Nearby-epoch query contract explicitly accepted on 2026-10-28 with “Accepted. Proceed.”; bounded runtime implementation selected, runtime acceptance pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. Exact-event persistence is implemented; observer/ephemeris extensions remain unimplemented |
 | K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Agreed capability on 2026-10-27; detailed model/domain/product definitions and implementation pending. Separate from K4b.06 mean-axis views and K4b.07 persistence; no historical/future observer accuracy or unrestricted ephemeris coverage claim |
 
 
