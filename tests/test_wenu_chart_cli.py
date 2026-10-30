@@ -981,3 +981,34 @@ def test_explicit_cluster_model_cli_toml_real_output_and_lookup_override(source,
             '--field-width','50','--field-height','40','--config',str(config),'--open-cluster-model','lookup',
             '--format','svg','--output',str(tmp_path/'lookup.svg'),'--debug'],emit_outputs=False)==0
     assert not any(q.reference.representation=='cartesian' for q,_ in seen)
+
+@pytest.mark.parametrize("option", ["--stellar-motion-config", "--stellar-epoch-config",
+                                  "--atlas-frame-config"])
+def test_atlas_sheet_prepared_request_rejects_scientific_file_inputs(tmp_path, monkeypatch, option):
+    """A supplied file must not be silently ignored by the prepared-request route."""
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    from wenu.charts import request_generation
+    from wenu.resources import configuration_preset_path
+    atlas = AtlasBandTiling.from_json(
+        configuration_preset_path("b4-portrait", kind="atlas-layout").read_text())
+    request = AtlasSheetChartRequest(atlas.geometry.sheets[0], atlas.geometry.page,
+        AtlasChartPresentation(layers=("equatorial_grid",)), tmp_path/"output")
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Conflicting files must refuse before execution")
+    monkeypatch.setattr(request_generation, "generate_chart_request", forbidden)
+    assert chart.main(["atlas-sheet", "--chart-number", "1",
+        "--output-dir", str(request.output_dir), option, str(tmp_path/"query.toml")],
+        atlas_request=request, sky=object()) == 2
+    assert not request.output_dir.exists()
+
+
+def test_atlas_sheet_epoch_config_is_explicit_and_excludes_live_motion(tmp_path):
+    arguments = ["atlas-sheet", "--chart-number", "1", "--output-dir", str(tmp_path)]
+    parsed = chart.parser().parse_args(arguments + ["--stellar-epoch-config", "query.toml"])
+    assert parsed.stellar_epoch_config == Path("query.toml")
+    assert parsed.stellar_motion_config is None
+    assert chart.parser().parse_args(arguments).stellar_epoch_config is None
+    with pytest.raises(SystemExit):
+        chart.parser().parse_args(arguments + ["--stellar-epoch-config", "query.toml",
+                                               "--stellar-motion-config", "live.toml"])

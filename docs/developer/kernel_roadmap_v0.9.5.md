@@ -69,7 +69,7 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 closed with R1/observer deferrals. K4b.07 exact persistence (#358), nearby query (#359/#360) and saved consumers/J-2000/polar specimens (#361) accepted. Main f72a2055 after #362 is clean/synchronized; branches cleaned; original catalogues/evidence retained. Parent K4b.07 remains open |
+| Current bounded result | K4b.06 closed with R1/observer deferrals. K4b.07 exact persistence, nearby queries, saved consumers and C2 exact-event companions accepted. PR #364 merged at main 6ff7e1b5; clean synchronized Mac and local/remote branch cleanup confirmed; original catalogues/evidence retained. Parent K4b.07 remains open |
 | Next bounded submilestone | K4b.07.CLI1 selected by Fernando with “Proceed”: saved epoch-catalogue selection in wenu_chart atlas-sheet, through the existing query contract and native request route. C2 accepted/merged/cleaned at main 6ff7e1b5; ordinary observer-dependent families remain deferred |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
@@ -1139,16 +1139,16 @@ Selected boundary and acceptance:
   hashes, split event/receipt, all returned values and unknown errors.
   Add DE440 selection boundaries and DE441 part/seam checks; do not treat
   cross-model differences as a zero-tolerance equality oracle. No visual,
-  observer or physical-accuracy claim follows; these checks are not yet run.
+  observer or physical-accuracy claim follows; these checks passed at `437ee649` as recorded above.
 
-Selection is now recorded above; actual-cache acceptance still requires the
-verified available local resource/event and proposed checks. This slice creates no
+C2 actual-cache and fresh-process verification and bounded user acceptance are
+complete as recorded above. This slice creates no
 new requirement for native barycentric stellar charts or K5 baseline migration.
 Additional planets/Moon, interval ephemerides/reuse, observer relative-state
 composition, site/Earth orientation/Delta-T/EOP/apparent corrections and ancient
 or far-future qualification remain separate K4b.07/K4b.08 work. Modern stars and
 measured parallaxes stay preserved. R1 bright-star comparison remains postponed;
-parent K4b.07 is not closed by C1 or the proposed C2.
+parent K4b.07 is not closed by the accepted C1/C2 slices.
 
 
 ## K4b.07.CLI1: saved epoch catalogue selection for one CLI atlas sheet
@@ -1190,7 +1190,10 @@ default replacement, planetary reuse, observer reconstruction, ordinary
 `regional`/all-sky/planisphere/circumpolar/binocular adoption, dependency or
 package extraction. Those observer-dependent families retain K4b.06.R3 and the
 separate full-observer/K4b.08 gates. This slice does not close parent K4b.07.
-Implementation and new Mac/actual-render acceptance remain pending.
+The candidate adds the CLI option through the existing capture/query owner and
+extends existing CLI/stellar tests. Static inspection only in this session:
+no usable execution environment is available. Python execution, focused Mac
+checks, actual J-2000 CLI render/parity and visual acceptance remain pending.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 

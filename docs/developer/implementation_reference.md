@@ -20,9 +20,14 @@ photometry must match the loaded source sky. The isolated position adapter reads
 only resolved data, retains unavailable rows as NaN geometry with original
 metadata and refuses use after close. Dependent lines/labels borrow those stars.
 
-`create_atlas(..., stellar_epoch_config=...)` and atlas CLI
-`--stellar-epoch-config` accept the independent query TOML described in the user
-guide. It is mutually exclusive with live `stellar_motion_config`/CLI input.
+`create_atlas(..., stellar_epoch_config=...)`, atlas publication CLI and
+`wenu_chart atlas-sheet --stellar-epoch-config PATH` accept the independent query
+TOML described in the user guide. It is mutually exclusive with live `stellar_motion_config`/CLI input.
+The single-sheet file route calls `StellarEpochExecutionInput.capture` with the
+verified saved-sky manifest and design digests, then supplies the admitted view
+through the existing `AtlasSheetChartRequest.stellar_motion` field. It adds no
+query algorithm; errors refuse before rendering, and prepared requests reject
+additional scientific file inputs. CLI1 Mac and actual-render checks are pending.
 Serial and spawn paths share the existing publication/worker lifecycle; workers
 verify snapshot/design bindings and load/query once during initialization.
 The existing native sheet route covers rectangular regional and polar owners;

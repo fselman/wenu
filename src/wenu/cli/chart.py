@@ -122,7 +122,10 @@ def parser():
     sheet.add_argument("--design", type=Path)
     sheet.add_argument("--config", type=Path)
     sheet.add_argument("--from-sky", type=Path)
-    sheet.add_argument("--stellar-motion-config", type=Path,
+    stellar_input = sheet.add_mutually_exclusive_group()
+    stellar_input.add_argument("--stellar-epoch-config", type=Path,
+        help="Explicit saved stellar epoch query TOML; catalogue, TCB event and reuse window.")
+    stellar_input.add_argument("--stellar-motion-config", type=Path,
         help="Explicit local stellar-motion TOML; nominal TCB epoch, no observer reconstruction.")
     sheet.add_argument("--atlas-frame-config", type=Path,
         help="Explicit TT mean-axis atlas-view TOML, independent of stellar motion.")
@@ -875,6 +878,11 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
         if arguments.stellar_motion_config is not None:
             from wenu.stellar_state import load_stellar_motion_request
             motion = load_stellar_motion_request(arguments.stellar_motion_config)
+        elif arguments.stellar_epoch_config is not None:
+            from wenu.stellar_epoch_consumer import StellarEpochExecutionInput
+            _, motion = StellarEpochExecutionInput.capture(arguments.stellar_epoch_config,
+                snapshot_sha256=snapshot.manifest_sha256,
+                design_sha256=hashlib.sha256(raw).hexdigest())
         orientation = frame_input = None
         if arguments.atlas_frame_config is not None:
             from wenu.charts.atlas_sheet import AtlasFrameExecutionInput
@@ -888,7 +896,8 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
         if not isinstance(atlas_request, AtlasSheetChartRequest):
             raise TypeError("atlas_request must be AtlasSheetChartRequest.")
         if any(value is not None for value in (arguments.design, arguments.config,
-                arguments.from_sky, arguments.stellar_motion_config, arguments.atlas_frame_config)):
+                arguments.from_sky, arguments.stellar_motion_config, arguments.stellar_epoch_config,
+                arguments.atlas_frame_config)):
             raise ValueError("Prepared atlas requests cannot also supply design/config/snapshot files.")
         if (atlas_request.sheet.number != arguments.chart_number
                 or atlas_request.output_dir != arguments.output_dir):

@@ -1,5 +1,29 @@
 # Testing policy and module independence
 
+## Saved epoch single-sheet CLI gate (K4b.07.CLI1)
+
+Closest existing protections are the real native file-admitted CLI export in
+`tests/test_wenu_chart_cli.py`, saved-input capture/refusal and publication parity
+in `tests/test_stellar_state.py`. Extend those owners for epoch-option/live-motion
+exclusion and prepared-request file conflicts. Two synthetic-source cases execute
+the real saved-product reader/query, file-admitted CLI and native request/export,
+comparing chart/report PNGs and report identities with the existing admitted
+route for reused modern and advanced J-2000 events. Wrong manifest, negative
+window, wrong scale and unsupported advancement must fail before output; input
+bundle bytes remain unchanged and no observer/source acquisition is permitted.
+Existing query tests protect signed window/domain edges; do not duplicate their
+numerical proofs in the CLI.
+
+Run the complete `tests/test_wenu_chart_cli.py` owner and
+`tests/test_stellar_state.py -k 'stellar_epoch_single_sheet_cli or stellar_epoch_consumer_capture or stellar_epoch_query_reuse_boundaries or stellar_epoch_query_coverage'`,
+then the complete documentation gate. No independent core/collection/dependency
+change or unchanged publication-worker rerun is required. This session has no
+usable execution environment: no Python compilation or pytest result is claimed.
+After focused Mac success, use the retained actual J-2000 catalogue for a CLI
+specimen with admitted-route scientific/report/PNG parity and visual review.
+No new preparation/acquisition, observer reconstruction or physical accuracy
+qualification follows.
+
 ## Companion assessment gate (K4b.07.C1)
 
 This is documentation only: run the complete existing `documentation` gate.

@@ -7,9 +7,12 @@ architecture; it does not change these commands.
 
 ## Saved stellar epoch catalogues
 
-The saved-catalogue consumer candidate accepts an explicit query file through
-`--stellar-epoch-config`, as an alternative to `--stellar-motion-config`.
-It uses the existing atlas/native regional and polar pipeline. For example:
+The atlas publication command `wenu_create_atlas` and single-sheet command
+`wenu_chart atlas-sheet` accept an explicit query file through
+`--stellar-epoch-config PATH`, as an alternative to `--stellar-motion-config`.
+The query file identifies the catalogue directory and its manifest digest;
+short catalogue names are not registered. Both commands use the existing
+observer-free atlas/native regional and polar pipeline. For example:
 
 ```toml
 schema_version = 1
@@ -29,7 +32,10 @@ placeholder is deliberately not executable. The instant above is astronomical
 Julian epoch J-2000 on the native TCB coordinate, not a civil date conversion.
 The finite nonnegative reuse window is required and configurable; 100 is an
 example, not a default or physical-accuracy guarantee. At/inside it positions
-keep their saved epoch; outside it original admitted models evaluate the target.
+keep their saved epoch; outside it original admitted models evaluate the target
+only within their admitted domains, otherwise the request refuses. In-window
+reuse may cross a model-domain boundary with explicit coverage disclosure;
+it does not claim model validity at the requested epoch.
 Reports and visible notes disclose actual/requested epochs and approximation.
 Supply a separately admitted atlas-frame file for dated TT mean axes if needed.
 All source identities/measurements stay intact; a source-sky mismatch refuses.
@@ -37,7 +43,18 @@ Serial/spawn workers verify the captured input and their snapshot/design binding
 Observer-dependent products remain deferred. Mac gates and actual J-2000
 preparation/render checks passed at `9f7b2e9a`. The common 80-degree modern and
 J-2000 north-cap specimens contain Polaris as an actual drawn marker; direct,
-serial and spawned output agree. User visual acceptance and merge remain pending.
+serial and spawned output agree. Those consumer specimens were accepted through #361/#362. The new single-sheet
+CLI option is a CLI1 candidate; its focused Mac and actual-render checks remain
+pending.
+
+For one sheet, supply `--stellar-epoch-config /absolute/path/to/query_v1.toml`
+alongside the existing `--design`, `--config`, `--from-sky`, `--chart-number`
+and `--output-dir` arguments to `wenu_chart atlas-sheet`. The saved source sky
+must match the epoch catalogue. Keep the query document separate from appearance
+configuration; optional `--atlas-frame-config` selects independent TT display axes.
+Omitting the epoch option preserves the existing route. Ordinary `regional`,
+`all-sky`, `planisphere`, `circumpolar` and `binocular` commands do not yet admit
+this option; their observer-dependent adoption remains deferred.
 
 
 ## Commands and independent inputs
@@ -368,6 +385,3 @@ Reports retain the source design hash, derived sheet/frame identity, TT equinox,
 stellar TCB event when present, target-axis centre, backend/matrices and unknown
 accuracy. A supplied index remains a static unverified frame/date reference.
 Omitting `--atlas-frame-config` retains native ICRS behavior.
-
-
-
