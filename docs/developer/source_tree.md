@@ -146,7 +146,8 @@ concrete Wenu classes.
 | [`comet_photometry.py`](../../src/wenu/comet_photometry.py) | Observer-dependent comet model magnitude from NASA/JPL Horizons. |
 | [`coordinate_service.py`](../../src/wenu/coordinate_service.py) | Central astronomical transformations for typed spherical geometry. |
 | [`coordinates.py`](../../src/wenu/coordinates.py) | Kernel vocabulary aliases plus Wenu source/observer factories and ObservationContext. |
-| [`ephemeris.py`](../../src/wenu/ephemeris.py) | Typed Cartesian ephemeris-state boundary. |
+| [`ephemeris.py`](../../src/wenu/ephemeris.py) | Typed Cartesian ephemeris-state boundary and native split-JD TDB event. |
+| [`ephemeris_companion.py`](../../src/wenu/ephemeris_companion.py) | Immutable derived exact-event geometric Earth/Sun product validation, SDK preparation, completion-last publication and data-only reload; no numerical model or observer. |
 | [`ephemeris_state.py`](../../src/wenu/ephemeris_state.py) | Borrowed request-scoped adapter from the existing geometric ephemeris protocol to returned Cartesian SDK states; no numerical model or light-time solver. |
 | [`minor_body_acquisition.py`](../../src/wenu/minor_body_acquisition.py) | Networked preflight acquisition for immutable numbered-asteroid resources. |
 | [`minor_body_ephemeris.py`](../../src/wenu/minor_body_ephemeris.py) | Offline minor-body states from one borrowed Horizons SPK resource. |
@@ -161,7 +162,7 @@ concrete Wenu classes.
 | [`satellite_crossings.py`](../../src/wenu/satellite_crossings.py) | Provider-neutral artificial-satellite crossing contracts. |
 | [`satellite_planning_advisories.py`](../../src/wenu/satellite_planning_advisories.py) | Offline observatory-neutral advisories from exact satellite reports. |
 | [`satellite_presentations.py`](../../src/wenu/satellite_presentations.py) | Renderer-neutral reports for normalized SatChecker candidate evidence. |
-| [`skyfield_ephemeris.py`](../../src/wenu/skyfield_ephemeris.py) | Skyfield adapter for one already-resolved JPL SPK resource. |
+| [`skyfield_ephemeris.py`](../../src/wenu/skyfield_ephemeris.py) | Geometric Skyfield state adapter, exact split-TDB input and process-owned pinned offline DE440/DE441 resource selection/lifetime. |
 | [`solar_system_appearance.py`](../../src/wenu/solar_system_appearance.py) | Renderer-neutral physical appearance of spherical Solar-System bodies. |
 | [`solar_system_directions.py`](../../src/wenu/solar_system_directions.py) | Observer-relative Solar-System direction realization. |
 | [`solar_system_disk_geometry.py`](../../src/wenu/solar_system_disk_geometry.py) | Renderer-neutral physical spherical geometry for apparent body disks. |
@@ -561,5 +562,3 @@ single-edition native-direction ingestion contract in `stellar_catalogue.py`.
 The existing offline audit owns normalization/staged local publication and its
 existing tests own corruption, source-free reload and public-command seams.
 This adds no new kernel route, provider, dependency or installed command.
-
-

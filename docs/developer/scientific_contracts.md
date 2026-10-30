@@ -1,22 +1,33 @@
 # Current scientific contracts and paused work
 
-## Companion states: assessed boundary, implementation pending
+<a id="companion-states-assessed-boundary-implementation-pending"></a>
 
-The [C1 assessment and proposed C2 scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
+## Companion states: selected exact-event candidate
+
+The [C1 assessment and selected C2 scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
 keep native TDB-compatible simultaneous geometric Earth/Sun PV separate from
 stellar TCB states and terrestrial observers. An explicit common-event receipt
 and qualified spatial convention are necessary for later composition; converting
 a time label alone does not admit subtraction. The existing nominal-astrometric
 batch converter does not accept geometric ephemeris references. No saved companion
-codec, planetary reuse, observer capability or ancient ephemeris coverage has
-been implemented by this documentation assessment. C2 remains proposed only.
+codec, planetary reuse, observer capability or ancient ephemeris coverage was
+implemented by the C1 documentation assessment. Fernando subsequently selected
+C2 after #363 merge/cleanup at main `244f4cb4`; agreement commit `489fbaf0`
+precedes runtime edits. The C2 candidate now implements exact native TDB
+Earth/Sun preparation and immutable data-only reload through existing
+ephemeris/SDK owners. Mac runtime/documentation and actual-cache verification
+passed at `437ee649`, including fresh-process reload without SPKs/providers/
+network. The [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification) records exact product/time identities
+and separates numerical transport agreement from unknown physical accuracy.
+Final receipt documentation and user acceptance remain pending.
+No nonzero reuse, observer or physical-accuracy qualification is inferred.
 The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
 records verified-byte/structural acquisition separately from state evaluation.
 Fernando's agreed resource policy prefers full DE440 within qualified actual
 coverage and DE441 beyond it, with file/path/hash evidence and no extrapolation.
 DE441 parts require explicit coverage/overlap routing; model overlap states need
 not be identical or equally accurate. Existing DE440s/modern defaults stay
-unchanged. The proposed checks retain separate TCB/TDB event and geometric
+unchanged. The verified checks retain separate TCB/TDB event and geometric
 spatial-convention qualification; no observer accuracy follows from SPK coverage.
 
 
@@ -1406,7 +1417,3 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and
-
-
-
-

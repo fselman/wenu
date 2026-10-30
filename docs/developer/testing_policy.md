@@ -13,9 +13,9 @@ The DE440/DE441 acquisition/policy receipt remains documentation only: recorded
 checksums and SPK paths are not direct-state or automatic-selection acceptance.
 Proposed future coverage adds DE440 boundaries, both DE441 parts and seam/overlap
 routing/refusal, plus exact prepare/reload/direct-state checks at J2000, J-2000
-and J-8000 after explicit TCB→TDB conversion. These gates are unexecuted and C2
-runtime is not selected. Re-run only the complete documentation gate for this
-policy update; retain the 36-case pass at 71dafb6a as prior-head evidence.
+and J-8000 after explicit TCB→TDB conversion. These gates were unexecuted at the C1 policy-update stage. C2 is now selected
+as recorded in its candidate gate below; retain the 36-case pass at 71dafb6a
+as prior-head evidence, not verification of the C2 implementation.
 
 
 ## Saved epoch consumer gate
@@ -2659,6 +2659,33 @@ in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
 
 
+## Exact-event companion candidate gate
 
+C2 agreement precedes runtime at `489fbaf0`. Closest existing protections are
+the typed-source contracts and returned-SDK/raw-source parity cases in
+`tests/test_ephemeris.py` and `tests/test_skyfield_ephemeris.py`.
+Four added functions in the former protect immutable/detached exact-event
+access, data corruption even after rehashing, explicit TCB/TDB receipts and
+split-event validation. Seven added functions in the latter cover pinned
+selection/precision/coverage edges and overlap, partial-open cleanup, actual SDK
+roundtrip/direct-source parity on explicitly synthetic backend data, no-clobber/
+publication/racing-output failure cleanup, selected-provider refusal without
+fallback, and fresh-process reload with SPKs deleted and network/provider entry
+points forbidden. A real Skyfield time-object seam checks both low-part signs at
+modern/J-2000/J-8000 events using synthetic vectors. The existing core/time
+mathematics are unchanged.
 
+At `437ee649`, both complete ephemeris owner files passed all 49 Mac cases in
+8.84 s; the complete documentation gate passed 36 in 3.28 s, after a passing
+diff check. Actual linked products at the three explicit TCB→TDB events passed
+direct-source/SDK/reload parity, DE440 boundary routing, DE441 overlap, outer
+refusals and resource closure. Fresh-process actual reload passed without
+SPK/provider/network access. The [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification) contains retained
+paths, product digests, measured residuals, prior failures and scientific limits.
 
+The final receipt changes documentation/inventory only. Run the complete existing
+`documentation` gate with plugin autoload disabled, empty PYTEST_ADDOPTS, fresh
+bytecode and run provenance. Do not repeat the successful runtime, actual-cache,
+fresh-process or stellar rendering workloads. No core, watched stellar owner,
+production/test/dependency/collection/default or numerical-model change is made.
+Bounded user acceptance remains pending; no parent closure is inferred.

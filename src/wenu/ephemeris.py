@@ -163,17 +163,33 @@ def ephemeris_resource_contains(resource, required):
 
 
 @dataclass(frozen=True)
+class EphemerisJulianDate:
+    """Exact canonical two-part native TDB event; never a rounded ISO label."""
+
+    jd1: int
+    jd2: float
+
+    def __post_init__(self):
+        if type(self.jd1) is not int or abs(self.jd1) > 2**53:
+            raise ValueError("jd1 must be an exactly representable integer day.")
+        if (type(self.jd2) not in (int, float) or not isfinite(self.jd2)
+                or not -0.5 <= self.jd2 < 0.5):
+            raise ValueError("jd2 must be a finite canonical fractional day.")
+        object.__setattr__(self, 'jd2', float(self.jd2) if self.jd2 else 0.0)
+
+
+@dataclass(frozen=True)
 class EphemerisStateRequest:
     """One geometric Cartesian state evaluation request."""
 
     target: str
     centre: str
     frame: str
-    instant: str
+    instant: str | EphemerisJulianDate
     time_scale: str
 
     def __post_init__(self):
-        for name in ("target", "centre", "instant"):
+        for name in ("target", "centre"):
             object.__setattr__(
                 self,
                 name,
@@ -189,6 +205,11 @@ class EphemerisStateRequest:
             "time_scale",
             _text(self.time_scale, name="time_scale").lower(),
         )
+        if type(self.instant) is EphemerisJulianDate:
+            if self.time_scale != 'tdb':
+                raise ValueError('Split ephemeris JD requires native TDB.')
+        else:
+            object.__setattr__(self, 'instant', _text(self.instant, name='instant'))
 
 
 @dataclass(frozen=True)

@@ -1,5 +1,105 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.07.C2 exact-event companion candidate
+
+Fernando selected C2 with “Proceed” after #363 acceptance/merge/cleanup and
+confirmed clean synchronized Mac main `244f4cb4`. Agreement is committed at
+`489fbaf0` before runtime edits. The as-is review below remains the provenance
+for extending existing owners rather than creating an alternate state engine.
+The [implemented API](implementation_reference.md#exact-event-ephemeris-companions)
+separates explicit split-JD TDB input, pinned offline selection/lifetime and
+immutable product publication/reload. New `ephemeris_companion.py` is justified
+by its distinct data-validation/publication lifecycle, not body-specific math.
+The existing typed source and returned Cartesian SDK remain numerical owners;
+the stellar nominal-astrometric converter and all six watched stellar/core
+owners are unchanged. DE441 part 1 wins its admitted overlap; DE440 retains
+first priority in its own actual coverage. Selected-source failure refuses.
+
+Modified source/tests compile. Four new codec/request functions passed direct
+local execution with actual records/time adapter using stdlib assertion contexts
+and a narrow package namespace; isolated exact selection/overlap/refusal/lifetime
+checks passed. Five further owner functions passed direct execution with the
+actual modified source/SDK/codec and synthetic third-party boundaries; no real
+backend acceptance is claimed. The first local corruption test exposed unnormalized SDK
+InvalidQuery exceptions; normalization was corrected and the same functions
+passed. Full pytest/Astropy/Skyfield, cold public imports/fresh-process and
+actual-cache execution are unavailable in the assistant environment. Subsequent
+user-reported Mac verification is recorded below. Final receipt documentation
+and user acceptance remain pending; K4b.07 parent closure is not claimed.
+See [the gate](testing_policy.md#exact-event-companion-candidate-gate).
+
+
+### Exact-event companion Mac and actual-cache verification
+
+**Tested runtime source:** `437ee649016843674ac1465834ffb71740ebc03e`.
+Fernando reported all 49 cases in the two complete ephemeris owner files passed
+in 8.84 s, all 36 documentation cases passed in 3.28 s, and `git diff --check`
+passed. Retain
+`~/Software/build/wenu/test/exact-ephemeris-companion-focused-v2-rrcq3o0w`.
+The earlier v1 run at `55170b6c` stopped at EOF whitespace preflight before any
+test executed; preserve
+`~/Software/build/wenu/test/exact-ephemeris-companion-focused-v1-le9evbse`.
+The correction changed file endings and blob identities, not executable statements.
+
+The offline actual-cache recipe `wenu_companion_actual_acceptance_v1.py`,
+SHA-256 `14f8d10186a025bf413aa87ce4f3fcfc2f6288944f307f90c304f089cb3cf9cc`,
+passed using all three pinned existing resources. Retain
+`~/Software/build/wenu/output/exact-ephemeris-companion-actual-v1-goqonh81`,
+including its script-bound provenance, log, summary and three immutable companion
+directories. Summary SHA-256:
+`d9f5252a1eb99a8eadc9e6762e7552455d76594a481aa41a2d1f4ff3e30d2b2f`.
+These are user-reported Mac results and receipt output, not direct assistant
+inspection of the Mac filesystem.
+
+The epoch names below refer to the original stellar **TCB** Julian-date inputs;
+their converted native TDB events are explicit and are not relabelled TT/civil
+epochs. Each product links its original stellar manifest and an admitted
+TCB→TDB receipt without changing the source product.
+
+| Product | Source TCB JD | Evaluated TDB JD (two parts) | Selected resource |
+|---|---|---|---|
+| j2000 | (2451545, 0) | (2451545, -0.00013025216543700573) | DE440/full |
+| jminus2000 | (990545, 0) | (990545, 0.022522841645042993) | DE441/part-1 |
+| jminus8000 | (-1200955, 0) | (-1200955, 0.056502482360762996) | DE441/part-1 |
+
+| Product | Companion manifest SHA-256 | States SHA-256 |
+|---|---|---|
+| j2000 | `6f231dc9b23ae99ce320440e79815868c33d7f7dfbe26caaff10bfae7cd3976a` | `e1ece82ea74b030b9c427b8d0c2b91ea27b892a8050911a1aaf6032f4cbcee51` |
+| jminus2000 | `1a8ea3227c504fc77700da41777b7196576b8a2d970dec960576b743aa3fd5fc` | `0cda15746d4da8183f9110cf0fcf62bd8444d5d06b19af1cd7d01c6a2b78b381` |
+| jminus8000 | `5574925907b2048cd5818e65bbc45dc2c7cc822fd58b67998dfa48f2a185880a` | `fa8f5a9199b3188909fc271c1934543cff52ff16f72930917b799aaf61f850c3` |
+
+Both required Earth centre (399) and Sun (10) relative to SSB (0) were retained
+at every event. Direct-source versus returned-SDK Euclidean position residual
+maxima were 0, 0 and 1.1102230246251565e-16 AU; corresponding velocity residuals
+were 4.336808689942018e-19, 0 and 0 AU/day. Reload preserved the returned values
+exactly. These are transport/composition comparisons through the existing source,
+not independent orbit or physical-accuracy oracles.
+
+Six DE440 boundary selections/evaluations, both DE441 parts at three overlap
+events, two outer-coverage refusals and the closed resource lifetime passed.
+DE441 part-1/part-2 Earth/Sun position differences were [0,0], [0,0] and
+[2.5438405243138006e-16,8.690541527449943e-19] AU. At the converted modern event,
+DE440 versus DE441 Earth/Sun differences were [5.457464008449871e-14,0] AU.
+Model differences were measured separately, not required to vanish or treated
+as equal physical accuracy. Existing source stellar manifests and acquisition
+inventory were reread unchanged; the recipe did not rewrite existing products.
+No fresh full stellar-state payload audit or stellar rendering is claimed.
+
+Fresh-process actual-product reload passed separately for all three products,
+with expected manifest/state digests, while SPK file opens, provider construction
+and network access were prohibited. Retain
+`~/Software/build/wenu/test/companion-actual-reload-v1-7ye_u_n6`.
+The source actual-run passed status, exact runtime head and recipe digest were
+checked before that reload. Source/measurement, ephemeris physical and numerical
+accuracy channels remain separately unknown; time-conversion operation rounding
+is a distinct receipt, not a state-accuracy certificate.
+
+This final receipt changes documentation/inventory only. Run the complete
+documentation gate on its final head; reuse unchanged successful runtime,
+actual-cache and fresh-process results. User acceptance/merge remain pending.
+Only bounded C2 verification is complete; parent K4b.07, nonzero planetary reuse,
+additional bodies and full K4b.08 terrestrial observer work remain separate.
+
 ## K4b.07 companion-state as-is assessment
 
 **Selected scope (K4b.07.C1):** Fernando said “proceed” after the proposal to
@@ -32,8 +132,9 @@ documentation assessment. The local environment lacks pytest/Astropy/Skyfield/ER
 companion persistence from a caller-pinned local SPK. See the
 [proposed contract](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
 The subsequent acquisition receipt below establishes available local DE440/DE441
-resources and records Fernando's selection policy. The exact-event seam,
-selection/overlap behavior and direct-evaluation checks remain unimplemented.
+resources and records Fernando's selection policy. At the C1 assessment, the exact-event seam, selection/overlap behavior and
+direct-evaluation checks were unimplemented. The current C2 candidate above
+implements those interfaces; subsequent Mac and actual-cache verification is recorded above.
 Additional bodies, nonzero reuse and full observer composition stay separate.
 
 ### Verified local DE440/DE441 resources and agreed selection
@@ -4796,7 +4897,3 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
-
-
-
-

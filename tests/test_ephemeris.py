@@ -322,3 +322,125 @@ def test_kernel_ephemeris_checks_returned_request_resource_units_and_coverage():
     with pytest.raises(OutsideCoverage):
         KernelEphemerisStateSource(Source(forbidden)).state(
             replace(request, instant='2200-01-01T00:00:00'))
+
+def _synthetic_companion_bytes():
+    """Constructed codec-only data; never captured JPL ephemeris evidence."""
+    from hashlib import sha256
+    from wenu.ephemeris_companion import _encode, REFERENCE, POLICY, SCHEMA, UNKNOWN_ERRORS
+    source_names = ('wenu.ephemeris', 'wenu.ephemeris_state', 'wenu.skyfield_ephemeris',
+                    'wenu.ephemeris_companion', 'wenu_kernel.kernel', 'wenu_kernel.records')
+    rows = [dict(target=target, centre='0', position_au=[.1, .2, .3],
+        velocity_au_per_day=[.001, .002, .003], position_error_au=UNKNOWN_ERRORS.copy(),
+        velocity_error_au_per_day=UNKNOWN_ERRORS.copy(),
+        provenance=['synthetic fixture; no physical validity', 'returned kernel Cartesian state'])
+        for target in ('399', '10')]
+    raw = _encode(rows)
+    manifest = dict(schema=SCHEMA, complete=True,
+        event=dict(jd1=2451545, jd2=2**-40, scale='tdb'), reference=REFERENCE.copy(),
+        selection=dict(model='DE440', part='full', path='/synthetic/fixture.bsp', sha256='a'*64,
+            coverage_jd=[2400000.5, 2500000.5], provenance=['synthetic metadata'],
+            segments=[dict(centre=c, target=t, frame=1, data_type=2,
+                start_jd=2400000.5, end_jd=2500000.5) for c,t in ((0,3), (3,399), (0,10))],
+            policy=POLICY, spatial_convention='JPL TDB-compatible geometric ICRF',
+            axes_evidence='SPK frame 1; JPL DE440/DE441 metadata explicitly admitted'),
+        implementation=dict(sources={n:'b'*64 for n in source_names},
+            backends={n:'synthetic' for n in ('skyfield','jplephem','astropy','numpy')}),
+        stellar_link=None, products={'states.json':dict(sha256=sha256(raw).hexdigest(), size_bytes=len(raw))})
+    return manifest, raw
+
+
+def test_companion_data_only_exact_event_and_detached_rows(tmp_path):
+    from hashlib import sha256
+    from wenu.ephemeris_companion import _encode, EphemerisCompanion, load_ephemeris_companion
+    from wenu_kernel.records import TimePoint
+    manifest, raw = _synthetic_companion_bytes()
+    saved = EphemerisCompanion(_encode(manifest), raw)
+    event = saved.instant
+    assert event == TimePoint(2451545, 2**-40, 'tdb')
+    assert [r['target'] for r in saved.at(event, ('10','399'))] == ['10','399']
+    assert saved.at(event, ()) == ()
+    row = saved.at(event)[0]
+    row['position_au'][0] = 999
+    assert saved.at(event)[0]['position_au'][0] == .1
+    for bad in (TimePoint(2451545, 0, 'tdb'), TimePoint(2451545, 2**-40, 'tcb')):
+        with pytest.raises(ValueError): saved.at(bad)
+    for ids in (('3',), ('399','399'), ('unknown',)):
+        with pytest.raises(ValueError): saved.at(event, ids)
+    (tmp_path/'manifest.json').write_bytes(saved.manifest)
+    (tmp_path/'states.json').write_bytes(raw)
+    assert load_ephemeris_companion(tmp_path, expected_manifest_sha256=
+        sha256(saved.manifest).hexdigest()) == saved
+    with pytest.raises(ValueError):
+        load_ephemeris_companion(tmp_path, expected_manifest_sha256='c'*64)
+    (tmp_path/'states.json').unlink()
+    with pytest.raises(ValueError): load_ephemeris_companion(tmp_path)
+
+
+def test_companion_rejects_semantic_corruption_even_with_rehashed_payload():
+    import copy
+    from hashlib import sha256
+    from wenu.ephemeris_companion import _encode, _decode, EphemerisCompanion
+    manifest, raw = _synthetic_companion_bytes()
+    EphemerisCompanion(_encode(manifest), raw)  # passing baseline
+    faults = [lambda m,r:m.update(complete=False), lambda m,r:m.update(schema='wrong'),
+        lambda m,r:m['event'].update(scale='tcb'), lambda m,r:m['event'].update(jd2=.5),
+        lambda m,r:m['reference'].update(frame='gcrs'), lambda m,r:m['reference'].update(centre='3'),
+        lambda m,r:m['reference'].update(position_unit='km'),
+        lambda m,r:m['selection'].update(model='DE440s'),
+        lambda m,r:m['selection'].update(part='part-1'),
+        lambda m,r:m['selection'].update(coverage_jd=[2451545,2451545.0000001]),
+        lambda m,r:m['selection']['segments'][1].update(target=301),
+        lambda m,r:m['selection']['segments'][0].update(frame=17),
+        lambda m,r:m['selection']['segments'][0].update(data_type=99),
+        lambda m,r:m['selection'].update(spatial_convention='nominal-astrometric'),
+        lambda m,r:m['implementation']['sources'].update({'wenu.ephemeris':'wrong'}),
+        lambda m,r:r[0].update(target='3'), lambda m,r:r[1].update(centre='399'),
+        lambda m,r:r.pop(), lambda m,r:r[0].update(velocity_au_per_day=None),
+        lambda m,r:r[0].update(position_error_au=0), lambda m,r:r[0].update(provenance=['synthetic'])]
+    for fault in faults:
+        m,r = copy.deepcopy(manifest),_decode(raw)
+        fault(m,r)
+        altered = _encode(r)
+        m['products']['states.json'] = dict(sha256=sha256(altered).hexdigest(), size_bytes=len(altered))
+        with pytest.raises((ValueError, TypeError)):
+            EphemerisCompanion(_encode(m), altered)
+    with pytest.raises(ValueError): EphemerisCompanion(_encode(manifest), raw+b' ')
+    with pytest.raises(ValueError): EphemerisCompanion(_encode(manifest), raw.replace(b'0.1', b'NaN'))
+    with pytest.raises(ValueError): EphemerisCompanion(b'{"schema":1,"schema":2}', raw)
+
+
+def test_companion_validates_explicit_tcb_link_receipt():
+    from dataclasses import asdict
+    import copy
+    from wenu.astrometric_coordinates import TcbTdbAdapter
+    from wenu.ephemeris_companion import _encode, _decode, EphemerisCompanion
+    from wenu_kernel.records import TimePoint, TimeSpan
+    from wenu_kernel.time import TimeService
+    m,raw = _synthetic_companion_bytes()
+    source = TimePoint(2451545, 2**-40, 'tcb')
+    adapter = TcbTdbAdapter(TimeSpan(TimePoint(2400001,0,'tcb'), TimePoint(2499999,0,'tcb')))
+    admission = adapter.describe()
+    receipt = TimeService((adapter,), admissions=(admission,)).convert(source,'tdb')
+    m['event'] = asdict(receipt.target)
+    m['stellar_link'] = _decode(_encode(dict(stellar_manifest_sha256='c'*64,
+        stellar_event=asdict(source), admission=asdict(admission), conversion=asdict(receipt))))
+    saved = EphemerisCompanion(_encode(m),raw)
+    assert saved.instant == receipt.target
+    for key in ('source', 'target'):
+        bad = copy.deepcopy(m)
+        bad['stellar_link']['conversion'][key]['jd2'] += 2**-30
+        with pytest.raises(ValueError): EphemerisCompanion(_encode(bad),raw)
+    bad = copy.deepcopy(m)
+    bad['stellar_link']['conversion']['numerical_error_s'] = 0
+    # This exact conversion has nonzero operation rounding; it cannot be relabelled exact.
+    assert receipt.numerical_error_s > 0
+    with pytest.raises(ValueError): EphemerisCompanion(_encode(bad),raw)
+
+
+def test_ephemeris_split_event_requires_native_tdb_and_canonical_parts():
+    from wenu.ephemeris import EphemerisJulianDate, EphemerisStateRequest
+    e = EphemerisJulianDate(-1200955,2**-40)
+    assert EphemerisStateRequest('399','0','icrf',e,'tdb').instant == e
+    with pytest.raises(ValueError): EphemerisStateRequest('399','0','icrf',e,'tcb')
+    for args in ((True,0), (1,.5), (1,float('nan')), (2**53+1,0), (1,True)):
+        with pytest.raises(ValueError): EphemerisJulianDate(*args)

@@ -1783,5 +1783,21 @@ transport and observer/geocentric ITRS transforms retain their current meanings.
 Constructed custom-protocol sources remain compatible. Finite-Sun occultation,
 observer twilight and continuous contact search keep their existing mathematics.
 
+## Exact-event geometric companion conventions
 
-
+The selected K4b.07.C2 candidate preserves native split-JD TDB at both the
+Skyfield input and returned Cartesian SDK query. It never passes a summed large
+JD or default-rounded ISO event through that new seam. Existing string requests
+keep their original behavior. Saved states are simultaneous geometric Earth
+centre (399)/Sun (10) relative to SSB (0), ICRF axes, TDB-compatible AU and AU/day,
+with unknown measurement/physical/numerical errors separately recorded.
+SPK frame-1/path evidence and explicitly pinned JPL model metadata qualify this
+convention separately from the time-scale label. The stellar nominal-astrometric
+batch converter is not applied. Optional stellar linkage retains the admitted
+TCB→TDB conversion event/model/rounding receipt without altering original states.
+No apparent corrections, Earth rotation, terrestrial site or planetary reuse
+follows from persistence. Mac runtime/documentation, actual-cache linked states
+and fresh data-only reload passed at `437ee649`; the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification)
+records separate time events, product identities and numerical residuals.
+These checks do not certify physical/observer accuracy or add planetary reuse.
+See [the API](implementation_reference.md#exact-event-ephemeris-companions).
