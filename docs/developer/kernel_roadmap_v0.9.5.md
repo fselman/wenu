@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 129, 2026-10-30. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. Companion assessment C1 is selected, C2 is proposed only; parent K4b.07 and observer work remain open.
+**Plan revision:** 130, 2026-10-30. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. Companion assessment C1 is selected, C2 is proposed only; parent K4b.07 and observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -70,7 +70,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with R1/observer deferrals. K4b.07 exact persistence (#358), nearby query (#359/#360) and saved consumers/J-2000/polar specimens (#361) accepted. Main f72a2055 after #362 is clean/synchronized; branches cleaned; original catalogues/evidence retained. Parent K4b.07 remains open |
-| Next bounded submilestone | K4b.07.C1 companion-state assessment selected by Fernando with “proceed”; documentation only. DE440/DE441 resource policy agreed and acquisition reported verified; review proposed C2 exact-event Earth/Sun companion scope before any runtime selection. See [scope](#k4b07-companion-assessment-and-proposed-exact-event-slice). Parent K4b.07 and observer work remain open |
+| Next bounded submilestone | K4b.07.C1 companion-state assessment selected by Fernando with “proceed”; documentation only. DE440/DE441 resource policy and acquisition recorded; Fernando selected C2 exact-event Earth/Sun implementation with “Proceed” after #363 merge/cleanup at main 244f4cb4. See [scope](#k4b07-companion-assessment-and-proposed-exact-event-slice). Parent K4b.07 and observer work remain open |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1061,7 +1061,7 @@ coverage. Missing/corrupt selected resources refuse; do not silently substitute
 a model or extrapolate beyond DE441. This agrees policy and records completed
 acquisition, not automatic-selection or companion runtime implementation.
 
-**K4b.07.C2 — proposed, not selected for implementation:** first persist exact-
+**K4b.07.C2 — selected for implementation, 2026-10-30:** first persist exact-
 event geometric Earth-centre (NAIF 399) and Sun (10) PV relative to solar-system
 barycentre (0), through the existing ephemeris and returned SDK state route.
 Both are required for this bounded two-body product; missing identity or coverage
@@ -1069,7 +1069,20 @@ refuses the whole publication. Never substitute Earth-Moon barycentre (3), a
 planet-system barycentre, another model or a stale event. Later explicit body
 lists/optional-body status and per-body coverage qualification remain separate.
 
-Proposed boundary and acceptance:
+Fernando accepted PR #363, requested merge/cleanup and confirmed clean
+synchronized Mac main `244f4cb49af5e3331cedba5ca343a4b7ac024284` with both
+branches removed. After the explicit C2 proposal (offline DE440/DE441 selection,
+exact-event Earth/Sun evaluation, immutable save/reload and direct checks at
+J2000/J-2000/J-8000), he said “Proceed”. This selects that bounded implementation
+and its closest gates, not observer work, planetary reuse or parent closure.
+Record agreement before runtime edits. The existing ephemeris and returned SDK
+route remain the numerical owners; persistence has a separate immutable lifecycle.
+For deterministic DE441 overlap routing, prefer part 1 when both are admitted;
+otherwise use the covered part. Full DE440 still has priority within its own
+qualified coverage. Resource corruption or selected-path failure refuses without
+fallback. Neither overlap policy nor a direct comparison claims physical accuracy.
+
+Selected boundary and acceptance:
 
 - Explicit caller-owned local DE440/DE441 resource inventory, pinned paths,
   expected SHA-256, model/provenance and finite admitted coverage; verify the
@@ -1116,8 +1129,8 @@ Proposed boundary and acceptance:
   cross-model differences as a zero-tolerance equality oracle. No visual,
   observer or physical-accuracy claim follows; these checks are not yet run.
 
-Selection requires review of this concrete scope, documented agreement before
-runtime and a verified available local resource/event. This proposal creates no
+Selection is now recorded above; actual-cache acceptance still requires the
+verified available local resource/event and proposed checks. This slice creates no
 new requirement for native barycentric stellar charts or K5 baseline migration.
 Additional planets/Moon, interval ephemerides/reuse, observer relative-state
 composition, site/Earth orientation/Delta-T/EOP/apparent corrections and ancient
@@ -2425,6 +2438,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 130: select exact-event companion implementation | Fernando's “Proceed” after #363 acceptance/merge/cleanup, confirmed clean synchronized main 244f4cb4 and the explicit C2 result/gate proposal | Select bounded offline DE440/DE441 routing, exact Earth/Sun evaluation and immutable preparation/reload with the specified owner and actual-cache gates; no observer work, nonzero planetary reuse, new acquisition or parent closure |
 | Revision 129: record DE440/DE441 acquisition and agreed resource policy | Fernando's explicit DE440-within-coverage/DE441-longer-span decision and authorization to download both, with user-reported verified Mac acquisition recovered from the 2026-10-28 handoff; clean synchronized task head reconfirmed 2026-10-30 | Documentation only. Keep modern defaults; no automatic selection, C2 runtime authorization, new acquisition, extrapolation, observer adoption or parent closure |
 | Revision 128: select companion assessment and reconcile consumer acceptance | Fernando’s “accepted, merge and cleanup both PRs”, confirmed main f72a2055/branch cleanup and “proceed” after the companion assessment proposal | Accept #361 consumer/visual result; select C1 documentation assessment only. C2 exact-event Earth/Sun persistence remains proposed, not runtime authority |
 | Revision 127: select observer-free epoch consumers with J-2000 and north cap | Fernando’s 2026-10-28 instruction quoted in the consumer contract after main d4fb035d synchronization/cleanup | Select the described consumer integration, additional retained catalogue and modern/J-2000 Polaris-visible cap specimens; no observer/companion/source-model expansion or parent closure |
