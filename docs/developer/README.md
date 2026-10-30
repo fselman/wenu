@@ -6,8 +6,12 @@ The [as-is assessment](kernel_migration_audit_v1.md#k4b07-companion-state-as-is-
 identifies existing geometric ephemeris, SDK and TCB/TDB owners.
 The [proposed C2 boundary](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
 is exact-event Earth-centre/Sun persistence from a verified local SPK.
-This assessment adds no runtime, acquisition or observer functionality.
-C2 is proposed for review, not selected implementation.
+The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
+records the subsequently authorized and reported verified DE440/DE441 downloads.
+The agreed policy prefers full DE440 within qualified coverage and DE441 beyond
+it, preserving DE440s/modern defaults. Selection, exact-event evaluation and
+companion persistence remain unimplemented. C2 is proposed for review, not
+selected implementation; no further acquisition or observer work is activated.
 
 
 ## Accepted saved epoch consumers (K4b.07)

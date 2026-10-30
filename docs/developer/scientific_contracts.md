@@ -10,6 +10,14 @@ a time label alone does not admit subtraction. The existing nominal-astrometric
 batch converter does not accept geometric ephemeris references. No saved companion
 codec, planetary reuse, observer capability or ancient ephemeris coverage has
 been implemented by this documentation assessment. C2 remains proposed only.
+The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
+records verified-byte/structural acquisition separately from state evaluation.
+Fernando's agreed resource policy prefers full DE440 within qualified actual
+coverage and DE441 beyond it, with file/path/hash evidence and no extrapolation.
+DE441 parts require explicit coverage/overlap routing; model overlap states need
+not be identical or equally accurate. Existing DE440s/modern defaults stay
+unchanged. The proposed checks retain separate TCB/TDB event and geometric
+spatial-convention qualification; no observer accuracy follows from SPK coverage.
 
 
 ## Saved epoch consumer contract

@@ -31,10 +31,67 @@ documentation assessment. The local environment lacks pytest/Astropy/Skyfield/ER
 **Recommended next slice, proposed K4b.07.C2:** exact-event Earth-centre and Sun
 companion persistence from a caller-pinned local SPK. See the
 [proposed contract](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
-Actual local resource identity/coverage and the event-input seam must be verified
-before implementation is selected. No existing file is known here to support
-the retained J-2000 or J-8000 stellar epochs. Longer ephemerides, additional
-bodies, nonzero reuse and full observer composition remain separately reviewed.
+The subsequent acquisition receipt below establishes available local DE440/DE441
+resources and records Fernando's selection policy. The exact-event seam,
+selection/overlap behavior and direct-evaluation checks remain unimplemented.
+Additional bodies, nonzero reuse and full observer composition stay separate.
+
+### Verified local DE440/DE441 resources and agreed selection
+
+After the C1 assessment, Fernando explicitly chose full DE440 within its
+qualified actual coverage and DE441 for longer spans, and authorized both
+downloads. This resource policy is agreed; C2 runtime implementation remains
+proposed. The Mac branch was reconfirmed clean/synchronized at
+`71dafb6a84a5c381f4b902467d25972b46913b97` on 2026-10-30, with main
+`f72a20557de7b0d86123438c15a73fcaa88b07df`.
+
+Fernando reported successful acquisition into `/Users/fselman/.cache/wenu`.
+Each unchanged file passed JPL-published MD5 and SPK structural checks for the
+required paths 0→3→399 and 0→10; SHA-256 and segment coverage were recorded.
+These are user-reported Mac results recovered from the saved handoff, not direct
+assistant inspection of the Mac inventory.
+
+| Resource | Recorded SHA-256 | JPL-published MD5 |
+|---|---|---|
+| `de440.bsp` | `a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5` | `c9d581bfd84209dbeee8b1583939b148` |
+| `de441_part-1.bsp` | `13757827f5db41b835a24bbd637488636ce79a8ca754062fed17844f7d5b618e` | `7e5fcf9ecb5d08e1ab70c049baa60cd3` |
+| `de441_part-2.bsp` | `3abb17dae2d78dd34880377544aacb54892104a0d4462b322cb9f4454d4887f6` | `ad8dfa4e505ef0e3a5d587a5b4705632` |
+
+Retain the successful evidence directory
+`/Users/fselman/Software/build/wenu/output/jpl-de440-de441-acquisition-v2-vrlyhrov`,
+including `run-provenance.json`, `resource-inventory-v2.json`, published checksums
+and technical comments. The inventory, not rounded year labels, owns the actual
+segment coverage and file/target paths. DE441 part 1 technical coverage is TDB
+JD -3100015.5..2440432.5; part 2 is JD 2440400.5..8000016.5. Route the applicable
+part explicitly: intersecting the two complete file intervals would incorrectly
+reduce the model to their overlap. A deterministic overlap choice and seam
+checks still require definition/qualification in the proposed runtime slice.
+DE440/DE441 overlap agreement must be measured, not assumed exact or assigned
+equal physical accuracy; their lunar-core damping models differ.
+
+Keep the earlier failed acquisition evidence
+`/Users/fselman/Software/build/wenu/output/jpl-de440-de441-acquisition-v1-lbywbudt`:
+TLS validation failed while obtaining technical comments, before BSP downloads.
+The successful v2 used verified TLS with the installed certifi CA bundle,
+bounded sequential retries and no-clobber installation of checksum-verified
+staged files; no insecure TLS bypass or repository change was made.
+
+The pre-existing `de440s.bsp` and modern defaults remain unchanged.
+No further acquisition is needed for the proposed slice. Acquisition verifies
+bytes/structure, not exact-event evaluation, time conversion, automatic selection,
+saved-state reload or an ancient terrestrial observer. J2000, J-2000 and J-8000
+prepare/reload/direct-evaluation checks remain proposed and unexecuted.
+Beyond qualified DE441 coverage, longer-span extension remains future research;
+no extrapolation or silent model fallback is authorized.
+
+Primary sources recorded in the 2026-10-28 acquisition review:
+[JPL SPK directory](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/),
+[published checksums](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/aa_checksums.txt),
+[DE440 comments](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_tech-comments.txt),
+[DE441 comments](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_tech-comments.txt),
+[model description](https://ssd.jpl.nasa.gov/doc/de440_de441.html) and
+[NAIF rules](https://naif.jpl.nasa.gov/naif/rules.html).
+
 
 
 

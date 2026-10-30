@@ -9,6 +9,13 @@ dependency, build or collection changes. Do not run the proposed companion
 science gate as though a codec already exists. Its exact-event parity, precision,
 identity/refusal and fresh-process obligations are specified in the
 [proposed scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
+The DE440/DE441 acquisition/policy receipt remains documentation only: recorded
+checksums and SPK paths are not direct-state or automatic-selection acceptance.
+Proposed future coverage adds DE440 boundaries, both DE441 parts and seam/overlap
+routing/refusal, plus exact prepare/reload/direct-state checks at J2000, J-2000
+and J-8000 after explicit TCB→TDB conversion. These gates are unexecuted and C2
+runtime is not selected. Re-run only the complete documentation gate for this
+policy update; retain the 36-case pass at 71dafb6a as prior-head evidence.
 
 
 ## Saved epoch consumer gate
