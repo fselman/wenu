@@ -18,6 +18,22 @@ acceptance and merge are confirmed through #361/main f72a2055 after #362;
 clean Mac synchronization and cleanup are confirmed. No companion runtime follows.
 
 
+
+## Exact-event ephemeris companion lifecycle
+
+The selected K4b.07.C2 candidate extends existing ephemeris request/adapter owners
+for native split-JD TDB input and pinned offline DE440/DE441 resource ownership.
+Selection remains in `skyfield_ephemeris.py`; the existing `ephemeris_state.py`
+returned Cartesian SDK path remains authoritative for transported PV.
+The separate `ephemeris_companion.py` module owns immutable derived-product
+validation/preparation/publication/reload, not a second numerical engine.
+It stores Earth-centre/Sun simultaneous geometric ICRF/TDB-compatible states,
+not stellar nominal-astrometric states or terrestrial observations.
+Optional stellar-manifest linkage verifies explicit common-event receipts.
+No chart, renderer, observer, original stellar codec/model/core or modern
+default changes. Mac/runtime/actual-cache acceptance is pending.
+See the [API](implementation_reference.md#exact-event-ephemeris-companions).
+
 ## Stellar epoch query lifetime
 
 `stellar_epoch_query.py` owns explicit in-memory reuse policy, detached resolution
@@ -941,5 +957,6 @@ deterministic import/test/render routes. This is not new acquisition authority.
 Complete Mac audit/documentation acceptance is pending. After acceptance,
 Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
 independent astronomical package extraction remain separate.
+
 
 

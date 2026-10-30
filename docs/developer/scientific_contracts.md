@@ -1,15 +1,22 @@
 # Current scientific contracts and paused work
 
-## Companion states: assessed boundary, implementation pending
+<a id="companion-states-assessed-boundary-implementation-pending"></a>
 
-The [C1 assessment and proposed C2 scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
+## Companion states: selected exact-event candidate
+
+The [C1 assessment and selected C2 scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
 keep native TDB-compatible simultaneous geometric Earth/Sun PV separate from
 stellar TCB states and terrestrial observers. An explicit common-event receipt
 and qualified spatial convention are necessary for later composition; converting
 a time label alone does not admit subtraction. The existing nominal-astrometric
 batch converter does not accept geometric ephemeris references. No saved companion
-codec, planetary reuse, observer capability or ancient ephemeris coverage has
-been implemented by this documentation assessment. C2 remains proposed only.
+codec, planetary reuse, observer capability or ancient ephemeris coverage was
+implemented by the C1 documentation assessment. Fernando subsequently selected
+C2 after #363 merge/cleanup at main `244f4cb4`; agreement commit `489fbaf0`
+precedes runtime edits. The C2 candidate now implements exact native TDB
+Earth/Sun preparation and immutable data-only reload through existing
+ephemeris/SDK owners. Its Mac and actual-cache gates remain pending.
+No nonzero reuse, observer or physical-accuracy qualification is inferred.
 The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
 records verified-byte/structural acquisition separately from state evaluation.
 Fernando's agreed resource policy prefers full DE440 within qualified actual
@@ -1406,6 +1413,7 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and
+
 
 
 

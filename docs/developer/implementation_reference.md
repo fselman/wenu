@@ -3027,6 +3027,66 @@ the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
 
 
+## Exact-event ephemeris companions
 
+K4b.07.C2 is selected at roadmap commit `489fbaf0` and implemented as a candidate;
+Mac runtime/documentation and actual-cache acceptance remain pending.
+`EphemerisJulianDate(jd1, jd2)` in `wenu.ephemeris` supplies a canonical
+integer day and finite fractional day [-0.5,0.5), native TDB only.
+`EphemerisStateRequest.instant` accepts this value or its existing string input.
+Existing string behavior is unchanged. The Skyfield adapter calls
+`timescale.tdb_jd(jd1, jd2)`; the SDK preserves the same split event and coverage
+checks compare exact components rather than a summed large JD.
 
+`PinnedEphemerisResource(path, sha256, model, part, coverage_jd, provenance)`
+in `wenu.skyfield_ephemeris` requires explicit file/model metadata.
+`open_pinned_ephemerides(resources)` is a context manager admitting exactly
+DE440/full, DE441/part-1 and DE441/part-2. It opens existing local files only,
+checks SHA-256, actual conservative segment coverage and geometric
+0→3→399/0→10 paths in frame 1, and closes every opened kernel on failure/exit.
+Timescale construction uses bundled tables only; the native TDB state path
+uses no UTC/UT1, observer, EOP or leap-second conversion.
+`resources.select(EphemerisJulianDate(...))` returns the borrowed existing
+source and detached selection evidence. Full DE440 has priority; outside it,
+covered DE441 part 1 precedes part 2. Selected-backend failure never retries
+another model. A closed resource context refuses selection.
+
+`prepare_ephemeris_companion(resources, instant, destination,
+stellar_manifest=None, time_admission=None, time_conversion=None)` in
+`wenu.ephemeris_companion` requires an open validated resource context and a
+native TDB SDK `TimePoint`. It evaluates Earth centre (399) and Sun (10), both
+relative to SSB (0), through `KernelEphemerisStateSource`. The separate
+`wenu-ephemeris-companion/1` directory contains `states.json` and a digest-bound
+completion manifest. It records selected file/model/part/path/segments, native
+geometric ICRF/TDB-compatible AU and AU/day values, exact event, source-code and
+backend identities, provenance and separate unknown measurement/physical/numerical
+error channels. SI SDK round-trip transport may change the last bit relative
+to direct AU evaluation; exact reload preserves the actual returned values,
+not a claim of bit equality with the raw provider or certified numerical accuracy.
+
+Optional `stellar_manifest` is the original stellar manifest bytes.
+Its digest/event bind an explicit admitted `TcbTdbAdapter` receipt to the actual
+TDB evaluation event; the reader recomputes that resource-free conversion.
+No stellar product/source/model is edited, and a reused stellar position is not
+relabeled as the companion evaluation event.
+
+`load_ephemeris_companion(directory, expected_manifest_sha256=None)` validates
+schema, payload digest/size, IDs, reference/units, event, segment evidence,
+receipts and completeness. It returns an immutable `EphemerisCompanion`;
+`instant` exposes the TDB event and `at(instant, identifiers=('399','10'))`
+returns detached ordered rows. Empty subsets are permitted; unknown/duplicate
+IDs or a different event/scale refuse. No SPK/provider/network/original stellar
+source is needed to reload. Recorded code/backend identities are provenance,
+not a demand to reconstruct the original installed provider during reading.
+Pass the expected manifest digest to bind an externally retained product identity.
+Publication is no-clobber, completion-last and cleans only this call's reserved
+partial directory on failure. There is no planetary time window/extrapolation,
+new installed CLI/default, chart consumer, observer composition or parent closure.
+
+Primary backend/convention references reviewed 2026-10-30:
+[Skyfield offline timescales](https://rhodesmill.org/skyfield/api-iokit.html),
+[split TDB input](https://rhodesmill.org/skyfield/api-time.html),
+[SPK conventions](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html),
+[JPL ICRF axes in frame 1](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/mkspk.html)
+and [DE440/DE441 model](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf).
 

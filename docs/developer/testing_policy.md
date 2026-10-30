@@ -13,9 +13,9 @@ The DE440/DE441 acquisition/policy receipt remains documentation only: recorded
 checksums and SPK paths are not direct-state or automatic-selection acceptance.
 Proposed future coverage adds DE440 boundaries, both DE441 parts and seam/overlap
 routing/refusal, plus exact prepare/reload/direct-state checks at J2000, J-2000
-and J-8000 after explicit TCB→TDB conversion. These gates are unexecuted and C2
-runtime is not selected. Re-run only the complete documentation gate for this
-policy update; retain the 36-case pass at 71dafb6a as prior-head evidence.
+and J-8000 after explicit TCB→TDB conversion. These gates were unexecuted at the C1 policy-update stage. C2 is now selected
+as recorded in its candidate gate below; retain the 36-case pass at 71dafb6a
+as prior-head evidence, not verification of the C2 implementation.
 
 
 ## Saved epoch consumer gate
@@ -2659,6 +2659,42 @@ in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
 
 
+## Exact-event companion candidate gate
 
+C2 agreement precedes runtime at `489fbaf0`. Closest existing protections are
+the typed-source contracts and returned-SDK/raw-source parity cases in
+`tests/test_ephemeris.py` and `tests/test_skyfield_ephemeris.py`.
+Four added functions in the former protect immutable/detached exact-event
+access, data corruption even after rehashing, explicit TCB/TDB receipts and
+split-event validation. Seven added functions in the latter cover pinned
+selection/precision/coverage edges and overlap, partial-open cleanup, actual SDK
+roundtrip/direct-source parity on explicitly synthetic backend data, no-clobber/
+publication/racing-output failure cleanup, selected-provider refusal without
+fallback, and fresh-process reload with SPKs deleted and network/provider entry
+points forbidden. A real Skyfield time-object seam checks both low-part signs at
+modern/J-2000/J-8000 events using synthetic vectors. The existing core/time
+mathematics are unchanged.
 
+Run both complete ephemeris owner files, then the complete `documentation`
+gate. Disable plugin autoload, clear PYTEST_ADDOPTS and use a fresh bytecode/run
+directory with provenance. No test file, gate manifest, collection, dependency,
+installed command, state SDK or watched stellar owner changes.
+Direct local execution of the four new codec/request functions passed using
+stdlib assertion contexts and actual immutable records/time adapter, with the
+broad Wenu facade intentionally bypassed because astronomy dependencies are
+unavailable. Exact selection/overlap/refusal/lifetime logic also passed a direct
+local isolated check. Five further owner functions passed direct execution
+with actual modified source/SDK/codec and explicitly synthetic third-party
+boundaries. This is not real astronomy-backend acceptance. Modified Python compiles. These are not pytest, public-
+import, Skyfield, fresh-process or actual-cache acceptance claims; Mac gates
+remain pending. Preserve the failed initial local exception-normalization check
+as development evidence; the corrected same four-function gate passed.
+
+Then inspect the retained acquisition inventory and use the already verified
+local files for modern/J-2000/J-8000 split-event conversion, preparation/reload
+and direct-source parity; check DE440 boundary routing and DE441 parts/overlap.
+Record actual selected hashes/paths/events/receipts, returned values, separate
+unknown errors and raw-provider versus SI-SDK-transport residuals. Exact reload
+must be lossless; direct AU values can differ at roundoff. No visual or physical
+accuracy is established. Do not redownload resources or repeat stellar rendering.
 

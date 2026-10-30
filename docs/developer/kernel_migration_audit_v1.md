@@ -1,5 +1,32 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.07.C2 exact-event companion candidate
+
+Fernando selected C2 with “Proceed” after #363 acceptance/merge/cleanup and
+confirmed clean synchronized Mac main `244f4cb4`. Agreement is committed at
+`489fbaf0` before runtime edits. The as-is review below remains the provenance
+for extending existing owners rather than creating an alternate state engine.
+The [implemented API](implementation_reference.md#exact-event-ephemeris-companions)
+separates explicit split-JD TDB input, pinned offline selection/lifetime and
+immutable product publication/reload. New `ephemeris_companion.py` is justified
+by its distinct data-validation/publication lifecycle, not body-specific math.
+The existing typed source and returned Cartesian SDK remain numerical owners;
+the stellar nominal-astrometric converter and all six watched stellar/core
+owners are unchanged. DE441 part 1 wins its admitted overlap; DE440 retains
+first priority in its own actual coverage. Selected-source failure refuses.
+
+Modified source/tests compile. Four new codec/request functions passed direct
+local execution with actual records/time adapter using stdlib assertion contexts
+and a narrow package namespace; isolated exact selection/overlap/refusal/lifetime
+checks passed. Five further owner functions passed direct execution with the
+actual modified source/SDK/codec and synthetic third-party boundaries; no real
+backend acceptance is claimed. The first local corruption test exposed unnormalized SDK
+InvalidQuery exceptions; normalization was corrected and the same functions
+passed. Full pytest/Astropy/Skyfield, cold public imports/fresh-process and
+actual-cache checks are unavailable here and remain pending on the Mac.
+This candidate is neither acceptance nor K4b.07 parent closure.
+See [the gate](testing_policy.md#exact-event-companion-candidate-gate).
+
 ## K4b.07 companion-state as-is assessment
 
 **Selected scope (K4b.07.C1):** Fernando said “proceed” after the proposal to
@@ -32,8 +59,9 @@ documentation assessment. The local environment lacks pytest/Astropy/Skyfield/ER
 companion persistence from a caller-pinned local SPK. See the
 [proposed contract](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
 The subsequent acquisition receipt below establishes available local DE440/DE441
-resources and records Fernando's selection policy. The exact-event seam,
-selection/overlap behavior and direct-evaluation checks remain unimplemented.
+resources and records Fernando's selection policy. At the C1 assessment, the exact-event seam, selection/overlap behavior and
+direct-evaluation checks were unimplemented. The current C2 candidate above
+implements those interfaces; Mac and actual-cache acceptance remain pending.
 Additional bodies, nonzero reuse and full observer composition stay separate.
 
 ### Verified local DE440/DE441 resources and agreed selection
@@ -4796,6 +4824,7 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
 
 

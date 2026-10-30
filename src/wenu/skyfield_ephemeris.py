@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager, ExitStack
+from dataclasses import dataclass
+from fractions import Fraction
 import re
 from hashlib import sha256
 from math import cos, isfinite, radians, sin
@@ -15,6 +18,7 @@ from skyfield.positionlib import Astrometric as SkyfieldAstrometric
 from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.ephemeris import (
     EphemerisResourceIdentity,
+    EphemerisJulianDate,
     EphemerisState,
     EphemerisStateRequest,
 )
@@ -106,6 +110,122 @@ def resolve_skyfield_resource_identity(kernel, *, model=None):
     )
 
 
+@dataclass(frozen=True)
+class PinnedEphemerisResource:
+    """Caller-pinned local file and metadata, never inferred from its name.
+
+    Coverage is checked against the actual conservative segment intersection.
+    Model/provenance is a caller admission, not inferred physical accuracy.
+    """
+
+    path: str
+    sha256: str
+    model: str
+    part: str
+    coverage_jd: tuple[float, float]
+    provenance: tuple[str, ...]
+
+    def __post_init__(self):
+        if (self.model, self.part) not in (
+                ('DE440', 'full'), ('DE441', 'part-1'), ('DE441', 'part-2')):
+            raise ValueError('Explicit DE440/full or DE441/part-1/part-2 required.')
+        if not isinstance(self.path, str) or not self.path.strip():
+            raise ValueError('Explicit local SPK path required.')
+        digest = self.sha256
+        if (type(digest) is not str or len(digest) != 64
+                or any(c not in '0123456789abcdef' for c in digest)):
+            raise ValueError('Pinned SHA-256 required.')
+        if (type(self.coverage_jd) not in (tuple, list) or len(self.coverage_jd) != 2
+                or any(type(x) not in (int, float) or not isfinite(x)
+                       for x in self.coverage_jd)
+                or not self.coverage_jd[0] < self.coverage_jd[1]):
+            raise ValueError('Finite increasing TDB coverage required.')
+        object.__setattr__(self, 'coverage_jd', tuple(float(x) for x in self.coverage_jd))
+        if (type(self.provenance) not in (tuple, list) or not self.provenance
+                or any(type(x) is not str or not x.strip() for x in self.provenance)):
+            raise ValueError('Explicit resource provenance required.')
+        object.__setattr__(self, 'provenance', tuple(self.provenance))
+
+
+def _spk_segments(kernel):
+    """Qualify the actual JPL geometric paths, axes, types and segment ranges."""
+    records = tuple(dict(centre=s.spk_segment.center, target=s.spk_segment.target,
+        frame=s.spk_segment.frame, data_type=s.spk_segment.data_type,
+        start_jd=float(s.spk_segment.start_jd), end_jd=float(s.spk_segment.end_jd))
+        for s in kernel.segments)
+    if (not records or any(r['frame'] != 1 or r['data_type'] not in (2, 3)
+                          or not isfinite(r['start_jd']) or not isfinite(r['end_jd'])
+                          or r['start_jd'] >= r['end_jd'] for r in records)
+            or not {(0, 3), (3, 399), (0, 10)} <=
+            {(r['centre'], r['target']) for r in records}):
+        raise ValueError('SPK requires J2000/ICRF geometric 0→3→399 and 0→10 paths.')
+    return records
+
+
+class OfflineEphemerisResources:
+    """Context-owned validated resources; no acquisition or cross-request cache."""
+
+    def __init__(self, entries):
+        self._entries = tuple(entries)
+        self._closed = False
+
+    def select(self, event):
+        """DE440 first, then covered DE441 part 1, then part 2; never fallback on failure."""
+        if self._closed:
+            raise ValueError('Offline ephemeris context is closed.')
+        if type(event) is not EphemerisJulianDate:
+            raise TypeError('Explicit split-JD TDB event required.')
+        exact = Fraction(event.jd1) + Fraction(event.jd2)
+        for pin, source, segments in self._entries:
+            if pin.coverage_jd[0] <= exact <= pin.coverage_jd[1]:
+                return source, dict(model=pin.model, part=pin.part,
+                    path=str(Path(pin.path).expanduser().resolve()),
+                    sha256=pin.sha256, coverage_jd=list(pin.coverage_jd),
+                    provenance=list(pin.provenance), segments=[dict(s) for s in segments],
+                    policy='de440-then-de441-part1-then-part2/1',
+                    spatial_convention='JPL TDB-compatible geometric ICRF',
+                    axes_evidence='SPK frame 1; JPL DE440/DE441 metadata explicitly admitted')
+        raise EphemerisCoverageError('Outside all qualified DE440/DE441 coverage.')
+
+
+@contextmanager
+def open_pinned_ephemerides(resources):
+    """Verify all three caller-pinned files and own/close their offline handles.
+
+    load_file opens only existing files. builtin=True prevents time-table I/O;
+    no UTC/UT1/observer calculation uses the bundled tables in this native TDB path.
+    """
+    pins = tuple(resources)
+    roles = [('DE440', 'full'), ('DE441', 'part-1'), ('DE441', 'part-2')]
+    if (len(pins) != 3 or any(type(p) is not PinnedEphemerisResource for p in pins)
+            or {(p.model, p.part) for p in pins} != set(roles)):
+        raise ValueError('Exactly one DE440 and both DE441 parts must be pinned.')
+    from skyfield.api import load_file, load
+    timescale = load.timescale(builtin=True)
+    owner = None
+    with ExitStack() as stack:
+        entries = []
+        for role in roles:
+            pin = next(p for p in pins if (p.model, p.part) == role)
+            path = Path(pin.path).expanduser().resolve(strict=True)
+            if not path.is_file():
+                raise ValueError('SPK must be an existing regular file.')
+            kernel = load_file(str(path))
+            stack.callback(kernel.close)
+            identity = resolve_skyfield_resource_identity(kernel, model=pin.model)
+            if identity.sha256 != pin.sha256 or _kernel_coverage(kernel) != pin.coverage_jd:
+                raise ValueError('Pinned SPK hash or coverage differs from actual file.')
+            segments = _spk_segments(kernel)
+            source = SkyfieldEphemerisStateSource(kernel=kernel, timescale=timescale,
+                resource=identity, coverage_jd=pin.coverage_jd)
+            entries.append((pin, source, segments))
+        owner = OfflineEphemerisResources(entries)
+        try:
+            yield owner
+        finally:
+            owner._closed = True
+
+
 class SkyfieldEphemerisStateSource:
     """Borrow an open Skyfield kernel and return geometric ICRF states."""
 
@@ -176,13 +296,18 @@ class SkyfieldEphemerisStateSource:
                 "Skyfield SPK adapter currently supports only frame='icrf'."
             )
 
-        astropy_time = Time(request.instant, scale=request.time_scale)
-        time = self._timescale.from_astropy(astropy_time)
-        tdb = float(time.tdb)
+        if type(request.instant) is EphemerisJulianDate:
+            # tdb_jd preserves the low part for jplephem's split-time evaluation.
+            time = self._timescale.tdb_jd(request.instant.jd1, request.instant.jd2)
+            tdb = Fraction(request.instant.jd1) + Fraction(request.instant.jd2)
+        else:
+            astropy_time = Time(request.instant, scale=request.time_scale)
+            time = self._timescale.from_astropy(astropy_time)
+            tdb = float(time.tdb)
         start, end = self._coverage_jd
         if not start <= tdb <= end:
             raise EphemerisCoverageError(
-                f"requested TDB JD {tdb:.8f} is outside kernel coverage "
+                f"requested TDB JD {float(tdb):.8f} is outside kernel coverage "
                 f"{start:.8f} through {end:.8f}."
             )
 
@@ -419,3 +544,4 @@ class SkyfieldApparentDirectionRealizer:
             raise ValueError(
                 "observer barycentric state does not match the astrometric result."
             )
+

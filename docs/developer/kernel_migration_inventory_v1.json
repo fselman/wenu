@@ -258,12 +258,6 @@
       "description": "Reusable projected boundaries and coordinate-label anchors."
     },
     {
-      "path": "src/wenu/charts/cartoon.py",
-      "git_blob_sha": "fc079e3d85e38163d980ce1824149ddc7e15d54d",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Convenience composition for educational cartoon charts."
-    },
-    {
       "path": "src/wenu/charts/cartoon_composition.py",
       "git_blob_sha": "953f3b0b07055bbb2808af9f3257c0ffb32f70dc",
       "as_is_directory": "src/wenu/charts",
@@ -274,6 +268,12 @@
       "git_blob_sha": "3cdfcc5392b7c8aad87f24b4ef141aa94a209ab9",
       "as_is_directory": "src/wenu/charts",
       "description": "Print and presentation realizations of the cartoon chart style."
+    },
+    {
+      "path": "src/wenu/charts/cartoon.py",
+      "git_blob_sha": "fc079e3d85e38163d980ce1824149ddc7e15d54d",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Convenience composition for educational cartoon charts."
     },
     {
       "path": "src/wenu/charts/center_arguments.py",
@@ -330,16 +330,16 @@
       "description": "Output-neutral geometric context supplied by chart specifications."
     },
     {
-      "path": "src/wenu/charts/detail.py",
-      "git_blob_sha": "b88eb12f3c191be345833f0296af4d18b081f745",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Output-neutral contracts and adaptive chart-detail policies."
-    },
-    {
       "path": "src/wenu/charts/detail_application.py",
       "git_blob_sha": "914b402c65cccc40448992dec3a3127a0b4f4af8",
       "as_is_directory": "src/wenu/charts",
       "description": "Apply resolved chart detail to a populated celestial sphere."
+    },
+    {
+      "path": "src/wenu/charts/detail.py",
+      "git_blob_sha": "b88eb12f3c191be345833f0296af4d18b081f745",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Output-neutral contracts and adaptive chart-detail policies."
     },
     {
       "path": "src/wenu/charts/drawing.py",
@@ -402,12 +402,6 @@
       "description": "Reusable discrete placement rules for constellation labels."
     },
     {
-      "path": "src/wenu/charts/legend.py",
-      "git_blob_sha": "3041575c68d3e969b02569b75d10cc9b4046bd54",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Configurable informational legends for static sky charts."
-    },
-    {
       "path": "src/wenu/charts/legend_composition.py",
       "git_blob_sha": "be0b4dcbc8dff14dc10d4f5f430f075ee4defb95",
       "as_is_directory": "src/wenu/charts",
@@ -444,10 +438,10 @@
       "description": "Backend-independent descriptions of symbols used by chart legends."
     },
     {
-      "path": "src/wenu/charts/magnitude_legend.py",
-      "git_blob_sha": "d1aef3a0d3fbd6c90692a64987716e6cb64501a6",
+      "path": "src/wenu/charts/legend.py",
+      "git_blob_sha": "3041575c68d3e969b02569b75d10cc9b4046bd54",
       "as_is_directory": "src/wenu/charts",
-      "description": "Backend-independent stellar magnitude-scale descriptions."
+      "description": "Configurable informational legends for static sky charts."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
@@ -468,6 +462,12 @@
       "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
+      "path": "src/wenu/charts/magnitude_legend.py",
+      "git_blob_sha": "d1aef3a0d3fbd6c90692a64987716e6cb64501a6",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Backend-independent stellar magnitude-scale descriptions."
+    },
+    {
       "path": "src/wenu/charts/modes.py",
       "git_blob_sha": "24252ad21f4785f958541fc3d9236dee5caec9fb",
       "as_is_directory": "src/wenu/charts",
@@ -486,16 +486,16 @@
       "description": "Packaged binocular content for paired physical polar planispheres."
     },
     {
-      "path": "src/wenu/charts/polar_calendar.py",
-      "git_blob_sha": "d1f5175c5e46f6538e9f5a572f550204b17524aa",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Immutable common-year calendar geometry for polar planispheres."
-    },
-    {
       "path": "src/wenu/charts/polar_calendar_furniture.py",
       "git_blob_sha": "6dbd8fe345dbfb6bcd6af65b642bb007a179c6c2",
       "as_is_directory": "src/wenu/charts",
       "description": "Resolved physical calendar furniture for paired polar planispheres."
+    },
+    {
+      "path": "src/wenu/charts/polar_calendar.py",
+      "git_blob_sha": "d1f5175c5e46f6538e9f5a572f550204b17524aa",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Immutable common-year calendar geometry for polar planispheres."
     },
     {
       "path": "src/wenu/charts/polar_horizon_overlay.py",
@@ -510,16 +510,16 @@
       "description": "Reviewed label clearances for the physical polar planisphere."
     },
     {
-      "path": "src/wenu/charts/polar_magnitude_scale.py",
-      "git_blob_sha": "a5198d52aae37e0ec5a9c3e9abe128edf8ce24b9",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Polar-only stellar magnitude-scale semantics and physical placement."
-    },
-    {
       "path": "src/wenu/charts/polar_magnitude_scale_rendering.py",
       "git_blob_sha": "3bd82633a2a501f1bdd393af4d84e44cc5716179",
       "as_is_directory": "src/wenu/charts",
       "description": "Shared Matplotlib realization of polar-only magnitude-scale furniture."
+    },
+    {
+      "path": "src/wenu/charts/polar_magnitude_scale.py",
+      "git_blob_sha": "a5198d52aae37e0ec5a9c3e9abe128edf8ce24b9",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Polar-only stellar magnitude-scale semantics and physical placement."
     },
     {
       "path": "src/wenu/charts/polar_page_export.py",
@@ -540,12 +540,6 @@
       "description": "Matplotlib realization of resolved polar physical-page furniture."
     },
     {
-      "path": "src/wenu/charts/polar_planisphere.py",
-      "git_blob_sha": "bc5ad9a351d21913947ef823c563508dd7992a13",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Single-face polar-planisphere disk geometry."
-    },
-    {
       "path": "src/wenu/charts/polar_planisphere_pair.py",
       "git_blob_sha": "f82337ed7b90bb7da086ce037343d20405ab5199",
       "as_is_directory": "src/wenu/charts",
@@ -556,6 +550,12 @@
       "git_blob_sha": "9d5d311c75e596afb41852445a579fc59c74ab48",
       "as_is_directory": "src/wenu/charts",
       "description": "Canonical physical-print appearance for polar planisphere disks."
+    },
+    {
+      "path": "src/wenu/charts/polar_planisphere.py",
+      "git_blob_sha": "bc5ad9a351d21913947ef823c563508dd7992a13",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Single-face polar-planisphere disk geometry."
     },
     {
       "path": "src/wenu/charts/polar_pouch_export.py",
@@ -582,12 +582,6 @@
       "description": "Matplotlib realization of resolved polar-pouch furniture."
     },
     {
-      "path": "src/wenu/charts/polar_pouch_sheet.py",
-      "git_blob_sha": "5f1effd5da4b4bba0cc922a6f476a2269bef425e",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Single-A4 imposition of the paired folded polar-pouch faces."
-    },
-    {
       "path": "src/wenu/charts/polar_pouch_sheet_export.py",
       "git_blob_sha": "80a8e86f68226213e91742fe413d94442ca58770",
       "as_is_directory": "src/wenu/charts",
@@ -598,6 +592,12 @@
       "git_blob_sha": "7c6aaecba350393a46c265224d40bf64d114e103",
       "as_is_directory": "src/wenu/charts",
       "description": "Vector rendering of both pouch faces on one folded A4 sheet."
+    },
+    {
+      "path": "src/wenu/charts/polar_pouch_sheet.py",
+      "git_blob_sha": "5f1effd5da4b4bba0cc922a6f476a2269bef425e",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Single-A4 imposition of the paired folded polar-pouch faces."
     },
     {
       "path": "src/wenu/charts/presets.py",
@@ -646,12 +646,6 @@
       "git_blob_sha": "239a4884150524c3651831b175a7efb7980e72ed",
       "as_is_directory": "src/wenu/charts",
       "description": "Compose chart legends from an existing chart-rendering result."
-    },
-    {
-      "path": "src/wenu/charts/request.py",
-      "git_blob_sha": "338bed7c3b4d9fc73e4028ac0af6aa64d0d2ae11",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Immutable user-facing chart-request contracts."
     },
     {
       "path": "src/wenu/charts/request_chart.py",
@@ -720,10 +714,10 @@
       "description": "Request-owned registration of one drawable Solar-System track."
     },
     {
-      "path": "src/wenu/charts/sequence.py",
-      "git_blob_sha": "ffa03f44f5a50c7da8f3feb00a068a666d32a1a5",
+      "path": "src/wenu/charts/request.py",
+      "git_blob_sha": "338bed7c3b4d9fc73e4028ac0af6aa64d0d2ae11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Canonical repeated-static observer-time chart sequences."
+      "description": "Immutable user-facing chart-request contracts."
     },
     {
       "path": "src/wenu/charts/sequence_arguments.py",
@@ -736,6 +730,12 @@
       "git_blob_sha": "cf36e21840e54c1ea78a18c6121bf14722ced511",
       "as_is_directory": "src/wenu/charts",
       "description": "Deterministic manifests for canonical observer-time chart sequences."
+    },
+    {
+      "path": "src/wenu/charts/sequence.py",
+      "git_blob_sha": "ffa03f44f5a50c7da8f3feb00a068a666d32a1a5",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Canonical repeated-static observer-time chart sequences."
     },
     {
       "path": "src/wenu/charts/solar_system_disk_preparation.py",
@@ -798,16 +798,16 @@
       "description": "Offline resolution of packaged and explicit chart targets."
     },
     {
-      "path": "src/wenu/charts/view.py",
-      "git_blob_sha": "80c1c006181131b297f099ef7f8ee3190dd7e2dc",
-      "as_is_directory": "src/wenu/charts",
-      "description": "Ordinary observer-bound geometrical chart views."
-    },
-    {
       "path": "src/wenu/charts/view_defaults.py",
       "git_blob_sha": "365d9eae9925029ffb9e4b09545734d3cfb1f93e",
       "as_is_directory": "src/wenu/charts",
       "description": "Authoritative geometrical defaults for ordinary chart views."
+    },
+    {
+      "path": "src/wenu/charts/view.py",
+      "git_blob_sha": "80c1c006181131b297f099ef7f8ee3190dd7e2dc",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Ordinary observer-bound geometrical chart views."
     },
     {
       "path": "src/wenu/cli/__init__.py",
@@ -1051,16 +1051,23 @@
       "description": "Synthetic 50S.4B validation snapshot resources."
     },
     {
-      "path": "src/wenu/ephemeris.py",
-      "git_blob_sha": "423539c5d2131e2d57b18489749880b8bf55392c",
+      "path": "src/wenu/ephemeris_companion.py",
+      "git_blob_sha": "4db8e88edc42eaef375b35f6856f9707bd2e10cb",
       "as_is_directory": "src/wenu",
-      "description": "Typed Cartesian ephemeris-state boundary."
+      "description": "Immutable derived exact-event geometric Earth/Sun companion validation/preparation/publication/data-only reload; separate resource lifetime and existing ephemeris/SDK numerical owners.",
+      "baseline_relation": "Added for selected K4b.07.C2; not part of the historical baseline census."
     },
     {
       "path": "src/wenu/ephemeris_state.py",
       "git_blob_sha": "bc1aa48e26ebe7a1e772cc5530eecf64664b4ab8",
       "as_is_directory": "src/wenu",
       "description": "Borrowed request-scoped geometric ephemeris adapter to Cartesian SDK states."
+    },
+    {
+      "path": "src/wenu/ephemeris.py",
+      "git_blob_sha": "423539c5d2131e2d57b18489749880b8bf55392c",
+      "as_is_directory": "src/wenu",
+      "description": "Typed Cartesian ephemeris-state boundary."
     },
     {
       "path": "src/wenu/example_scripts/__init__.py",
@@ -1093,16 +1100,16 @@
       "description": "Generate the canonical visible-sky planisphere for La Ligua."
     },
     {
-      "path": "src/wenu/example_scripts/regional_constellation.py",
-      "git_blob_sha": "9a42d112d35473d66144d806e615328829056f0d",
-      "as_is_directory": "src/wenu/example_scripts",
-      "description": "Generate a regional chart for one IAU constellation."
-    },
-    {
       "path": "src/wenu/example_scripts/regional_constellation_group.py",
       "git_blob_sha": "e8fcb446d80891ca49792e6b1ae4cf89cbf11271",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate a regional chart for an arbitrary constellation group."
+    },
+    {
+      "path": "src/wenu/example_scripts/regional_constellation.py",
+      "git_blob_sha": "9a42d112d35473d66144d806e615328829056f0d",
+      "as_is_directory": "src/wenu/example_scripts",
+      "description": "Generate a regional chart for one IAU constellation."
     },
     {
       "path": "src/wenu/geometry/__init__.py",
@@ -1375,16 +1382,16 @@
       "description": "Atomic same-observer coordination of bounded local crossing queries."
     },
     {
-      "path": "src/wenu/satellites/crossing_matrix.py",
-      "git_blob_sha": "550e18fe067139784de2d9a56b8b066c6579365e",
-      "as_is_directory": "src/wenu/satellites",
-      "description": "Strict offline exhaustive/accelerated crossing-matrix evidence."
-    },
-    {
       "path": "src/wenu/satellites/crossing_matrix_execution.py",
       "git_blob_sha": "c4a081483c223b2109f264b4835019ddff980dfc",
       "as_is_directory": "src/wenu/satellites",
       "description": "Explicit offline production path for satellite equivalence evidence."
+    },
+    {
+      "path": "src/wenu/satellites/crossing_matrix.py",
+      "git_blob_sha": "550e18fe067139784de2d9a56b8b066c6579365e",
+      "as_is_directory": "src/wenu/satellites",
+      "description": "Strict offline exhaustive/accelerated crossing-matrix evidence."
     },
     {
       "path": "src/wenu/satellites/crossing_oracle.py",
@@ -1676,10 +1683,10 @@
       "description": "Renderer-neutral scientific Solar-System trajectory realization."
     },
     {
-      "path": "src/wenu/sky/venus.py",
-      "git_blob_sha": "1537af5a03570b5afbc7547668d5a18fe8ac2247",
+      "path": "src/wenu/sky/venus_disk_sequence.py",
+      "git_blob_sha": "31a907230935534aa6cc6eab7389f8fbfda6cfe9",
       "as_is_directory": "src/wenu/sky",
-      "description": "Configured symbolic-point specialization for apparent Venus."
+      "description": "Generic drawable observed-body disk sequence in one chart frame."
     },
     {
       "path": "src/wenu/sky/venus_disk.py",
@@ -1688,10 +1695,10 @@
       "description": "Generic request-owned resolved-body disk component layers."
     },
     {
-      "path": "src/wenu/sky/venus_disk_sequence.py",
-      "git_blob_sha": "31a907230935534aa6cc6eab7389f8fbfda6cfe9",
+      "path": "src/wenu/sky/venus.py",
+      "git_blob_sha": "1537af5a03570b5afbc7547668d5a18fe8ac2247",
       "as_is_directory": "src/wenu/sky",
-      "description": "Generic drawable observed-body disk sequence in one chart frame."
+      "description": "Configured symbolic-point specialization for apparent Venus."
     },
     {
       "path": "src/wenu/skyfield_ephemeris.py",
@@ -1738,13 +1745,6 @@
       "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
     },
     {
-      "path": "src/wenu/stellar_epoch.py",
-      "git_blob_sha": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
-      "as_is_directory": "src/wenu",
-      "description": "Derived immutable exact-event stellar bundle preparation/validation/reader; original source and model continuation coefficients retained separately from states.",
-      "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
-    },
-    {
       "path": "src/wenu/stellar_epoch_consumer.py",
       "git_blob_sha": "bc4d23a0dae0af62a37d9dacd92fe64542cba661",
       "as_is_directory": "src/wenu",
@@ -1757,6 +1757,13 @@
       "as_is_directory": "src/wenu",
       "description": "Explicit native TCB fixed-window reuse and original-model advancement; detached resolution/receipt and short SDK lifetime, separate from immutable product codec.",
       "baseline_relation": "Added for accepted K4b.07 query contract; not a new baseline census."
+    },
+    {
+      "path": "src/wenu/stellar_epoch.py",
+      "git_blob_sha": "b53a2536a0477ce3e9f2ffdb8bafc5b54e7bc5f1",
+      "as_is_directory": "src/wenu",
+      "description": "Derived immutable exact-event stellar bundle preparation/validation/reader; original source and model continuation coefficients retained separately from states.",
+      "baseline_relation": "Added for selected K4b.07 exact-epoch persistence; not part of historical baseline census."
     },
     {
       "path": "src/wenu/stellar_research.py",
@@ -1778,16 +1785,16 @@
       "description": "Deterministic semantic annotations for Matplotlib SVG output."
     },
     {
-      "path": "src/wenu/temporal.py",
-      "git_blob_sha": "0436d268ebc0381a975f279e869562a02cbfdbb6",
-      "as_is_directory": "src/wenu",
-      "description": "Renderer-neutral temporal sequence vocabulary."
-    },
-    {
       "path": "src/wenu/temporal_components.py",
       "git_blob_sha": "bbf9a7bdf5c11516e35b4fa263ad27aae58191d9",
       "as_is_directory": "src/wenu",
       "description": "Shared visibility policy for start-inclusive temporal components."
+    },
+    {
+      "path": "src/wenu/temporal.py",
+      "git_blob_sha": "0436d268ebc0381a975f279e869562a02cbfdbb6",
+      "as_is_directory": "src/wenu",
+      "description": "Renderer-neutral temporal sequence vocabulary."
     },
     {
       "path": "src/wenu/translations.py",
@@ -8667,7 +8674,7 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 277,
+    "production_python_files": 278,
     "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
@@ -27173,7 +27180,7 @@
       ],
       "sampled_1900_2100_step_10_max_equator_difference_mas": 0.6465610759538054,
       "sampled_1900_2100_step_10_max_ecliptic_difference_mas": 0.27919038136174085,
-      "diagnostic_tolerance_rad": 4.84813681109536e-09,
+      "diagnostic_tolerance_rad": 4.84813681109536e-9,
       "limits": "Measured comparison is not a physical accuracy bound or uniformly 100 microarcseconds"
     },
     "Mac_acceptance": "passed; see mac_acceptance",
@@ -27272,8 +27279,8 @@
             "axes": "mean-equator-equinox",
             "model_digest": "b18c898fb2052d633ce1d32a150f79ac3580b26bb4f2374be8264d92eb73464c",
             "pole_icrs": [
-              -8.056148939844682e-08,
-              -3.305556629794447e-08,
+              -8.056148939844682e-8,
+              -3.305556629794447e-8,
               0.9999999999999962
             ],
             "epoch_rounding_s": 0
@@ -27283,7 +27290,7 @@
             "axes": "mean-ecliptic-equinox",
             "model_digest": "99a5c9d6882ef4e7b4400cbd44cf52096f50cf8714f887324f77288045d2cf79",
             "pole_icrs": [
-              -1.0206949457023484e-07,
+              -1.0206949457023484e-7,
               -0.3977769994449437,
               0.917482129914565
             ],
@@ -27383,7 +27390,7 @@
         "j2000": {
           "event": {
             "jd1": 2451545,
-            "jd2": 0.0,
+            "jd2": 0,
             "scale": "tcb"
           },
           "manifest_sha256": "5acf3da525ce708d639dcc46507ae35b52478799f07b251e61151fa44f0d1ce9",
@@ -27397,7 +27404,7 @@
         "jminus8000": {
           "event": {
             "jd1": -1200955,
-            "jd2": 0.0,
+            "jd2": 0,
             "scale": "tcb"
           },
           "manifest_sha256": "fe05b6730bee3569c90072a3b942ac1b11a5c06c65d2c8d36c712c52a425c293",
@@ -27532,7 +27539,7 @@
         "retention_role": "active retained input and acceptance evidence",
         "event": {
           "jd1": 990545,
-          "jd2": 0.0,
+          "jd2": 0,
           "scale": "tcb"
         },
         "manifest_sha256": "63f4bfa9f02cf724f40c068af7580506d5d226effea9819feca5a776e9bdb68b",
@@ -27575,7 +27582,7 @@
       },
       "modern_actual_position_tcb": {
         "jd1": 2451545,
-        "jd2": 0.0,
+        "jd2": 0,
         "scale": "tcb"
       },
       "modern_mean_axes_tt": {
@@ -27604,7 +27611,7 @@
   "stellar_companion_assessment": {
     "milestone": "K4b.07.C1",
     "base_commit": "f72a20557de7b0d86123438c15a73fcaa88b07df",
-    "status": "selected documentation assessment; C2 proposed, not selected runtime",
+    "status": "C1 assessment/resource-policy accepted through PR363/main244f4cb4; C2 selected with agreement at489fbaf0",
     "existing_owners": [
       "src/wenu/ephemeris.py",
       "src/wenu/skyfield_ephemeris.py",
@@ -27619,13 +27626,49 @@
       "tests/test_observer_resources.py"
     ],
     "gaps": [
-      "No companion codec",
-      "Split-JD backend event seam needs qualification",
-      "Geometric ephemeris reference is not accepted by stellar nominal-astrometric convention converter",
-      "No verified ancient local SPK coverage"
+      "Mac exact-event backend/SDK/codec and actual-cache checks remain pending",
+      "Geometric ephemeris reference remains separate from the stellar nominal-astrometric convention converter",
+      "No ancient/future terrestrial observer qualification"
     ],
     "proposal": "C2 exact-event Earth 399 and Sun 10 relative to SSB 0, offline pinned local resource, no nonzero reuse or observer composition",
     "gate": "documentation",
-    "limits": "No runtime/tests/resources/dependency/build/collection change, acquisition, new numerical model, observer adoption or parent closure."
+    "limits": "Retained C1 assessment; subsequent C2 candidate is described in the separate implementation record. No observer adoption or parent closure."
+  },
+  "exact_event_ephemeris_companion": {
+    "milestone": "K4b.07.C2",
+    "status": "selected implementation candidate; Mac and actual-cache gates pending",
+    "base_commit": "244f4cb49af5e3331cedba5ca343a4b7ac024284",
+    "agreement_commit": "489fbaf0a9bb708a9323d13cc7935fae8c366704",
+    "source_blobs": {
+      "src/wenu/ephemeris.py": "bc537c2232c2d9f7c366c440b055dc0b404d5220",
+      "src/wenu/ephemeris_state.py": "1671586a1d24f58dcace2e7d24bd9466192ee085",
+      "src/wenu/skyfield_ephemeris.py": "1bc4c8e96c0a62ec19789e97393c511533cc2b00",
+      "src/wenu/ephemeris_companion.py": "4db8e88edc42eaef375b35f6856f9707bd2e10cb",
+      "tests/test_ephemeris.py": "6de4107a4e2b8655b3bf24b0ee50dbcb2e8b6858",
+      "tests/test_skyfield_ephemeris.py": "a9db201dc680715d470415493eb535d4f05fca68"
+    },
+    "test_owners": [
+      "tests/test_ephemeris.py",
+      "tests/test_skyfield_ephemeris.py"
+    ],
+    "new_test_functions": {
+      "tests/test_ephemeris.py": [
+        "test_companion_data_only_exact_event_and_detached_rows",
+        "test_companion_rejects_semantic_corruption_even_with_rehashed_payload",
+        "test_companion_validates_explicit_tcb_link_receipt",
+        "test_ephemeris_split_event_requires_native_tdb_and_canonical_parts"
+      ],
+      "tests/test_skyfield_ephemeris.py": [
+        "test_offline_companion_selection_exact_edges_and_resource_lifetime",
+        "test_offline_companion_hash_path_and_partial_open_failures_close",
+        "test_exact_companion_sdk_roundtrip_precision_and_direct_source",
+        "test_exact_companion_publication_failure_cleanup_and_racing_destination",
+        "test_exact_companion_selected_backend_refusal_does_not_fallback",
+        "test_exact_companion_fresh_process_load_without_spk_or_provider",
+        "test_split_tdb_source_delivers_exact_event_to_real_skyfield_time"
+      ]
+    },
+    "local_verification": "Compiles; four codec/request functions directly executed with actual records/time adapter and stdlib assertion contexts under a narrow package namespace; isolated selection/overlap/refusal/lifetime check passed. No pytest/Skyfield/fresh-process/actual-cache acceptance claim. Five source-owner functions also executed directly with actual source/SDK/codec and synthetic third-party boundaries; real Skyfield time seam and cold process remain Mac-only.",
+    "limits": "No dependency, collection, core, watched stellar, modern default, observer, nonzero planetary reuse or parent-closure change."
   }
 }

@@ -268,3 +268,233 @@ def test_cartesian_kernel_transport_preserves_existing_raw_geometric_state(resol
     assert routed.resource is raw.resource
     assert routed.provenance[:-1] == raw.provenance
     assert source._kernel is kernel
+
+
+def _synthetic_pinned_resources(tmp_path, monkeypatch):
+    """Synthetic SPK bytes/metadata and vectors, not captured provider fixtures."""
+    from skyfield import api
+    from wenu.skyfield_ephemeris import PinnedEphemerisResource
+    class PrecisionTimescale:
+        def __init__(self): self.received = []
+        def from_astropy(self, time):
+            raise AssertionError('Exact TDB must not use an ISO/TT time route')
+        def tdb_jd(self, jd, fraction=None):
+            assert fraction is not None
+            self.received.append((jd, fraction))
+            return SimpleNamespace(jd1=jd, jd2=fraction)
+    class PrecisionVector(FakeVector):
+        def at(self, time):
+            return SimpleNamespace(position=SimpleNamespace(au=tuple(x+time.jd2 for x in self.position)),
+                velocity=SimpleNamespace(au_per_d=self.velocity))
+    domains = [('DE440','full',(2451540.,2451550.)),
+               ('DE441','part-1',(0.,2451546.)),
+               ('DE441','part-2',(2451544.,8000000.))]
+    kernels, pins = {}, []
+    for index,(model,part,coverage) in enumerate(domains):
+        path = tmp_path/f'synthetic-{index}.bsp'
+        path.write_bytes(('synthetic SPK '+str(index)).encode())
+        kernel = FakeKernel(path)
+        kernel.segments = tuple(SimpleNamespace(spk_segment=SimpleNamespace(
+            center=c, target=t, frame=1, data_type=2, start_jd=coverage[0],end_jd=coverage[1]))
+            for c,t in ((0,3),(3,399),(0,10)))
+        kernel._vectors[3] = FakeVector((9.,9.,9.),(.9,.9,.9))
+        for key in (10,399):
+            old = kernel._vectors[key]
+            kernel._vectors[key] = PrecisionVector(old.position,old.velocity)
+        kernel.closed = 0
+        def close(k=kernel): k.closed += 1
+        kernel.close = close
+        kernels[str(path)] = kernel
+        pins.append(PinnedEphemerisResource(str(path),sha256(path.read_bytes()).hexdigest(),
+            model,part,coverage,('synthetic metadata; no JPL accuracy claim',)))
+    timescale = PrecisionTimescale()
+    monkeypatch.setattr(api,'load_file',lambda path:kernels[path])
+    monkeypatch.setattr(api.load,'timescale',lambda *,builtin:timescale if builtin is True else None)
+    return pins,kernels,timescale
+
+
+def test_offline_companion_selection_exact_edges_and_resource_lifetime(tmp_path, monkeypatch):
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    from wenu.ephemeris import EphemerisJulianDate
+    pins,kernels,_ = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    with open_pinned_ephemerides(reversed(pins)) as resources:
+        for day,frac,role in ((2451540,0,'full'),(2451550,0,'full'),
+            (2451540,-2**-40,'part-1'),(2451550,2**-40,'part-2'),
+            (990545,0,'part-1'),(3000000,0,'part-2'),
+            (0,0,'part-1'),(8000000,0,'part-2')):
+            assert resources.select(EphemerisJulianDate(day,frac))[1]['part'] == role
+        # Qualify deterministic part-1 priority separately where DE440 masks the seam.
+        from wenu.skyfield_ephemeris import OfflineEphemerisResources
+        de441 = OfflineEphemerisResources(resources._entries[1:])
+        assert de441.select(EphemerisJulianDate(2451545,0))[1]['part'] == 'part-1'
+        assert de441.select(EphemerisJulianDate(2451546,2**-40))[1]['part'] == 'part-2'
+        for event in (EphemerisJulianDate(0,-2**-40),EphemerisJulianDate(8000000,2**-40)):
+            with pytest.raises(EphemerisCoverageError): resources.select(event)
+    assert all(k.closed == 1 for k in kernels.values())
+    with pytest.raises(ValueError): resources.select(EphemerisJulianDate(2451545,0))
+
+
+def test_offline_companion_hash_path_and_partial_open_failures_close(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    pins,kernels,_ = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    bad = [pins[0],replace(pins[1],sha256='a'*64),pins[2]]
+    with pytest.raises(ValueError):
+        with open_pinned_ephemerides(bad): pass
+    assert list(k.closed for k in kernels.values()) == [1,1,0]
+    for k in kernels.values():k.closed=0
+    list(kernels.values())[1].segments[1].spk_segment.target = 301
+    with pytest.raises(ValueError):
+        with open_pinned_ephemerides(pins): pass
+    assert list(k.closed for k in kernels.values()) == [1,1,0]
+    with pytest.raises(ValueError):
+        with open_pinned_ephemerides(pins[:2]): pass
+
+
+def test_exact_companion_sdk_roundtrip_precision_and_direct_source(tmp_path, monkeypatch):
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    from wenu.ephemeris import EphemerisJulianDate
+    from wenu.ephemeris_companion import prepare_ephemeris_companion, load_ephemeris_companion
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.records import TimePoint
+    pins,_,timescale = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    with open_pinned_ephemerides(pins) as resources:
+        for index,day in enumerate((2451545,990545,3000000)):
+            event = TimePoint(day,2**-40,'tdb')
+            path = tmp_path/f'product-{index}'
+            digest = prepare_ephemeris_companion(resources,event,path)
+            saved = load_ephemeris_companion(path,expected_manifest_sha256=digest)
+            assert saved.instant == event
+            source,_ = resources.select(EphemerisJulianDate(day,2**-40))
+            for row in saved.at(event):
+                req = EphemerisStateRequest(row['target'],'0','icrf',EphemerisJulianDate(day,2**-40),'tdb')
+                direct = source.state(req)
+                routed = KernelEphemerisStateSource(source).state(req)
+                assert tuple(row['position_au']) == routed.position
+                assert tuple(row['velocity_au_per_day']) == routed.velocity
+                assert row['position_au'] == pytest.approx(direct.position,rel=5e-16,abs=1e-16)
+                assert row['velocity_au_per_day'] == pytest.approx(direct.velocity,rel=5e-16,abs=1e-16)
+                assert row['position_error_au'] == dict(measurement=None,physical_model=None,numerical=None)
+            assert (day,2**-40) in timescale.received
+            with pytest.raises(FileExistsError): prepare_ephemeris_companion(resources,event,path)
+        source,_ = resources.select(EphemerisJulianDate(2451545,0))
+        exact = source.state(EphemerisStateRequest('399','0','icrf',EphemerisJulianDate(2451545,2**-40),'tdb'))
+        rounded = source.state(EphemerisStateRequest('399','0','icrf',EphemerisJulianDate(2451545,0),'tdb'))
+        assert exact.position != rounded.position  # deliberate summed-JD fault changes baseline
+
+
+def test_exact_companion_publication_failure_cleanup_and_racing_destination(tmp_path, monkeypatch):
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    from wenu import ephemeris_companion as codec
+    from wenu_kernel.records import TimePoint
+    pins,_,_ = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    event = TimePoint(2451545,0,'tdb')
+    original = codec.os.link
+    with open_pinned_ephemerides(pins) as resources:
+        for fail_at in (1,2):
+            calls = []
+            path = tmp_path/f'failed-{fail_at}'
+            def fail(source,destination):
+                calls.append(str(destination))
+                if len(calls) == fail_at:raise OSError('injected link failure')
+                return original(source,destination)
+            with monkeypatch.context() as m:
+                m.setattr(codec.os,'link',fail)
+                with pytest.raises(OSError):codec.prepare_ephemeris_companion(resources,event,path)
+            assert not path.exists()
+            assert not list(tmp_path.glob('.wenu-ephemeris-*'))
+        path = tmp_path/'racing'
+        original_mkdir = codec.Path.mkdir
+        def race(self,*args,**kwargs):
+            if self == path and not self.exists():
+                original_mkdir(self)
+                (self/'other-writer').write_text('preserve')
+            return original_mkdir(self,*args,**kwargs)
+        with monkeypatch.context() as m:
+            m.setattr(codec.Path,'mkdir',race)
+            with pytest.raises(FileExistsError):codec.prepare_ephemeris_companion(resources,event,path)
+        assert (path/'other-writer').read_text() == 'preserve'
+        assert not list(tmp_path.glob('.wenu-ephemeris-*'))
+
+
+def test_exact_companion_selected_backend_refusal_does_not_fallback(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    from wenu.ephemeris import EphemerisJulianDate
+    from wenu.ephemeris_companion import prepare_ephemeris_companion
+    from wenu_kernel.records import TimePoint
+    pins,_,_ = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    with open_pinned_ephemerides(pins) as resources:
+        source,_ = resources.select(EphemerisJulianDate(2451545,0))
+        state = source.state
+        calls = []
+        def wrong(req):
+            calls.append(req.target)
+            return replace(state(req),provider_target_id='3')
+        monkeypatch.setattr(source,'state',wrong)
+        with pytest.raises(ValueError):
+            prepare_ephemeris_companion(resources,TimePoint(2451545,0,'tdb'),tmp_path/'wrong')
+        assert calls == ['399']
+        assert not (tmp_path/'wrong').exists()
+
+
+def test_exact_companion_fresh_process_load_without_spk_or_provider(tmp_path, monkeypatch):
+    import subprocess
+    import sys
+    from wenu.skyfield_ephemeris import open_pinned_ephemerides
+    from wenu.ephemeris_companion import prepare_ephemeris_companion
+    from wenu_kernel.records import TimePoint
+    pins,_,_ = _synthetic_pinned_resources(tmp_path,monkeypatch)
+    path = tmp_path/'detached'
+    with open_pinned_ephemerides(pins) as resources:
+        digest = prepare_ephemeris_companion(resources,TimePoint(2451545,0,'tdb'),path)
+    for pin in pins:
+        from pathlib import Path
+        Path(pin.path).unlink()
+    code = '''
+import socket, sys
+def refuse(*args, **kwargs):
+    raise AssertionError('provider/network/SPK access forbidden during reload')
+socket.socket.connect = refuse
+from skyfield import api
+api.load_file = refuse
+api.load.__class__.__call__ = refuse
+from wenu.ephemeris_companion import load_ephemeris_companion
+import wenu.skyfield_ephemeris as sf
+import wenu.ephemeris_state as sdk
+sf.SkyfieldEphemerisStateSource.__init__ = refuse
+sf.open_pinned_ephemerides = refuse
+sdk.KernelEphemerisStateSource.__init__ = refuse
+saved = load_ephemeris_companion(sys.argv[1], expected_manifest_sha256=sys.argv[2])
+assert [r['target'] for r in saved.at(saved.instant)] == ['399','10']
+print('data-only reload passed')
+'''
+    result = subprocess.run([sys.executable,'-c',code,str(path),digest],
+                            capture_output=True,text=True,check=False)
+    assert result.returncode == 0, result.stdout+result.stderr
+    assert 'data-only reload passed' in result.stdout
+
+
+def test_split_tdb_source_delivers_exact_event_to_real_skyfield_time(resolved, monkeypatch):
+    """Real time backend plus synthetic vectors; not a real SPK orbit oracle."""
+    from fractions import Fraction
+    from skyfield.api import load
+    from wenu.ephemeris import EphemerisJulianDate
+    source,kernel,_,_ = resolved
+    monkeypatch.setattr(source,'_timescale',load.timescale(builtin=True))
+    # Synthetic vector admission for this event-input seam only.
+    monkeypatch.setattr(source,'_coverage_jd',(-3100015.5,8000016.5))
+    received=[]
+    vector=kernel._vectors[399]
+    old=vector.at
+    def capture(time):
+        received.append(Fraction(float(time.whole))+Fraction(float(time.tdb_fraction)))
+        return old(time)
+    monkeypatch.setattr(vector,'at',capture)
+    for day in (2451545,990545,-1200955):
+        for low in (2**-40,-2**-40):
+            event=EphemerisJulianDate(day,low)
+            source.state(EphemerisStateRequest('399','0','icrf',event,'tdb'))
+            assert received[-1] == Fraction(day)+Fraction(low)
+            assert received[-1] != Fraction(float(day+low))
+

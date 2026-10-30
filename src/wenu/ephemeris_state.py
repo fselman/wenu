@@ -15,7 +15,7 @@ from astropy import units as u
 
 from wenu.ephemeris import (
     EphemerisResourceChain, EphemerisResourceIdentity,
-    EphemerisState, EphemerisStateRequest,
+    EphemerisJulianDate, EphemerisState, EphemerisStateRequest,
 )
 from wenu_kernel.kernel import Kernel
 from wenu_kernel.errors import ResourceMismatch, UnsupportedCapability
@@ -105,7 +105,9 @@ class _EphemerisProvider:
         )
         self.query = StateQuery(
             self.catalogue_ref, self.model, (self.object,),
-            (_time_point(Time(request.instant, scale=request.time_scale).tdb),),
+            ((TimePoint(request.instant.jd1, request.instant.jd2, 'tdb')
+              if type(request.instant) is EphemerisJulianDate else
+              _time_point(Time(request.instant, scale=request.time_scale).tdb)),),
             self.reference, AccuracyRequest(metric="euclidean_norm"),
             require_velocity=True,
         )
@@ -186,3 +188,4 @@ class KernelEphemerisStateSource:
             velocity=tuple(x / (u.au / u.day).to(u.m / u.s) for x in returned.velocity_m_s),
             provenance=original.provenance + ("returned kernel Cartesian state",),
         )
+
