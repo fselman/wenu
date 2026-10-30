@@ -716,9 +716,3 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
-
-
-
-
-
-

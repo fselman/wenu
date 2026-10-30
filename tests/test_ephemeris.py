@@ -444,4 +444,3 @@ def test_ephemeris_split_event_requires_native_tdb_and_canonical_parts():
     with pytest.raises(ValueError): EphemerisStateRequest('399','0','icrf',e,'tcb')
     for args in ((True,0), (1,.5), (1,float('nan')), (2**53+1,0), (1,True)):
         with pytest.raises(ValueError): EphemerisJulianDate(*args)
-

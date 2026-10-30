@@ -4824,8 +4824,3 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
-
-
-
-
-

@@ -188,4 +188,3 @@ class KernelEphemerisStateSource:
             velocity=tuple(x / (u.au / u.day).to(u.m / u.s) for x in returned.velocity_m_s),
             provenance=original.provenance + ("returned kernel Cartesian state",),
         )
-

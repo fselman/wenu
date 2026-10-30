@@ -497,4 +497,3 @@ def test_split_tdb_source_delivers_exact_event_to_real_skyfield_time(resolved, m
             source.state(EphemerisStateRequest('399','0','icrf',event,'tdb'))
             assert received[-1] == Fraction(day)+Fraction(low)
             assert received[-1] != Fraction(float(day+low))
-

@@ -1798,4 +1798,3 @@ TCB→TDB conversion event/model/rounding receipt without altering original stat
 No apparent corrections, Earth rotation, terrestrial site or planetary reuse
 follows from persistence. Full Mac and actual-cache acceptance is still pending.
 See [the API](implementation_reference.md#exact-event-ephemeris-companions).
-

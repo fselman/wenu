@@ -544,4 +544,3 @@ class SkyfieldApparentDirectionRealizer:
             raise ValueError(
                 "observer barycentric state does not match the astrometric result."
             )
-

@@ -285,4 +285,3 @@ class EphemerisStateSource(Protocol):
     def state(self, request: EphemerisStateRequest) -> EphemerisState:
         """Return one complete state for the declared request."""
         ...
-

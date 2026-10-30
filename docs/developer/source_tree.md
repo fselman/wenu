@@ -562,6 +562,3 @@ single-edition native-direction ingestion contract in `stellar_catalogue.py`.
 The existing offline audit owns normalization/staged local publication and its
 existing tests own corruption, source-free reload and public-command seams.
 This adds no new kernel route, provider, dependency or installed command.
-
-
-

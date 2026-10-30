@@ -957,6 +957,3 @@ deterministic import/test/render routes. This is not new acquisition authority.
 Complete Mac audit/documentation acceptance is pending. After acceptance,
 Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
 independent astronomical package extraction remain separate.
-
-
-

@@ -3089,4 +3089,3 @@ Primary backend/convention references reviewed 2026-10-30:
 [SPK conventions](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html),
 [JPL ICRF axes in frame 1](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/mkspk.html)
 and [DE440/DE441 model](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf).
-
