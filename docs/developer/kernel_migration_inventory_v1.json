@@ -27636,7 +27636,7 @@
   },
   "exact_event_ephemeris_companion": {
     "milestone": "K4b.07.C2",
-    "status": "selected implementation candidate; Mac and actual-cache gates pending",
+    "status": "Mac runtime/documentation, actual-cache and fresh-process verification passed; final receipt documentation and user acceptance pending",
     "base_commit": "244f4cb49af5e3331cedba5ca343a4b7ac024284",
     "agreement_commit": "489fbaf0a9bb708a9323d13cc7935fae8c366704",
     "source_blobs": {
@@ -27669,6 +27669,94 @@
       ]
     },
     "local_verification": "Compiles; four codec/request functions directly executed with actual records/time adapter and stdlib assertion contexts under a narrow package namespace; isolated selection/overlap/refusal/lifetime check passed. No pytest/Skyfield/fresh-process/actual-cache acceptance claim. Five source-owner functions also executed directly with actual source/SDK/codec and synthetic third-party boundaries; real Skyfield time seam and cold process remain Mac-only.",
-    "limits": "No dependency, collection, core, watched stellar, modern default, observer, nonzero planetary reuse or parent-closure change."
+    "limits": "No dependency, collection, core, watched stellar, modern default, observer, nonzero planetary reuse or parent-closure change.",
+    "verification": {
+      "tested_source_commit": "437ee649016843674ac1465834ffb71740ebc03e",
+      "focused": {
+        "passed": 49,
+        "seconds": 8.84,
+        "evidence": "~/Software/build/wenu/test/exact-ephemeris-companion-focused-v2-rrcq3o0w"
+      },
+      "documentation": {
+        "passed": 36,
+        "seconds": 3.28
+      },
+      "diff_check": "passed",
+      "failed_preflight": {
+        "commit": "55170b6c1b4bc644d6b1d3cc93bc0a306cc3a31a",
+        "evidence": "~/Software/build/wenu/test/exact-ephemeris-companion-focused-v1-le9evbse",
+        "failure": "new blank lines at EOF; tests not executed"
+      },
+      "actual_run": "~/Software/build/wenu/output/exact-ephemeris-companion-actual-v1-goqonh81",
+      "recipe_sha256": "14f8d10186a025bf413aa87ce4f3fcfc2f6288944f307f90c304f089cb3cf9cc",
+      "summary_sha256": "d9f5252a1eb99a8eadc9e6762e7552455d76594a481aa41a2d1f4ff3e30d2b2f",
+      "products": [
+        {
+          "name": "j2000",
+          "tdb": {
+            "jd1": 2451545,
+            "jd2": -0.00013025216543700573,
+            "scale": "tdb"
+          },
+          "resource": "DE440/full",
+          "manifest_sha256": "6f231dc9b23ae99ce320440e79815868c33d7f7dfbe26caaff10bfae7cd3976a",
+          "states_sha256": "e1ece82ea74b030b9c427b8d0c2b91ea27b892a8050911a1aaf6032f4cbcee51",
+          "max_position_residual_au": 0,
+          "max_velocity_residual_au_per_day": 4.336808689942018e-19
+        },
+        {
+          "name": "jminus2000",
+          "tdb": {
+            "jd1": 990545,
+            "jd2": 0.022522841645042993,
+            "scale": "tdb"
+          },
+          "resource": "DE441/part-1",
+          "manifest_sha256": "1a8ea3227c504fc77700da41777b7196576b8a2d970dec960576b743aa3fd5fc",
+          "states_sha256": "0cda15746d4da8183f9110cf0fcf62bd8444d5d06b19af1cd7d01c6a2b78b381",
+          "max_position_residual_au": 0,
+          "max_velocity_residual_au_per_day": 0
+        },
+        {
+          "name": "jminus8000",
+          "tdb": {
+            "jd1": -1200955,
+            "jd2": 0.056502482360762996,
+            "scale": "tdb"
+          },
+          "resource": "DE441/part-1",
+          "manifest_sha256": "5574925907b2048cd5818e65bbc45dc2c7cc822fd58b67998dfa48f2a185880a",
+          "states_sha256": "fa8f5a9199b3188909fc271c1934543cff52ff16f72930917b799aaf61f850c3",
+          "max_position_residual_au": 1.1102230246251565e-16,
+          "max_velocity_residual_au_per_day": 0
+        }
+      ],
+      "de440_boundary_cases": 6,
+      "de441_overlap_position_differences_au": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2.5438405243138006e-16,
+          8.690541527449943e-19
+        ]
+      ],
+      "modern_de440_de441_position_differences_au": [
+        5.457464008449871e-14,
+        0
+      ],
+      "actual_fresh_process": {
+        "passed": true,
+        "evidence": "~/Software/build/wenu/test/companion-actual-reload-v1-7ye_u_n6",
+        "spk_provider_network_access": "prohibited",
+        "all_three_manifest_state_digests_checked": true
+      },
+      "limits": "User-reported Mac receipts; numerical transport/composition only, no independent orbit/physical accuracy certificate, observer work, nonzero reuse or parent closure."
+    }
   }
 }

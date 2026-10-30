@@ -3030,7 +3030,10 @@ gate repeat is part of this reconciliation.
 ## Exact-event ephemeris companions
 
 K4b.07.C2 is selected at roadmap commit `489fbaf0` and implemented as a candidate;
-Mac runtime/documentation and actual-cache acceptance remain pending.
+all 49 Mac ephemeris and 36 documentation cases passed at `437ee649`.
+Actual J2000/J-2000/J-8000 linked products, resource-boundary/overlap checks and
+fresh-process data-only reload also passed. See the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification).
+Final receipt documentation and user acceptance remain pending.
 `EphemerisJulianDate(jd1, jd2)` in `wenu.ephemeris` supplies a canonical
 integer day and finite fractional day [-0.5,0.5), native TDB only.
 `EphemerisStateRequest.instant` accepts this value or its existing string input.

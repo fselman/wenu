@@ -2675,25 +2675,17 @@ points forbidden. A real Skyfield time-object seam checks both low-part signs at
 modern/J-2000/J-8000 events using synthetic vectors. The existing core/time
 mathematics are unchanged.
 
-Run both complete ephemeris owner files, then the complete `documentation`
-gate. Disable plugin autoload, clear PYTEST_ADDOPTS and use a fresh bytecode/run
-directory with provenance. No test file, gate manifest, collection, dependency,
-installed command, state SDK or watched stellar owner changes.
-Direct local execution of the four new codec/request functions passed using
-stdlib assertion contexts and actual immutable records/time adapter, with the
-broad Wenu facade intentionally bypassed because astronomy dependencies are
-unavailable. Exact selection/overlap/refusal/lifetime logic also passed a direct
-local isolated check. Five further owner functions passed direct execution
-with actual modified source/SDK/codec and explicitly synthetic third-party
-boundaries. This is not real astronomy-backend acceptance. Modified Python compiles. These are not pytest, public-
-import, Skyfield, fresh-process or actual-cache acceptance claims; Mac gates
-remain pending. Preserve the failed initial local exception-normalization check
-as development evidence; the corrected same four-function gate passed.
+At `437ee649`, both complete ephemeris owner files passed all 49 Mac cases in
+8.84 s; the complete documentation gate passed 36 in 3.28 s, after a passing
+diff check. Actual linked products at the three explicit TCB→TDB events passed
+direct-source/SDK/reload parity, DE440 boundary routing, DE441 overlap, outer
+refusals and resource closure. Fresh-process actual reload passed without
+SPK/provider/network access. The [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification) contains retained
+paths, product digests, measured residuals, prior failures and scientific limits.
 
-Then inspect the retained acquisition inventory and use the already verified
-local files for modern/J-2000/J-8000 split-event conversion, preparation/reload
-and direct-source parity; check DE440 boundary routing and DE441 parts/overlap.
-Record actual selected hashes/paths/events/receipts, returned values, separate
-unknown errors and raw-provider versus SI-SDK-transport residuals. Exact reload
-must be lossless; direct AU values can differ at roundoff. No visual or physical
-accuracy is established. Do not redownload resources or repeat stellar rendering.
+The final receipt changes documentation/inventory only. Run the complete existing
+`documentation` gate with plugin autoload disabled, empty PYTEST_ADDOPTS, fresh
+bytecode and run provenance. Do not repeat the successful runtime, actual-cache,
+fresh-process or stellar rendering workloads. No core, watched stellar owner,
+production/test/dependency/collection/default or numerical-model change is made.
+Bounded user acceptance remains pending; no parent closure is inferred.

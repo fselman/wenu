@@ -1796,5 +1796,8 @@ convention separately from the time-scale label. The stellar nominal-astrometric
 batch converter is not applied. Optional stellar linkage retains the admitted
 TCB→TDB conversion event/model/rounding receipt without altering original states.
 No apparent corrections, Earth rotation, terrestrial site or planetary reuse
-follows from persistence. Full Mac and actual-cache acceptance is still pending.
+follows from persistence. Mac runtime/documentation, actual-cache linked states
+and fresh data-only reload passed at `437ee649`; the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification)
+records separate time events, product identities and numerical residuals.
+These checks do not certify physical/observer accuracy or add planetary reuse.
 See [the API](implementation_reference.md#exact-event-ephemeris-companions).

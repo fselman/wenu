@@ -31,7 +31,10 @@ It stores Earth-centre/Sun simultaneous geometric ICRF/TDB-compatible states,
 not stellar nominal-astrometric states or terrestrial observations.
 Optional stellar-manifest linkage verifies explicit common-event receipts.
 No chart, renderer, observer, original stellar codec/model/core or modern
-default changes. Mac/runtime/actual-cache acceptance is pending.
+default changes. Mac runtime, documentation and actual-cache verification
+passed at `437ee649`, including fresh data-only reload of the actual bundles.
+The [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification) retains the identities and numerical limits;
+final receipt documentation and user acceptance remain pending.
 See the [API](implementation_reference.md#exact-event-ephemeris-companions).
 
 ## Stellar epoch query lifetime

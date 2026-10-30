@@ -18,8 +18,11 @@ selection, exact split-TDB evaluation through the existing SDK, and immutable
 data-only companion preparation/reload. See the
 [API](implementation_reference.md#exact-event-ephemeris-companions) and
 [gate](testing_policy.md#exact-event-companion-candidate-gate).
-Local compile/direct codec/selection checks passed; complete Mac gates and
-actual-cache verification remain pending. No observer or nonzero reuse is added.
+All 49 Mac ephemeris and 36 documentation cases passed at `437ee649`, followed
+by real DE440/DE441 preparation/reload, boundary/overlap checks and fresh-process
+data-only reload of all three actual bundles. See the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification).
+Final receipt documentation and user acceptance remain pending; no observer,
+nonzero planetary reuse or K4b.07 parent closure is added.
 
 
 ## Accepted saved epoch consumers (K4b.07)
