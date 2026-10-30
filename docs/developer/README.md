@@ -1,5 +1,13 @@
 # Wenu developer documentation
 
+## Earth rotation model research
+
+The [Earth rotation models guide](research/earth_rotation_models_guide_v1.md)
+compares the nominal secular model, historical splines, Espenak–Meeus and IERS
+products, including extrapolation and proposed modular selection. It records
+current support and the discussion separately from proposed K4b.08 work;
+saving the guide does not select or implement a rotation model.
+
 K4b.07.CLI1 adds saved epoch-query file selection to `wenu_chart atlas-sheet`
 through the existing capture/query and native request owners. C2 companions are
 accepted through #364/main `6ff7e1b5`, with Mac synchronization and branch cleanup
