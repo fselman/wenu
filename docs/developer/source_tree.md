@@ -294,7 +294,7 @@ concrete Wenu classes.
 |---|---|
 | [`cli/__init__.py`](../../src/wenu/cli/__init__.py) | Command-line tools for Wenu. |
 | [`cli/atlas.py`](../../src/wenu/cli/atlas.py) | Installed atlas adapters for geometry, index and chart-page production. |
-| [`cli/chart.py`](../../src/wenu/cli/chart.py) | Installed command-line interface for ordinary Wenu chart generation. |
+| [`cli/chart.py`](../../src/wenu/cli/chart.py) | Installed ordinary-chart and native atlas-sheet CLI; explicit saved epoch-query file admission through the existing stellar owner. |
 | [`cli/comets.py`](../../src/wenu/cli/comets.py) | Installed command for explicit networked comet discovery. |
 | [`cli/examples.py`](../../src/wenu/cli/examples.py) | Install Wenu's canonical example scripts in the current directory. |
 | [`cli/notebooks.py`](../../src/wenu/cli/notebooks.py) | Copy the example Wenu notebooks into a user-selected directory. |

@@ -1,5 +1,12 @@
 # Wenu developer documentation
 
+K4b.07.CLI1 adds saved epoch-query file selection to `wenu_chart atlas-sheet`
+through the existing capture/query and native request owners. C2 companions are
+accepted through #364/main `6ff7e1b5`, with Mac synchronization and branch cleanup
+confirmed. CLI1 focused Mac and retained J-2000 render/visual checks are pending;
+ordinary observer-dependent chart families remain deferred. See the
+[bounded CLI scope](kernel_roadmap_v0.9.5.md#k4b07cli1-saved-epoch-catalogue-selection-for-one-cli-atlas-sheet).
+
 <a id="companion-state-assessment-k4b07c1"></a>
 
 ## Exact-event companion candidate (K4b.07.C2)

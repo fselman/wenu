@@ -2727,3 +2727,98 @@ def test_stellar_epoch_consumer_public_view_shares_positions_without_sdk(motion_
 @pytest.mark.parametrize('frame_axes', [None,'mean-equator-equinox'])
 def test_stellar_epoch_consumer_publication_serial_spawn_parity(motion_document, monkeypatch, epoch, jobs, frame_axes):
     _assert_stellar_publication_parity(motion_document, monkeypatch, epoch, jobs, frame_axes, saved=True)
+
+@pytest.mark.parametrize('motion_document', [
+    dict(change=dict(ra=7.5, pmra=100., pmdec=200.), extra_photometry={9:3.})
+], indirect=True)
+@pytest.mark.parametrize('target', ['reused', 'advanced'])
+def test_stellar_epoch_single_sheet_cli_file_admission_and_parity(
+        motion_document, tmp_path, monkeypatch, target):
+    """Synthetic source/snapshot; real saved-product query, CLI, request and export."""
+    from hashlib import sha256
+    from PIL import Image
+    import numpy as np
+    from wenu.cli import chart
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    from wenu.charts.request_generation import generate_chart_request
+    from wenu.resources import configuration_preset_path
+    from wenu.sky import native_snapshot
+    from wenu.stellar_epoch import prepare_stellar_epoch, load_stellar_epoch
+    from wenu.stellar_epoch_consumer import StellarEpochViewInput
+    from wenu.observer import Observer
+
+    source, directory, write = motion_document
+    live_config = write(lambda d: d.update(target_jyear_tcb=2000.))
+    original = bridge.load_stellar_motion_request(live_config)
+    bundle = tmp_path/'epoch'
+    digest = prepare_stellar_epoch(original, bundle)
+    product = load_stellar_epoch(bundle, expected_manifest_sha256=digest)
+    event = (TimePoint(original.instant.jd1+1, original.instant.jd2, 'tcb')
+             if target == 'reused' else TimePoint(990545, 0., 'tcb'))
+    window = 100 if target == 'reused' else 0
+    query = tmp_path/'epoch-query.toml'
+    query.write_bytes(_epoch_consumer_document(bundle, digest, event, window))
+    original_bytes = {p.name: p.read_bytes() for p in bundle.iterdir() if p.is_file()}
+    design = configuration_preset_path('b4-portrait', kind='atlas-layout')
+    raw = design.read_bytes()
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    design_digest = sha256(raw).hexdigest()
+    sky = _motion_cli_sky(source, live_config.parent)
+    class SyntheticSnapshot:
+        manifest_sha256 = 'a'*64
+        def require(self, **kwargs):
+            assert kwargs['design_sha256'] == design_digest
+        def make_sky(self):
+            return sky
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot',
+                        lambda *a, **k: SyntheticSnapshot())
+    def forbidden(*a, **k):
+        raise AssertionError('Saved native CLI must not create an observer or acquire a source sky')
+    monkeypatch.setattr(Observer, '__init__', forbidden)
+    monkeypatch.setattr(chart, 'generate_celestial_sphere', forbidden)
+    presentation_file = tmp_path/'presentation.toml'
+    presentation_file.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
+        'layers=["stars","constellation_lines","constellation_labels"]\n'
+        'formats=["png","pdf"]\ndpi=36\nlegend_fontsize=6.0\nreport_label_scale=1.0\n')
+    presentation = AtlasChartPresentation(
+        layers=('stars','constellation_lines','constellation_labels'),
+        formats=('png','pdf'), dpi=36, legend_fontsize=6., report_label_scale=1.)
+    output = tmp_path/'command'
+    arguments = ['atlas-sheet', '--design', str(design), '--config', str(presentation_file),
+        '--from-sky', str(tmp_path/'synthetic-snapshot'), '--stellar-epoch-config', str(query),
+        '--chart-number', '22', '--output-dir', str(output)]
+    assert chart.main(arguments, emit_outputs=False) == 0
+    admitted = StellarEpochViewInput(product, event, window)
+    request = AtlasSheetChartRequest(atlas.geometry.sheets[21], atlas.geometry.page,
+        presentation, tmp_path/'direct', stellar_motion=admitted,
+        design_sha256=design_digest, design_bytes=raw)
+    generate_chart_request(request, sky=sky)
+    for suffix in ('', '_report'):
+        name = 'chart-22'+suffix+'.png'
+        with Image.open(output/name) as actual, Image.open(request.output_dir/name) as expected:
+            np.testing.assert_array_equal(np.asarray(actual), np.asarray(expected))
+    report = json.loads((output/'chart-22_report_data.json').read_text())['stellar_realization']
+    expected = json.loads((request.output_dir/'chart-22_report_data.json').read_text())['stellar_realization']
+    assert report == expected
+    receipt = report['epoch_query']
+    assert receipt['mode'] == target
+    assert receipt['requested_event'] == dict(jd1=event.jd1, jd2=event.jd2, scale='tcb')
+    assert receipt['actual_position_event'] == admitted.resolution.receipt()['actual_position_event']
+    assert not hasattr(sky.stars, '_stellar_realization')
+
+    # File admission must propagate existing reader/query failures before output.
+    invalid = [
+        _epoch_consumer_document(bundle, '0'*64, event, window),
+        _epoch_consumer_document(bundle, digest, event, -1),
+        _epoch_consumer_document(bundle, digest, TimePoint(event.jd1, event.jd2, 'tt'), window),
+        _epoch_consumer_document(bundle, digest, TimePoint(-100000000, 0., 'tcb'), 0),
+    ]
+    for index, document in enumerate(invalid):
+        query.write_bytes(document)
+        refused = tmp_path/f'refused-{index}'
+        command = arguments.copy()
+        command[command.index(str(output))] = str(refused)
+        assert chart.main(command, emit_outputs=False) == 2
+        assert not refused.exists()
+    assert original_bytes == {p.name: p.read_bytes() for p in bundle.iterdir() if p.is_file()}

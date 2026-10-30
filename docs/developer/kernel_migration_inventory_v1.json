@@ -27758,5 +27758,25 @@
       },
       "limits": "User-reported Mac receipts; numerical transport/composition only, no independent orbit/physical accuracy certificate, observer work, nonzero reuse or parent closure."
     }
+  },
+  "stellar_epoch_single_sheet_cli": {
+    "milestone": "K4b.07.CLI1",
+    "status": "candidate; static inspection only; focused Mac and actual J-2000 render/visual verification pending",
+    "base_commit": "6ff7e1b5a0e82ef764c779e42065e28f526a7f93",
+    "agreement_commit": "475163297575bcb31435fa2f822e6e8479f59f18",
+    "owner": "src/wenu/cli/chart.py",
+    "git_blob_sha": "c899e2d54c1fd9fa6d9dc024d3d88427846422e2",
+    "test_owners": [
+      "tests/test_wenu_chart_cli.py",
+      "tests/test_stellar_state.py"
+    ],
+    "route": "--stellar-epoch-config -> StellarEpochExecutionInput.capture -> admitted StellarEpochViewInput -> existing AtlasSheetChartRequest and native realization/export",
+    "limits": "No watched stellar/core/codec edits, registry, numerical model, format/default/dependency/collection changes or ordinary observer-dependent adoption; parent K4b.07 remains open.",
+    "prior_c2_acceptance": {
+      "pr": 364,
+      "main_commit": "6ff7e1b5a0e82ef764c779e42065e28f526a7f93",
+      "mac_clean_synchronized": true,
+      "local_remote_branch_cleanup": true
+    }
   }
 }
