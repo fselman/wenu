@@ -1,5 +1,25 @@
 # Current scientific contracts and paused work
 
+## Companion states: assessed boundary, implementation pending
+
+The [C1 assessment and proposed C2 scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
+keep native TDB-compatible simultaneous geometric Earth/Sun PV separate from
+stellar TCB states and terrestrial observers. An explicit common-event receipt
+and qualified spatial convention are necessary for later composition; converting
+a time label alone does not admit subtraction. The existing nominal-astrometric
+batch converter does not accept geometric ephemeris references. No saved companion
+codec, planetary reuse, observer capability or ancient ephemeris coverage has
+been implemented by this documentation assessment. C2 remains proposed only.
+The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
+records verified-byte/structural acquisition separately from state evaluation.
+Fernando's agreed resource policy prefers full DE440 within qualified actual
+coverage and DE441 beyond it, with file/path/hash evidence and no extrapolation.
+DE441 parts require explicit coverage/overlap routing; model overlap states need
+not be identical or equally accurate. Existing DE440s/modern defaults stay
+unchanged. The proposed checks retain separate TCB/TDB event and geometric
+spatial-convention qualification; no observer accuracy follows from SPK coverage.
+
+
 ## Saved epoch consumer contract
 
 The selected observer-free consumer adapter does not add science. It binds the
@@ -21,7 +41,8 @@ Polaris is finite, selected, inside the viewport and present in a drawn marker
 in both caps, without replacement or moving it to the pole. Its recorded target-
 axis declinations are +89.3747262476918 and +67.56518205779696 degrees; their
 difference describes coordinates in different axes, not physical stellar travel.
-Runtime and actual-product checks passed; user visual acceptance is pending.
+Runtime, actual-product and final documentation checks passed; Fernando accepted
+the visuals and #361 merged, with clean main f72a2055 and cleanup confirmed.
 Observer-dependent charts, companions and physical-error qualification stay deferred.
 
 
@@ -30,7 +51,7 @@ Observer-dependent charts, companions and physical-error qualification stay defe
 The accepted second K4b.07 contract is implemented as a candidate in
 `stellar_epoch_query.py`. At `350de788`, 20 Mac runtime and 36 documentation
 cases passed, followed by original-bundle compatibility and exact reciprocal
-all-row target-hash checks. User acceptance/merge remain pending; these results
+all-row target-hash checks. #359/#360 are accepted/merged at d4fb035d; these results
 verify service composition and preservation, not new physical accuracy.
 At/inside an explicitly chosen inclusive Julian-year window, saved states keep
 their actual catalogue event. A detached receipt separates the requested event,
@@ -65,8 +86,8 @@ The reader verifies data and provides exact-event access only; different-event
 and different-scale use refuses. Persistence does not make a historical model
 gap into a deletion from the modern catalogue, replace source facts, apply an
 observer/parallax correction, orient TT axes or extend model/resource validity.
-The configurable fixed-position window and model-faithful advancement remain
-future separately scoped K4b.07 work. Earth/Solar System and full observer
+The configurable fixed-position window and model-faithful advancement are
+accepted through #359/#360, under the separate query contract above. Earth/Solar System and full observer
 functionality stay separate. Local persistence implies no redistribution right.
 The coordinate guide's existing time/frame/parallax meanings remain current.
 
@@ -1385,6 +1406,7 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and
+
 
 
 

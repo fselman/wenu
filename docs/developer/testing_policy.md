@@ -1,5 +1,23 @@
 # Testing policy and module independence
 
+## Companion assessment gate (K4b.07.C1)
+
+This is documentation only: run the complete existing `documentation` gate.
+Check owner/test links, current acceptance/status consistency and the separation
+of selected C1 assessment from proposed C2 runtime. No production, test, resource,
+dependency, build or collection changes. Do not run the proposed companion
+science gate as though a codec already exists. Its exact-event parity, precision,
+identity/refusal and fresh-process obligations are specified in the
+[proposed scope](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice).
+The DE440/DE441 acquisition/policy receipt remains documentation only: recorded
+checksums and SPK paths are not direct-state or automatic-selection acceptance.
+Proposed future coverage adds DE440 boundaries, both DE441 parts and seam/overlap
+routing/refusal, plus exact prepare/reload/direct-state checks at J2000, J-2000
+and J-8000 after explicit TCB→TDB conversion. These gates are unexecuted and C2
+runtime is not selected. Re-run only the complete documentation gate for this
+policy update; retain the 36-case pass at 71dafb6a as prior-head evidence.
+
+
 ## Saved epoch consumer gate
 
 Closest protections are the existing native stellar view/export and complete
@@ -31,9 +49,9 @@ exact original-model query parity, actual-event saved/live geometry and
 direct/serial/spawn PNG/report agreement. Polaris reaches a finite selected,
 unclipped drawn marker in each cap. Evidence:
 `~/Software/build/wenu/output/epoch-consumers-acceptance-v1-lgsgoia9`.
-Original inputs were unchanged. User visual acceptance is pending. This final
-receipt changes documentation only; run the complete documentation gate, without
-repeating the successful runtime or catalogue/render workload.
+Original inputs were unchanged. Fernando accepted the visual result and requested merge/cleanup on 2026-10-28. PR #361 merged at `c4f7068b`; #362 then merged at `f72a2055`. Clean synchronized Mac main and both local/remote branch deletions are confirmed. The final #361 documentation gate passed all 36 cases in 7.58 s at `b9d2a806`; retain `~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye`. Original catalogues and acceptance evidence remain retained; parent K4b.07 stays open.
+This companion assessment changes documentation only; run the complete
+documentation gate without repeating successful runtime/catalogue/render work.
 
 
 ## Nearby-epoch query gate
@@ -2639,6 +2657,7 @@ The complete Mac gate collects 25 cases. Available documentation: 31 passed
 in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 38 active-document links/anchors pass against the full repository tree.
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
+
 
 
 

@@ -14,7 +14,8 @@ compatibility, source/model mathematics and observer ownership remain unchanged.
 The candidate passed 50 stellar/publication, 17 atlas and 36 documentation Mac
 cases at `9f7b2e9a`, then actual J-2000 preparation and saved/live/serial/spawn
 geometry/product checks with Polaris drawn in both north caps. User visual
-acceptance and merge remain pending; no observer/companion scope follows.
+acceptance and merge are confirmed through #361/main f72a2055 after #362;
+clean Mac synchronization and cleanup are confirmed. No companion runtime follows.
 
 
 ## Stellar epoch query lifetime
@@ -29,7 +30,8 @@ The immutable codec's strict watched code files remain unchanged so old accepted
 products keep their original compatibility binding. At `350de788`, 20 focused
 Mac runtime and 36 documentation cases passed. Both original retained products
 passed unchanged reuse and reciprocal all-row target-hash verification; user
-acceptance/merge remain pending. No later consumer or observer scope follows.
+acceptance/merge are confirmed through #359/#360 at d4fb035d. Consumer
+adoption is accepted above; companion/observer runtime remains separate.
 
 
 ## Exact-event stellar persistence candidate
@@ -939,4 +941,5 @@ deterministic import/test/render routes. This is not new acquisition authority.
 Complete Mac audit/documentation acceptance is pending. After acceptance,
 Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
 independent astronomical package extraction remain separate.
+
 

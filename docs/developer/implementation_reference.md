@@ -34,8 +34,7 @@ and approximation. Visible notes identify requested and actual epochs and reuse.
 Display-axis TT orientation remains separate from native TCB position time.
 The six strict v1 watched files are unchanged. At `9f7b2e9a`, 50 stellar, 17 atlas
 and 36 documentation Mac cases passed, followed by the actual J-2000 catalogue
-and Polaris-visible modern/ancient polar run. Final receipt documentation, user
-visual acceptance and merge remain pending.
+and Polaris-visible modern/ancient polar run. Fernando accepted the visual result and requested merge/cleanup on 2026-10-28. PR #361 merged at `c4f7068b`; #362 then merged at `f72a2055`. Clean synchronized Mac main and both local/remote branch deletions are confirmed. The final #361 documentation gate passed all 36 cases in 7.58 s at `b9d2a806`; retain `~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye`. Original catalogues and acceptance evidence remain retained; parent K4b.07 stays open.
 
 
 ## Nearby-epoch stellar queries
@@ -69,7 +68,8 @@ Existing v1 reader/hash guards and accepted bundle bytes are unchanged.
 At `350de788`, 20 Mac runtime and 36 documentation cases passed. Retained J2000
 and J-8000 products passed original-hash loading, unchanged reuse and reciprocal
 advancement against accepted full-state hashes, with all statuses/source bytes
-preserved. User acceptance/merge remain pending; no consumer/observer adoption.
+preserved. #359/#360 are accepted/merged at d4fb035d with cleanup confirmed.
+Consumer adoption is accepted above; observer work remains separate.
 
 
 ## Exact-epoch stellar catalogues
@@ -3025,6 +3025,7 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
 
 

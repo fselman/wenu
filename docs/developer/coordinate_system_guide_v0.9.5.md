@@ -13,7 +13,8 @@ pole. At `9f7b2e9a`, Mac runtime and actual-product checks passed. The modern
 request/TT-axis coordinate is JD(2461342,-0.5) in the separately declared scales,
 while reused raw stellar positions remain JD(2451545,0) TCB. J-2000 positions
 are JD(990545,0) TCB with independently declared JD(990545,0) TT axes. Polaris
-reaches a drawn marker in both; user visual acceptance remains pending.
+reaches a drawn marker in both; Fernando accepted both visuals and #361 is
+merged, with clean synchronized main f72a2055 and cleanup confirmed.
 
 
 ## Nearby-epoch event receipt
@@ -21,7 +22,7 @@ reaches a drawn marker in both; user visual acceptance remains pending.
 The accepted [K4b.07 query contract](kernel_roadmap_v0.9.5.md#k4b07-nearby-epoch-reuse-and-advancement-scope)
 now has a separate service candidate, verified at `350de788` by 20 Mac runtime
 and 36 documentation cases plus exact retained-product reciprocal checks.
-User acceptance/merge remain pending. Its receipt distinguishes catalogue, requested and actual
+Acceptance/merge are confirmed through #359/#360 at d4fb035d. Its receipt distinguishes catalogue, requested and actual
 position events. Inclusive in-window reuse leaves raw state times/anchors at the
 saved event and discloses fixed-position approximation error as unquantified.
 Requested-event coverage is disclosed even when the window crosses a model domain.
@@ -1781,5 +1782,6 @@ light time, aberration or frame qualification is introduced. Satellite TEME
 transport and observer/geocentric ITRS transforms retain their current meanings.
 Constructed custom-protocol sources remain compatible. Finite-Sun occultation,
 observer twilight and continuous contact search keep their existing mathematics.
+
 
 

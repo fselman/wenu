@@ -1,6 +1,20 @@
 # Wenu developer documentation
 
-## Saved epoch consumer candidate (K4b.07)
+## Companion-state assessment (K4b.07.C1)
+
+The [as-is assessment](kernel_migration_audit_v1.md#k4b07-companion-state-as-is-assessment)
+identifies existing geometric ephemeris, SDK and TCB/TDB owners.
+The [proposed C2 boundary](kernel_roadmap_v0.9.5.md#k4b07-companion-assessment-and-proposed-exact-event-slice)
+is exact-event Earth-centre/Sun persistence from a verified local SPK.
+The [resource receipt](kernel_migration_audit_v1.md#verified-local-de440de441-resources-and-agreed-selection)
+records the subsequently authorized and reported verified DE440/DE441 downloads.
+The agreed policy prefers full DE440 within qualified coverage and DE441 beyond
+it, preserving DE440s/modern defaults. Selection, exact-event evaluation and
+companion persistence remain unimplemented. C2 is proposed for review, not
+selected implementation; no further acquisition or observer work is activated.
+
+
+## Accepted saved epoch consumers (K4b.07)
 
 Fernando selected observer-free saved-catalogue consumption with an additional
 J-2000 catalogue and modern/J-2000 north-polar specimens showing Polaris. The
@@ -18,11 +32,10 @@ created/validated J-2000 with all 118,218 rows and original-model query parity.
 Both 80-degree north caps retain Polaris in an actual drawn marker, with direct,
 serial and spawn agreement and unchanged original inputs. See the
 [retained catalogue and polar receipt](kernel_migration_audit_v1.md#saved-epoch-consumer-actual-catalogue-and-polar-receipt).
-Final receipt documentation and user visual acceptance/merge remain pending;
-observers/companions remain deferred.
+Fernando accepted the visual result and requested merge/cleanup on 2026-10-28. PR #361 merged at `c4f7068b`; #362 then merged at `f72a2055`. Clean synchronized Mac main and both local/remote branch deletions are confirmed. The final #361 documentation gate passed all 36 cases in 7.58 s at `b9d2a806`; retain `~/Software/build/wenu/test/stellar-epoch-consumer-receipt-docs-v1-dkbvasye`. Original catalogues and acceptance evidence remain retained; parent K4b.07 stays open.
 
 
-## Nearby-epoch stellar query candidate (K4b.07)
+## Accepted nearby-epoch stellar query (K4b.07)
 
 Fernando accepted the native query contract with “Accepted. Proceed.” on
 2026-10-28 after 36 Mac documentation passes in 6.60 s at `ef578cde`.
@@ -38,8 +51,9 @@ documentation cases in 3.37 s. Both retained products loaded under their origina
 hashes, reused unchanged and advanced reciprocally with exact accepted target
 state hashes, preserving all 118,218 statuses and original input bytes.
 See the [full-population receipt and measured costs](kernel_migration_audit_v1.md#retained-bundle-nearby-epoch-verification).
-Final receipt documentation and user acceptance/merge remain pending. No
-chart/atlas, worker, companion or observer adoption; parent remains open.
+Final receipt documentation passed 36 cases in 6.80 s at bc5f2b14; Fernando
+accepted #359/#360 and confirmed merge/cleanup at main d4fb035d. The later
+consumer adoption is accepted above; companion/observer work and parent remain open.
 
 ## Exact-epoch stellar persistence candidate (K4b.07)
 
@@ -694,6 +708,7 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
+
 
 
 
