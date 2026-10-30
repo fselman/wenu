@@ -2780,10 +2780,10 @@ def test_stellar_epoch_single_sheet_cli_file_admission_and_parity(
     presentation_file = tmp_path/'presentation.toml'
     presentation_file.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
         'layers=["stars","constellation_lines","constellation_labels"]\n'
-        'formats=["png"]\ndpi=36\nlegend_fontsize=6.0\nreport_label_scale=1.0\n')
+        'formats=["png","pdf"]\ndpi=36\nlegend_fontsize=6.0\nreport_label_scale=1.0\n')
     presentation = AtlasChartPresentation(
         layers=('stars','constellation_lines','constellation_labels'),
-        formats=('png',), dpi=36, legend_fontsize=6., report_label_scale=1.)
+        formats=('png','pdf'), dpi=36, legend_fontsize=6., report_label_scale=1.)
     output = tmp_path/'command'
     arguments = ['atlas-sheet', '--design', str(design), '--config', str(presentation_file),
         '--from-sky', str(tmp_path/'synthetic-snapshot'), '--stellar-epoch-config', str(query),
