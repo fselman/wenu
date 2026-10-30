@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 130, 2026-10-30. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. C1 assessment/resource policy is accepted through #363; C2 runtime, actual-cache and fresh-process verification passed at 437ee649; final receipt documentation/user acceptance remain pending; parent K4b.07 and observer work remain open.
+**Plan revision:** 131, 2026-10-30. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. C1 assessment/resource policy is accepted through #363. C2 is accepted through #364, merged at 6ff7e1b5 with clean synchronized Mac and local/remote branch cleanup confirmed. All 49 runtime cases, actual-cache/fresh-process checks and final 36-case documentation gate passed. Fernando selected K4b.07.CLI1 saved epoch-catalogue selection for wenu_chart atlas-sheet with “Proceed”; parent K4b.07 and observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -70,7 +70,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with R1/observer deferrals. K4b.07 exact persistence (#358), nearby query (#359/#360) and saved consumers/J-2000/polar specimens (#361) accepted. Main f72a2055 after #362 is clean/synchronized; branches cleaned; original catalogues/evidence retained. Parent K4b.07 remains open |
-| Next bounded submilestone | K4b.07.C1 companion-state assessment selected by Fernando with “proceed”; documentation only. DE440/DE441 resource policy and acquisition recorded; Fernando selected C2 exact-event Earth/Sun implementation with “Proceed” after #363 merge/cleanup at main 244f4cb4. See [scope](#k4b07-companion-assessment-and-proposed-exact-event-slice). Parent K4b.07 and observer work remain open |
+| Next bounded submilestone | K4b.07.CLI1 selected by Fernando with “Proceed”: saved epoch-catalogue selection in wenu_chart atlas-sheet, through the existing query contract and native request route. C2 accepted/merged/cleaned at main 6ff7e1b5; ordinary observer-dependent families remain deferred |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1088,9 +1088,11 @@ and [gate](testing_policy.md#exact-event-companion-candidate-gate) describe actu
 interfaces and verification limits. At `437ee649`, all 49 Mac runtime and
 36 documentation cases passed; actual linked J2000/J-2000/J-8000 products,
 resource boundaries/overlap and fresh-process data-only reload passed.
-See the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification). Final receipt documentation and bounded
-user acceptance remain pending; this does not close parent K4b.07 or select
-another milestone.
+See the [verification receipt](kernel_migration_audit_v1.md#exact-event-companion-mac-and-actual-cache-verification). Final receipt documentation passed all 36 Mac cases in 7.26 s at
+`db92c598`; Fernando accepted and requested merge/cleanup. PR #364 merged at
+`6ff7e1b5`, with a tree identical to the tested head. Clean synchronized Mac main
+and both local/remote task-branch deletions are confirmed. This closes C2 only;
+parent K4b.07 remains open. CLI1 is separately selected below.
 
 Selected boundary and acceptance:
 
@@ -1148,6 +1150,47 @@ or far-future qualification remain separate K4b.07/K4b.08 work. Modern stars and
 measured parallaxes stay preserved. R1 bright-star comparison remains postponed;
 parent K4b.07 is not closed by C1 or the proposed C2.
 
+
+## K4b.07.CLI1: saved epoch catalogue selection for one CLI atlas sheet
+
+**Agreement/selection, 2026-10-30:** after accepting #364 and confirming clean
+synchronized Mac main `6ff7e1b5a0e82ef764c779e42065e28f526a7f93` with both task
+branches deleted, Fernando requested catalogue selection and epoch checks in
+`wenu_chart`. After reviewing the existing regional/observer deferrals and
+accepted native query contract, he said “Proceed” to the explicit first CLI
+task: expose saved epoch selection in `wenu_chart atlas-sheet`.
+This selection is recorded before runtime edits.
+
+**As-is and result:** atlas publication already accepts `--stellar-epoch-config`;
+the single-sheet file-admission command accepts only live motion and a separate
+TT frame input. Its prepared request already accepts `StellarEpochViewInput`.
+Add the same explicit query-TOML option to this file path, mutually exclusive
+with `--stellar-motion-config`, and reuse `StellarEpochExecutionInput.capture`
+with verified saved-sky and design bindings. Feed its admitted view to the
+existing request/realization/export owner. Prepared requests must reject an
+additional file input. Preserve omitted-option behavior and separate frame input.
+
+The existing query document identifies the immutable catalogue by path and
+manifest digest, requested native TCB event and required finite nonnegative
+reuse window. Reuse stored positions at/inside the window, disclosing actual
+versus requested epochs and requested-event model coverage even across a model
+domain boundary. Outside it, advance only through original admitted models or
+refuse. No new epoch/validity logic belongs in the CLI.
+
+**Smallest acceptance gate:** extend existing CLI and stellar/publication test
+owners for parser exclusion, prepared/file conflict, digest/event/window/domain
+refusal propagation, and real saved-product file admission with request/report/
+PNG parity against the existing admitted route for reused and advanced events.
+Run the focused CLI/stellar seams and complete documentation gate on the Mac.
+Then render from the retained actual J-2000 product, compare with the accepted
+consumer route and obtain visual review; preserve original products and evidence.
+
+**Limits:** no catalogue-name registry, new format/model/propagation, source or
+default replacement, planetary reuse, observer reconstruction, ordinary
+`regional`/all-sky/planisphere/circumpolar/binocular adoption, dependency or
+package extraction. Those observer-dependent families retain K4b.06.R3 and the
+separate full-observer/K4b.08 gates. This slice does not close parent K4b.07.
+Implementation and new Mac/actual-render acceptance remain pending.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
@@ -2448,6 +2491,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 131: select saved epoch single-sheet CLI adoption | Fernando’s “Proceed” after the explicit CLI-only proposal, following #364 acceptance and confirmed clean synchronized main 6ff7e1b5/branch cleanup | Select K4b.07.CLI1 file-admitted saved epoch selection through existing query/request owners and focused plus retained J-2000 CLI acceptance; no registry or observer-dependent adoption |
 | Revision 130: select exact-event companion implementation | Fernando's “Proceed” after #363 acceptance/merge/cleanup, confirmed clean synchronized main 244f4cb4 and the explicit C2 result/gate proposal | Select bounded offline DE440/DE441 routing, exact Earth/Sun evaluation and immutable preparation/reload with the specified owner and actual-cache gates; no observer work, nonzero planetary reuse, new acquisition or parent closure |
 | Revision 129: record DE440/DE441 acquisition and agreed resource policy | Fernando's explicit DE440-within-coverage/DE441-longer-span decision and authorization to download both, with user-reported verified Mac acquisition recovered from the 2026-10-28 handoff; clean synchronized task head reconfirmed 2026-10-30 | Documentation only. Keep modern defaults; no automatic selection, C2 runtime authorization, new acquisition, extrapolation, observer adoption or parent closure |
 | Revision 128: select companion assessment and reconcile consumer acceptance | Fernando’s “accepted, merge and cleanup both PRs”, confirmed main f72a2055/branch cleanup and “proceed” after the companion assessment proposal | Accept #361 consumer/visual result; select C1 documentation assessment only. C2 exact-event Earth/Sun persistence remains proposed, not runtime authority |
@@ -3194,7 +3238,7 @@ remain its separate responsibilities.
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed. Dated mean-axis atlas views accepted through #354 at d0124837 after Mac runtime/documentation/tooling, eight actual-cache publication cases and visual review; R2/R3 observer-free assessment and R4 final reconciliation accepted by Fernando on 2026-10-28 after 36 Mac documentation cases passed in 7.35 s at 829c4725; bounded K4b.06 closed. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. R1 bright-star comparison is explicitly postponed outside this closure gate and remains unfinished. Observer-dependent chart treatment is deferred until full observer functionality, with modern population/measurements preserved. K4b.07 and later observer work stay separate |
-| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; accepted through #358/main 233f18b1 after focused Mac/documentation and retained-source prepare/reload; clean synchronization/cleanup confirmed. Nearby-epoch query contract explicitly accepted on 2026-10-28 with “Accepted. Proceed.”; bounded service candidate passed Mac/runtime/documentation and original-bundle reciprocal checks at 350de788; final receipt passed and #359/#360 merged at d4fb035d. Consumer/J-2000/polar scope accepted through #361, merged and cleaned at main f72a2055. C1 assessment/resource policy accepted through #363/main 244f4cb4. C2 implementation selected with agreement at 489fbaf0; runtime/actual-cache/fresh-process verification passed at 437ee649; final receipt documentation and user acceptance pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. Exact-event stellar persistence is accepted; exact-event companion candidate implemented with Mac/actual-cache/fresh-process verification passed and bounded user acceptance pending; observer extensions remain unimplemented |
+| K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; accepted through #358/main 233f18b1 after focused Mac/documentation and retained-source prepare/reload; clean synchronization/cleanup confirmed. Nearby-epoch query contract explicitly accepted on 2026-10-28 with “Accepted. Proceed.”; bounded service candidate passed Mac/runtime/documentation and original-bundle reciprocal checks at 350de788; final receipt passed and #359/#360 merged at d4fb035d. Consumer/J-2000/polar scope accepted through #361, merged and cleaned at main f72a2055. C1 assessment/resource policy accepted through #363/main 244f4cb4. C2 implementation selected with agreement at 489fbaf0; runtime/actual-cache/fresh-process verification passed at 437ee649; final receipt documentation passed at db92c598; C2 accepted through #364/main 6ff7e1b5 with clean synchronization and cleanup confirmed. CLI1 single-sheet command adoption selected separately. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. Exact-event stellar persistence is accepted; exact-event companion accepted with Mac/actual-cache/fresh-process verification; observer extensions remain unimplemented |
 | K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Agreed capability on 2026-10-27; detailed model/domain/product definitions and implementation pending. Separate from K4b.06 mean-axis views and K4b.07 persistence; no historical/future observer accuracy or unrestricted ephemeris coverage claim |
 
 
