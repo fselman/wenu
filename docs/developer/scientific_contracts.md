@@ -1,8 +1,20 @@
 # Current scientific contracts and paused work
 
+## Ancient orientation assessment boundary
+
+The [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
+is selected to investigate nominal forced nutation while preserving VCW mean
+axes. No particular nutation algorithm, VCW hybrid, daily-rotation/origin
+construction or observer product is yet admitted.
+Ancient polar motion is explicitly omitted (`xp=yp=0`), not reconstructed as
+physically zero; its actual error remains unknown. Observed celestial-pole
+offsets and unpredictable free-core nutation are not supplied. Modern measured
+EOP behavior remains intact. Source inspection and formula differences alone
+establish neither physical accuracy nor compatibility of a full composition.
+
 ## Named nominal spin timing
 
-K4b.08.R1's candidate `earth_rotation.py` implements the explicitly selected
+K4b.08.R1's accepted `earth_rotation.py` implements the explicitly selected
 Espenak--Meeus 2006 coefficients with same-parabola remote continuation.
 Its default applies to the new named model boundary only. Finite TT admission,
 split TT-to-UT1 receipt, model identity and extrapolation regime accompany every
@@ -23,7 +35,8 @@ cannot combine this Skyfield Delta-T with a competing implicit Astropy UT1.
 
 See [API](implementation_reference.md#named-nominal-earth-rotation-model),
 [agreed scope](kernel_roadmap_v0.9.5.md#k4b08r1-named-nominal-delta-t-model-and-skyfield-adapter)
-and [research](research/earth_rotation_models_guide_v1.md). Mac acceptance pending.
+and [research](research/earth_rotation_models_guide_v1.md). #367 is accepted/merged
+at `7935541c` after six focused and 36 documentation Mac passes.
 
 <a id="companion-states-assessed-boundary-implementation-pending"></a>
 

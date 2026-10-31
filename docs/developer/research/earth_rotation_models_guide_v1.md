@@ -4,7 +4,11 @@
 
 Version 1 · 30 October 2026 · Research and design guide
 
-**Status:** research study with a subsequent implementation-selection update. The K4b.08.R1 candidate now implements one named model and Skyfield seam; Mac acceptance and ancient observer integration remain pending. This study does not qualify ancient observer accuracy. “Canonical” here means established and citable, not a universally mandated ancient-Earth solution.
+**Status:** research study followed by accepted K4b.08.R1 implementation.
+PR #367 merged at `7935541c` after six focused and 36 documentation Mac passes;
+Mac synchronization and branch cleanup are confirmed. The subsequent
+[nutation/orientation assessment](ancient_observer_orientation_assessment_v1.md)
+is selected under K4b.08.R2. Full observer/chart integration remains open.
 
 ## Executive summary
 

@@ -1,6 +1,7 @@
-| Next bounded submilestone | K4b.08.R1 selected: named Espenak--Meeus nominal Delta-T model and Skyfield adapter. Candidate implementation; focused Mac and documentation acceptance pending. Ordinary ancient chart/observer composition stays separate |n kernel and loadable astronomical packages
+# Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 132, 2026-10-31. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. C1 assessment/resource policy is accepted through #363. C2 is accepted through #364, merged at 6ff7e1b5 with clean synchronized Mac and local/remote branch cleanup confirmed. All 49 runtime cases, actual-cache/fresh-process checks and final 36-case documentation gate passed. Fernando selected K4b.07.CLI1 saved epoch-catalogue selection for wenu_chart atlas-sheet with “Proceed”; parent K4b.07 and observer work remain open.
+**Plan revision:** 133, 2026-10-31. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 orientation assessment is selected; no production nutation prescription or full observer integration is selected by that assessment.
+
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,11 +47,14 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `11d913c609ce280f8d459d918aeb644af0bc6e15`,
-confirmed clean/synchronized on the Mac after #366 merge and local/remote task
-branch deletion. #365 saved stellar epoch CLI and #366 Earth rotation research
-guide are accepted. The guide alone selected no runtime model; the subsequent
-explicit Espenak--Meeus agreement activates only K4b.08.R1 below.
+**Current accepted base:** main `7935541c211588e1d4442e535e00feae64c13e84`,
+confirmed clean/synchronized on the Mac on 2026-10-31. #365 saved epoch CLI,
+#366 rotation research and #367 named rotation model are accepted/merged.
+The saved handoff records completed #367 Mac acceptance and branch cleanup;
+the #367 PR records six focused and 36 documentation passes at `639193c6`.
+Fernando selected the nominal forced-nutation assessment with explicit ancient
+polar-motion omission using “Agreed. Proceed.”; K4b.08.R2 records that bounded
+scope below. A concrete nutation prescription and observer product remain pending.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -70,8 +74,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 closed with R1/observer deferrals. K4b.07 exact persistence, nearby queries, saved consumers and C2 exact-event companions accepted. PR #364 merged at main 6ff7e1b5; clean synchronized Mac and local/remote branch cleanup confirmed; original catalogues/evidence retained. Parent K4b.07 remains open |
-| Next bounded submilestone | K4b.07.CLI1 selected by Fernando with “Proceed”: saved epoch-catalogue selection in wenu_chart atlas-sheet, through the existing query contract and native request route. C2 accepted/merged/cleaned at main 6ff7e1b5; ordinary observer-dependent families remain deferred |
+| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1 accepted through #367/main 7935541c. Parents K4b.07/K4b.08 remain open |
+| Next bounded submilestone | K4b.08.R2: assess nominal forced nutation compatible with existing VCW axes, explicitly omit ancient polar motion, execute bounded diagnostics and recommend a composition. No production model or chart integration selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1228,10 +1232,46 @@ owner and run the complete documentation gate. This is a model/adapter slice;
 no ordinary CLI/chart/worker or Astropy adoption, horizon qualification,
 nutation/polar-motion choice, site model, historical fitting, uncertainty
 propagation or parent K4b.08 closure is implied. Those need their own agreed
-observer-product integration. Status: candidate implemented after agreement commit
-`4b4f7ed4`; isolated numerical/callable checks pass locally, while the real
-Skyfield seam and complete Mac acceptance remain pending. The parent milestone
-stays open.
+observer-product integration. **Accepted:** #367 merged at main `7935541c`
+after six focused Mac cases (including real Skyfield composition), 36 complete
+documentation cases and diff checks passed at `639193c6`. The tested/merged tree
+is `b7577a685609b7ad2f496f7fc8c18facd735761b`. Mac synchronization and local/remote
+branch cleanup were confirmed. Parent K4b.08 stays open.
+
+### K4b.08.R2: nominal nutation and polar-motion assessment
+
+**Agreement and base:** Fernando accepted investigation of nominal forced
+nutation with existing VCW mean axes and explicit ancient polar-motion omission
+with “Agreed. Proceed.” on 2026-10-31, then confirmed clean synchronized Mac
+main `7935541c211588e1d4442e535e00feae64c13e84`.
+This records assessment/diagnostic authority before execution, not selection
+of IAU 1980, IAU 2000A, a hybrid observer model or the full parent backlog.
+
+**Deliverable:** [source assessment and diagnostic protocol](research/ancient_observer_orientation_assessment_v1.md).
+Compare IAU 1980/2000A and the IAU-2006-adjusted variant, retaining VCW
+mean-equatorial/ecliptic axes. Examine fundamental arguments, obliquity,
+long-period partition and coherent daily-rotation/origin conventions.
+Explicitly omit ancient polar motion (`xp=yp=0`, unknown actual error);
+do not fabricate EOP, celestial-pole offsets or predictable free-core nutation.
+Preserve ordinary modern/final-IERS behavior.
+
+**Gate and limits:** source-backed assessment plus executed, retained diagnostic
+at declared modern/ancient/future TT samples (including J-8000), independent
+Euler-construction/sign-fault software checks, complete documentation gate
+and user review of the recommendation. Model differences do not establish
+physical accuracy. No production, dependency, SDK, catalogue, CLI/worker/chart,
+new acquisition or parent-closure change. The diagnostic runs outside the
+repository under the existing run/provenance convention. Current status:
+source assessment and recommendation delivered. At `dd1db923`, 36 Mac
+documentation cases passed in 8.14 s and the 1,374-event diagnostic completed
+with sign-fault detection. The receipt records sampled differences and unknown
+physical errors. The IAU2000A/VCW nominal hybrid is recommended, not adopted;
+full meridian/origin and reference-convention composition remains explicit.
+Final receipt-document verification and user review are pending. Concrete
+production composition/domain requires subsequent explicit agreement and its
+own bounded implementation gate.
+
+### K4b.08 parent requirements and acceptance
 
 **Agreement and status:** on 2026-10-27, after accepting PR #352 and confirming
 clean synchronized Mac main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
@@ -3278,7 +3318,7 @@ remain its separate responsibilities.
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed. Dated mean-axis atlas views accepted through #354 at d0124837 after Mac runtime/documentation/tooling, eight actual-cache publication cases and visual review; R2/R3 observer-free assessment and R4 final reconciliation accepted by Fernando on 2026-10-28 after 36 Mac documentation cases passed in 7.35 s at 829c4725; bounded K4b.06 closed. #357 merged at 7407ea1b; clean synchronized Mac and branch cleanup confirmed. R1 bright-star comparison is explicitly postponed outside this closure gate and remains unfinished. Observer-dependent chart treatment is deferred until full observer functionality, with modern population/measurements preserved. K4b.07 and later observer work stay separate |
 | K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; as-is assessment selected/completed on 2026-10-28. First exact-epoch slice selected after #357 merge/cleanup; accepted through #358/main 233f18b1 after focused Mac/documentation and retained-source prepare/reload; clean synchronization/cleanup confirmed. Nearby-epoch query contract explicitly accepted on 2026-10-28 with “Accepted. Proceed.”; bounded service candidate passed Mac/runtime/documentation and original-bundle reciprocal checks at 350de788; final receipt passed and #359/#360 merged at d4fb035d. Consumer/J-2000/polar scope accepted through #361, merged and cleaned at main f72a2055. C1 assessment/resource policy accepted through #363/main 244f4cb4. C2 implementation selected with agreement at 489fbaf0; runtime/actual-cache/fresh-process verification passed at 437ee649; final receipt documentation passed at db92c598; C2 accepted through #364/main 6ff7e1b5 with clean synchronization and cleanup confirmed. CLI1 single-sheet command adoption selected separately. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. Exact-event stellar persistence is accepted; exact-event companion accepted with Mac/actual-cache/fresh-process verification; observer extensions remain unimplemented |
-| K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Agreed capability on 2026-10-27; detailed model/domain/product definitions and implementation pending. Separate from K4b.06 mean-axis views and K4b.07 persistence; no historical/future observer accuracy or unrestricted ephemeris coverage claim |
+| K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Parent open. R1 named Espenak--Meeus timing accepted/merged through #367 at 7935541c. R2 nominal forced-nutation assessment selected on 2026-10-31 with explicit ancient polar-motion omission; production orientation, site/time/state composition and observer products remain pending |
 
 
 ### K5–K9: freeze, extraction and release

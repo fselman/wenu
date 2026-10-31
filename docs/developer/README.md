@@ -1,21 +1,28 @@
 # Wenu developer documentation
 
-## Earth rotation model research
+## Ancient observer orientation assessment
 
-The [Earth rotation models guide](research/earth_rotation_models_guide_v1.md)
-compares the nominal secular model, historical splines, Espenak–Meeus and IERS
-products, including extrapolation and modular selection. The subsequent explicit
-agreement selects K4b.08.R1's Espenak--Meeus model and Skyfield adapter; its
-candidate API is [documented here](implementation_reference.md#named-nominal-earth-rotation-model).
-Focused Mac and documentation verification remain pending. Full ancient
-observer/chart integration and parent K4b.08 remain open.
+The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
+examines nominal forced nutation compatible with existing VCW mean axes and
+explicitly omits ancient polar motion. At `dd1db923`, all 36 Mac documentation
+cases passed and the 1,374-event diagnostic completed with sign-fault detection.
+The report recommends a nominal IAU2000A/VCW candidate and discloses unresolved
+full-origin/convention composition. Final receipt-document verification and user
+review remain pending; no production prescription or observer/chart adoption
+is selected.
 
-K4b.07.CLI1 adds saved epoch-query file selection to `wenu_chart atlas-sheet`
-through the existing capture/query and native request owners. C2 companions are
-accepted through #364/main `6ff7e1b5`, with Mac synchronization and branch cleanup
-confirmed. CLI1 focused Mac and retained J-2000 render/visual checks are pending;
-ordinary observer-dependent chart families remain deferred. See the
-[bounded CLI scope](kernel_roadmap_v0.9.5.md#k4b07cli1-saved-epoch-catalogue-selection-for-one-cli-atlas-sheet).
+The [rotation study](research/earth_rotation_models_guide_v1.md) led to accepted
+K4b.08.R1: #367 merged at main `7935541c` after six focused and 36 documentation
+Mac passes at `639193c6`; synchronization/branch cleanup are confirmed.
+See the [API](implementation_reference.md#named-nominal-earth-rotation-model).
+Full ancient observer/chart integration and parent K4b.08 remain open.
+
+K4b.07.CLI1 saved epoch selection in `wenu_chart atlas-sheet` is accepted through
+#365/main `99d84144`, including focused/documentation and actual J-2000
+render/visual checks. The sole disclosed sheet-18 instrumentation-counter
+difference is not a scientific-state mismatch; a proposed extra recheck was
+not reported executed. Ordinary observer-dependent families remain deferred.
+See the [scope](kernel_roadmap_v0.9.5.md#k4b07cli1-saved-epoch-catalogue-selection-for-one-cli-atlas-sheet).
 
 <a id="companion-state-assessment-k4b07c1"></a>
 
