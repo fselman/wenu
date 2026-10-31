@@ -4,9 +4,11 @@
 
 The [Earth rotation models guide](research/earth_rotation_models_guide_v1.md)
 compares the nominal secular model, historical splines, Espenak–Meeus and IERS
-products, including extrapolation and proposed modular selection. It records
-current support and the discussion separately from proposed K4b.08 work;
-saving the guide does not select or implement a rotation model.
+products, including extrapolation and modular selection. The subsequent explicit
+agreement selects K4b.08.R1's Espenak--Meeus model and Skyfield adapter; its
+candidate API is [documented here](implementation_reference.md#named-nominal-earth-rotation-model).
+Focused Mac and documentation verification remain pending. Full ancient
+observer/chart integration and parent K4b.08 remain open.
 
 K4b.07.CLI1 adds saved epoch-query file selection to `wenu_chart atlas-sheet`
 through the existing capture/query and native request owners. C2 companions are

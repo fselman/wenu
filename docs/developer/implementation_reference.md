@@ -3097,3 +3097,63 @@ Primary backend/convention references reviewed 2026-10-30:
 [SPK conventions](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html),
 [JPL ICRF axes in frame 1](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/mkspk.html)
 and [DE440/DE441 model](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf).
+
+## Named nominal Earth rotation model
+
+K4b.08.R1 adds `wenu.earth_rotation.EarthRotationModel`, a separate spin-timing
+owner rather than an extension of the state SDK time vocabulary. The initial
+default name is `espenak-meeus-2006/1`; `ROTATION_MODELS` lists implemented
+names. Explicit unknown names refuse. Future numerical adapters enter the
+private explicit descriptor allowlist and reuse coverage checks, receipts and
+the Skyfield seam. No mutable process-wide default or arbitrary imports.
+
+`EarthRotationModel(coverage=tt_span, name=...)` requires a finite inclusive
+TT `TimeSpan`. `evaluate(tt)` accepts a split TT `TimePoint` and returns a
+frozen `RotationResult`: original TT, decimal TT year, Delta-T seconds,
+`ut1_jd1`/`ut1_jd2`, coefficient/convention `ModelRef`, caller coverage,
+regime, extrapolation flags and provenance. UT1 is a separate spin receipt,
+not a relabelled SDK time. Integer-day representation is limited to binary64's
+exact integer range; no historical accuracy follows from that numerical limit.
+
+Year uses the continuous elapsed fraction of a proleptic Gregorian TT year,
+with astronomical year zero, rather than NASA's approximate month midpoint.
+Branch selection retains exact split-date calendar arithmetic even immediately
+before a polynomial join. The original piecewise fit can have small jumps;
+no smoothing, derivative/LOD service or inverse UT1-to-TT solver is supplied.
+Negative Delta-T is allowed.
+
+`extrapolated` is true for the secular parabolas, the post-2005 prediction
+pieces and extension beyond the Canon interval. `outside_published_interval`
+separately flags dates outside complete calendar years -1999 through +3000.
+The same outer parabola continues there; no new empirical calibration is implied.
+Both numerical and physical error fields are unknown, not zero. No
+Canon-specific ELP-2000/82 lunar correction is added to this DE440/DE441 use.
+
+The immutable model is itself callable with summed TT JD scalars/arrays and
+returns seconds, matching Skyfield's `delta_t_function`. Its
+`skyfield_timescale(leap_dates=..., leap_offsets=...)` constructs a fresh
+`skyfield.timelib.Timescale` using copied, explicitly supplied finite leap
+arrays. It neither loads resources nor modifies an existing timescale.
+Use TT inputs for ancient dates; this does not admit ancient UTC/leap seconds.
+Skyfield supplies summed binary64 JD to its callback, so that seam cannot
+recover precision lost before the call; split input remains available through
+`evaluate()`. A single invalid/out-of-coverage array member refuses the call.
+
+Example model construction (no chart or observation is performed):
+
+```python
+from wenu.earth_rotation import EarthRotationModel
+from wenu_kernel.records import TimePoint, TimeSpan
+
+rotation = EarthRotationModel(
+    coverage=TimeSpan(TimePoint(-2000000, 0, "tt"),
+                      TimePoint(3000000, 0, "tt")))
+receipt = rotation.evaluate(TimePoint(-1200955, 0, "tt"))
+assert receipt.extrapolated and receipt.outside_published_interval
+```
+
+The model is the default only at this new selection boundary. Existing
+Observer/CLI/Astropy/final-IERS defaults and VCW axes remain unchanged.
+No full ancient observer, horizon correction, polar motion or nutation policy
+is implied. See the [gate](testing_policy.md#named-earth-rotation-model-gate)
+and [research guide](research/earth_rotation_models_guide_v1.md).

@@ -584,3 +584,251 @@ def test_observer_geometry_resource_refuses_mismatched_loaded_handle(tmp_path):
             observer.geometry_resource_identity()
     finally:
         observer.close()
+
+# Earth spin timing belongs beside the existing reception-resource owner.
+# Closest existing test: test_reception_leap_second_analytic_tt_tai_and_equivalent_tt_input.
+# Protect wrong polynomial pieces, year conventions, silent extrapolation,
+# TT/UT1 relabelling, global timescale mutation and post-success domain bypass.
+def _rotation_tt(year):
+    from fractions import Fraction
+    from math import floor
+    from wenu_kernel.records import TimePoint
+    # Independent Meeus calendar-to-JD expression, not the model's inverse.
+    integer = floor(year)
+    def jan1(y):
+        y -= 1
+        a = y//100
+        return (floor(365.25*(y+4716))+floor(30.6001*14)
+                +1+2-a+a//4-1524.5)
+    day = Fraction(jan1(integer))+Fraction(year-integer)*int(jan1(integer+1)-jan1(integer))
+    whole = floor(day+Fraction(1, 2))
+    return TimePoint(whole, float(day-whole), 'tt')
+
+
+def _rotation_model(**kwargs):
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    return EarthRotationModel(coverage=TimeSpan(_rotation_tt(-10000), _rotation_tt(5000)), **kwargs)
+
+
+def test_earth_rotation_published_pieces_and_independent_oracle():
+    # Numeric outputs captured by executing DeltaT_EspenakMeeus at a matched
+    # formula year from Astronomy Engine commit:
+    # 865d3da7d8112bbc7911238052c6af4aaf877181
+    # source/python/astronomy/astronomy.py; evaluated locally 2026-10-31.
+    # Its own tropical-year date convention is deliberately NOT adopted.
+    # No copied library implementation or new dependency is used here.
+    samples = (
+        (-8000, 308563.68),
+        (-2000, 46675.68000000001),
+        (-1000, 25427.68),
+        (0, 10583.6),
+        (1000, 1574.2),
+        (1650, 50.194015991022596),
+        (1750, 13.370070272572404),
+        (1830, 7.673379999999991),
+        (1880, -5.00848698849785),
+        (1910, 10.388399999999999),
+        (1930, 24.1329),
+        (1950, 29.07),
+        (1975, 45.45),
+        (2000, 63.86),
+        (2025, 74.467375),
+        (2100, 202.73999999999998),
+        (2500, 1459.6799999999998),
+        (4000, 15187.68),
+        (-500.0001, 17203.681484800032),
+        (-499.9999, 17203.65453029105),
+        (499.9999, 5710.132763330179),
+        (500.0001, 5710.043678630042),
+        (1599.9999, 120.25115871366307),
+        (1600.0001, 119.99990191984683),
+        (1699.9999, 8.992111592064504),
+        (1700.0001, 8.830016029940712),
+        (1799.9999, 13.756167536490707),
+        (1800.0001, 13.719966755368624),
+        (1859.9999, 7.569782575453701),
+        (1860.0001, 7.620057367482462),
+        (1899.9999, -2.7017471595449365),
+        (1900.0001, -2.7898505886989704),
+        (1919.9999, 21.187596970091036),
+        (1920.0001, 21.200084492238982),
+        (1940.9999, 24.772217744277977),
+        (1941.0001, 24.773199399558365),
+        (1960.9999, 33.55021676447715),
+        (1961.0001, 33.579916441279295),
+        (1985.9999, 54.8678072570764),
+        (1986.0001, 54.87778210211242),
+        (2004.9999, 64.72062017923291),
+        (2005.0001, 64.67061280605589),
+        (2049.9999, 93.00091189305572),
+        (2050.0001, 93.00020348003244),
+        (2149.9999, 328.4797325200314),
+        (2150.0001, 328.48021120003244),
+    )
+    from fractions import Fraction
+    model = _rotation_model()
+    for year, expected in samples:
+        event = _rotation_tt(year)
+        result = model.evaluate(event)
+        assert abs(result.decimal_year_tt-year) < 1e-10
+        assert abs(result.delta_t_s-expected) < 2e-8
+        offset = ((Fraction(event.jd1)+Fraction(event.jd2))
+                  -(Fraction(result.ut1_jd1)+Fraction(result.ut1_jd2)))*86400
+        assert abs(float(offset)-result.delta_t_s) < 2e-10
+        assert result.model == model.model and result.coverage == model.coverage
+        assert result.physical_error_s is result.numerical_error_s is None
+
+
+def test_earth_rotation_calendar_and_exact_piece_admission():
+    from dataclasses import replace
+    import pytest
+    from wenu_kernel.records import TimePoint
+    model = _rotation_model()
+    assert _rotation_tt(2000) == TimePoint(2451545, -.5, 'tt')
+    assert _rotation_tt(0) == TimePoint(1721060, -.5, 'tt')
+    # Leap-year fraction, including astronomical year zero.
+    for year, days in ((0, 366), (1900, 365), (2000, 366)):
+        start = _rotation_tt(year)
+        event = replace(start, jd1=start.jd1+days//2)
+        expected = year+(days//2)/days
+        assert model.evaluate(event).decimal_year_tt == expected
+    # Exact right-hand pieces at year boundaries; never average/smooth a join.
+    for year, expected in ((-500, 17203.6563390625), (500, 5710.0446703125),
+                           (1600, 120.), (1700, 8.83), (1800, 13.72),
+                           (1860, 7.62), (1900, -2.79), (1920, 21.20),
+                           (2005, 64.670575), (2050, 93.), (2150, 328.48)):
+        assert model.evaluate(_rotation_tt(year)).delta_t_s == pytest.approx(expected, abs=2e-8)
+    # A split instant immediately BEFORE the discontinuous 2005 join must
+    # stay on its left piece even if the reported decimal year rounds to 2005.
+    event = _rotation_tt(2005)
+    left = replace(event, jd1=event.jd1-1, jd2=.5-2**-52)
+    assert model.evaluate(left).delta_t_s > 64.72
+    assert model.evaluate(event).delta_t_s < 64.68
+
+
+def test_earth_rotation_nominal_extrapolation_identity_and_isolation():
+    from dataclasses import FrozenInstanceError
+    import pickle
+    import pytest
+    from wenu.earth_rotation import DEFAULT_ROTATION_MODEL
+    from wenu_kernel.errors import InvalidQuery, OutsideCoverage, TimeConversionUnavailable
+    from wenu_kernel.records import TimePoint, TimeSpan
+    model = _rotation_model()
+    explicit = _rotation_model(name='espenak-meeus-2006/1')
+    assert model == explicit and model.name == DEFAULT_ROTATION_MODEL
+    assert pickle.loads(pickle.dumps(model)) == model
+    good = model.evaluate(_rotation_tt(2000))
+    with pytest.raises(FrozenInstanceError):
+        model.name = 'other'
+    with pytest.raises(FrozenInstanceError):
+        good.delta_t_s = 0
+    for year, regime, outside in ((-8000, 'extended-parabola', True),
+                                  (-2000, 'extended-parabola', True),
+                                  (-1999, 'secular-parabola', False),
+                                  (2000, 'historical-polynomial', False),
+                                  (2026, 'prediction-polynomial', False),
+                                  (3000, 'secular-parabola', False),
+                                  (3001, 'extended-parabola', True)):
+        result = model.evaluate(_rotation_tt(year))
+        assert result.regime == regime
+        assert result.outside_published_interval is outside
+        assert result.extrapolated is (regime != 'historical-polynomial')
+    for name in ('unknown', 'espenak-meeus-2006', '', None, True):
+        with pytest.raises(InvalidQuery):
+            _rotation_model(name=name)
+    with pytest.raises(InvalidQuery):
+        from wenu.earth_rotation import EarthRotationModel
+        EarthRotationModel(coverage=None)
+    with pytest.raises(TimeConversionUnavailable):
+        model.evaluate(TimePoint(2451545, 0, 'tdb'))
+    with pytest.raises(InvalidQuery):
+        model.evaluate(2451545.)
+    narrow = type(model)(coverage=TimeSpan(_rotation_tt(2000), _rotation_tt(2001)))
+    for edge in (narrow.coverage.start, narrow.coverage.stop):
+        assert narrow.evaluate(edge).tt == edge
+    with pytest.raises(OutsideCoverage):
+        narrow.evaluate(_rotation_tt(-8000))
+    assert model.evaluate(_rotation_tt(2000)) == good
+    assert narrow.model == model.model  # Domain is separate from coefficient identity.
+    assert narrow.coverage != model.coverage
+
+
+def test_earth_rotation_skyfield_callable_arrays_and_refusals():
+    import numpy as np
+    import pytest
+    from wenu_kernel.errors import InvalidQuery, OutsideCoverage
+    model = _rotation_model()
+    dates = np.array([[-1200955., 990545.], [2451545., 2460000.]])
+    result = model(dates)
+    assert result.shape == dates.shape
+    for date, value in zip(dates.flat, result.flat):
+        assert value == model(float(date)) == model([float(date)])[0]
+    assert model([]).shape == (0,)
+    for bad in (True, '2451545', complex(1, 2), float('nan'), float('inf'),
+                [2451545., float('nan')]):
+        with pytest.raises(InvalidQuery):
+            model(bad)
+    for date in (-1e9, 1e9):
+        with pytest.raises(OutsideCoverage):
+            model([2451545., date])
+    np.testing.assert_array_equal(model(dates), result)
+
+
+def test_earth_rotation_real_skyfield_seam_no_global_mutation(monkeypatch):
+    from skyfield.api import load
+    import numpy as np
+    import pytest
+    from wenu_kernel.errors import InvalidQuery, OutsideCoverage
+    model = _rotation_model()
+    # Builtin leap data only; never a network acquisition.
+    base = load.timescale(builtin=True)
+    original = base.delta_t_function
+    dates, offsets = base.leap_dates.copy(), base.leap_offsets.copy()
+    ts = model.skyfield_timescale(leap_dates=dates, leap_offsets=offsets)
+    dates[:] = 0
+    offsets[:] = 0
+    assert base.delta_t_function is original
+    assert ts.delta_t_function is model
+    np.testing.assert_array_equal(ts.leap_dates, base.leap_dates)
+    np.testing.assert_array_equal(ts.leap_offsets, base.leap_offsets)
+    for jd in (-1200955., 990545., 2451545.):
+        time = ts.tt_jd(jd)
+        assert time.delta_t == model(jd)
+        # Skyfield's real split UT1 representation, without summed-JD subtraction.
+        dt = ((time.whole-time.whole)+(time.tt_fraction-time.ut1_fraction))*86400
+        assert dt == pytest.approx(model(jd), abs=2e-9)
+    with pytest.raises(OutsideCoverage):
+        _ = ts.tt_jd(-1e9).delta_t
+    assert ts.tt_jd(2451545.).delta_t == model(2451545.)
+    for bad in (dict(leap_dates=[2., 1.], leap_offsets=[1., 2.]),
+                dict(leap_dates=[1., 2.], leap_offsets=[1.]),
+                dict(leap_dates=[1., float('inf')], leap_offsets=[1., 2.])):
+        with pytest.raises(InvalidQuery):
+            model.skyfield_timescale(**bad)
+
+
+def test_earth_rotation_future_named_adapter_uses_same_boundary(monkeypatch):
+    from types import MappingProxyType
+    import wenu.earth_rotation as module
+    from wenu_kernel.records import ModelRef
+    original = _rotation_model()
+    tt = _rotation_tt(2000)
+    before = original.evaluate(tt)
+    identity = ModelRef('synthetic:test-rotation', '1', 'a'*64, ())
+    # Test-only descriptor simulates adding a future implemented adapter.
+    # Numerical policy stays in its evaluator, not the common Skyfield seam.
+    def synthetic(event):
+        return 2000., 100., 'synthetic-nominal', False, False
+    monkeypatch.setattr(module, '_MODEL_SPECS', MappingProxyType({
+        **module._MODEL_SPECS,
+        'synthetic-test/1': (synthetic, identity, ('Synthetic test only',)),
+    }))
+    monkeypatch.setattr(module, 'ROTATION_MODELS', tuple(module._MODEL_SPECS))
+    other = _rotation_model(name='synthetic-test/1')
+    assert other.evaluate(tt).model == identity
+    assert other.evaluate(tt).delta_t_s == 100.
+    assert other(float(tt.jd1)+tt.jd2) == 100.
+    assert other.evaluate(tt).provenance == ('Synthetic test only',)
+    assert original.evaluate(tt) == before
+    assert _rotation_model().evaluate(tt) == before

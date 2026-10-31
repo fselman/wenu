@@ -4,7 +4,7 @@
 
 Version 1 · 30 October 2026 · Research and design guide
 
-**Status:** this document records the discussion, a source-based model study and recommendations. It does not implement a model, change Wenu's roadmap, or qualify ancient observer accuracy. Current Wenu support is distinguished from proposed support below. “Canonical” here means established and citable, not a universally mandated ancient-Earth solution.
+**Status:** research study with a subsequent implementation-selection update. The K4b.08.R1 candidate now implements one named model and Skyfield seam; Mac acceptance and ancient observer integration remain pending. This study does not qualify ancient observer accuracy. “Canonical” here means established and citable, not a universally mandated ancient-Earth solution.
 
 ## Executive summary
 
@@ -12,7 +12,7 @@ The immediate objective is a working ancient-sky chart with a well-defined rotat
 
 Four choices were examined: a custom secular-deceleration model; the Stephenson–Morrison–Hohenkerk historical reconstruction with its 2020/2021 update; Espenak–Meeus; and IERS Earth-orientation data. The last is a data source with final, rapid and predicted regimes, not an ancient-rotation formula. There is no single prescribed extrapolation common to all implementations.
 
-The recommended first implementation candidate is a **pinned, explicitly named composite based on the existing Skyfield implementation**, subject to the normal Wenu assessment and acceptance. Its historical component uses updated published splines, but its joins and distant continuation are separate implementation choices. Calling the entire composite simply “the 2021 model” would conceal those choices. A pure published-spline adapter with a separately selected continuation is a valid alternative if close reproduction of the paper is preferred.
+**Subsequent implementation selection (2026-10-31):** after this study, Fernando explicitly chose Espenak--Meeus (2006), its same-parabola remote extension, and a named modular selection boundary for Skyfield. K4b.08.R1 now contains the candidate implementation; Mac acceptance is pending. The originally proposed pinned Skyfield composite remains a possible later adapter. The first default applies to the new model service, not to existing observer/chart defaults. See the [current API](../implementation_reference.md#named-nominal-earth-rotation-model).
 
 Provide an explicit model-selection boundary from the outset. Pin coefficients, tables, implementation and splice policy; report the regime actually used. Do not silently download new tables, change extrapolation, or let one chart layer compute a different UT1 from another. Modern measured operation must remain available independently of ancient nominal operation.
 
@@ -28,7 +28,7 @@ Repository baseline: `fselman/wenu`, main commit `99d8414494b3ff180b4be6ad37640c
 | `ErfaReceptionBackend` | Copies caller-verified local leap and final IERS-B data. Intersects resource coverage with a conservative 1950–2050 model interval; its UTC input adapter is post-1972. Uses explicit final EOP, ERFA EPV00/APCO and vacuum realization. It refuses unsupported coverage. [R2] |
 | Stellar epoch products and `wenu_chart atlas-sheet --stellar-epoch-config` | Accepted observer-free saved-catalogue route. Stellar reuse/advancement does not establish terrestrial rotation. [R3] |
 | Exact-event Earth/Sun companions | Accepted geometric ephemeris state persistence. A saved Earth PV does not include UT1, polar motion or the terrestrial site's orientation. [R3] |
-| Selectable ancient rotation models and ordinary ancient observer charts | **Proposed K4b.08 work**, not currently supported by a new public selector. The four model choices in this guide must not be advertised as implemented Wenu options. [R3] |
+| Named spin timing and ancient observer charts | K4b.08.R1 implements an Espenak--Meeus model-service candidate with an explicit name and Skyfield callable. Mac acceptance is pending. Ordinary ancient observer charts and the other model adapters remain unimplemented. [R3] |
 
 Long-term mean-axis orientation already has a separate admitted role. It must not be mistaken for a complete precession–nutation–Earth-rotation–polar-motion observer transformation.
 
@@ -168,7 +168,7 @@ A conceptual interface is `rotation.evaluate(tt, selection) -> RotationResult`. 
 
 ### 5.2 Selection must identify more than a model name
 
-Use a small explicit allowlist of adapters rather than arbitrary imports or evaluated configuration expressions. Possible identifiers, all **proposed**:
+Use a small explicit allowlist of adapters rather than arbitrary imports or evaluated configuration expressions. Identifiers considered in the study; Espenak--Meeus is now a candidate, the others remain **proposed**:
 
 - `nominal-quadratic/1`, with an explicit definition of all coefficients and epoch coordinate.
 - `historical-spline-2020/1`, pinned coefficient edition; continuation selected separately.
@@ -231,11 +231,11 @@ This is an edited synopsis of the dialogue, not a verbatim transcript.
 
 **User priority.** Obtain a functioning chart soon, with a well-defined baseline even if its ancient physical phase is wrong. Investigating departures from observations comes later. Model selection should remain possible. The discussion first proposed a constant-deceleration timeline, then favored examining established prescriptions before adopting that simplification.
 
-**Current recommendation, still proposed.** Select one pinned, documented composite or one published spline plus explicit continuation for the first implementation. Keep the custom quadratic available as a later controlled alternative. The IERS route remains the modern measured reference. Future observation-fitting can supply a versioned residual on top of a named baseline, with independent inputs and provenance; it is not required for initial charting.
+**Original recommendation, superseded by the explicit selection above.** The study initially proposed one pinned composite or one published spline plus explicit continuation. Keep the custom quadratic available as a later controlled alternative. The IERS route remains the modern measured reference. Future observation-fitting can supply a versioned residual on top of a named baseline, with independent inputs and provenance; it is not required for initial charting.
 
 ## 8. Decisions still needed before runtime implementation
 
-- Choose published-spline fidelity versus a pinned Skyfield composite as the first numerical owner. The latter avoids duplicating mature numerical machinery but includes backend-specific splices.
+- Espenak--Meeus is now selected as the first nominal numerical owner. Published historical splines and the pinned Skyfield composite remain future adapter choices.
 - Specify the finite initial date domain and the exact distant continuation. A formula's ability to return a number is insufficient to admit every epoch.
 - Define axis/nutation and polar-motion assumptions compatible with that domain, plus the existing site/chronology/ephemeris interfaces.
 - Record this bounded K4b.08 selection in the authoritative roadmap before runtime changes. Reconcile PR #365 acceptance there when that documentation is next updated; the merged snapshot still has pre-acceptance candidate wording.
