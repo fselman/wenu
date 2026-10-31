@@ -11,10 +11,12 @@ Mac main `7935541c211588e1d4442e535e00feae64c13e84`.
 This is an assessment and diagnostic scope, not production-model selection
 or authorization for the entire ancient observer/chart integration.
 
-Source inspection is complete for the owners below. Numerical comparison,
-complete Mac documentation verification, synthesis and user review are pending.
-No diagnostic result is claimed in this edition. No production, dependency,
-SDK, default, source catalogue or resource change is introduced.
+Source inspection and the bounded numerical comparison are complete. At
+`dd1db923`, all 36 Mac documentation cases passed in 8.14 s and the subsequent
+1,374-event diagnostic completed without error. The receipt and proposed
+recommendation below do not select a production model. Final receipt-document
+verification and user review remain pending. No production, dependency, SDK,
+default, source catalogue or resource change is introduced.
 
 ## Existing owners and constraints
 
@@ -126,6 +128,109 @@ recommended composition and remaining gaps, complete documentation acceptance,
 then user review. If source compatibility remains unresolved, report it;
 numerical agreement alone cannot close it. Later production integration needs
 its own agreed roadmap scope, owner/seam tests and actual chart acceptance.
+
+## Executed Mac diagnostic and synthesis
+
+User-reported execution at exact source head
+`dd1db92367b2fe3b0e4bc07165480248c67c7510`:
+
+- Documentation/diff gate: 36 cases passed in 8.14 s.
+  Retain `~/Software/build/wenu/test/ancient-orientation-assessment-docs-v1-kit3y2wg`.
+- Numerical diagnostic: all 1,374 declared events completed, 229 per anchor.
+  Retain `~/Software/build/wenu/test/ancient-orientation-diagnostic-v1-zy81kaa1`,
+  including `orientation_diagnostic_v1.py`, `diagnostic.log`,
+  `orientation-diagnostic-v1.json` and `run-provenance.json`.
+- Report SHA256:
+  `32d9094785189abeba59a328c5985cf44c27e2064e0b1a33a7f159534a8757ca`.
+- Installed versions printed by the diagnostic: NumPy 1.26.3, PyERFA 2.0.1.5,
+  ERFA 2.0.1, SOFA 20231011 and Skyfield 1.54.
+- The recipe records installed code/binary and diagnostic hashes in the retained
+  report. Their individual values were not printed/uploaded; do not invent them.
+  The received evidence is the pasted terminal output, not an independent read
+  of the complete local report/provenance.
+
+All quantities below are sampled diagnostics, not continuous maxima or physical
+error bounds. Each window extends 9.5 Julian years on either side of its anchor.
+The hybrid trials retain the same VCW mean orientation/obliquity.
+
+| Anchor TT Julian year | Max IAU1980 vs IAU2000A trial pole difference (arcsec) | Max IAU2000A vs IAU2006-adjusted trial pole difference (arcsec) | IAU2000A trial pole displacement from mean (arcsec, sampled range) |
+|---|---:|---:|---:|
+| -8000 | 0.271881136 | 0.002732372 | 5.770511–9.840490 |
+| -2000 | 0.011712071 | 0.001096751 | 6.191012–9.861213 |
+| 0 | 0.006868873 | 0.000548739 | 6.161146–9.907456 |
+| 2000 | 0.007603399 | 0.000005087 | 6.251376–9.844068 |
+| 2026 | 0.007659204 | 0.000009464 | 6.310215–9.876441 |
+| 8000 | 0.039608864 | 0.001661608 | 6.617851–9.955594 |
+
+The independent Euler construction agreed with ERFA `numat` to
+2.220446049250313e-16 in matrix entries. Inversion closure residual was
+3.3306690738754696e-16. Reversing the nutation-longitude sign produced a
+maximum entry residual 0.00017522280168138154 and was detected by the gate.
+These are implementation-convention checks, not independent geophysical
+validation. The inverse was computed explicitly, not approximated by transpose.
+
+At J-8000's sampled window, VCW mean obliquity differs from the extrapolated
+IAU1980 polynomial by up to 48.173408 arcsec and the IAU2006 polynomial by
+241.125574 arcsec. Those are mean-obliquity formula differences. They do not
+directly become an equal pole error: changing the obliquity used inside the
+small nutation rotation changes the trial IAU2000A pole by at most
+0.003552356 arcsec and the IAU2006-adjusted trial by 0.017758777 arcsec.
+The diagnostic leaves VCW precession unchanged throughout.
+
+Wrong multiplication order changes the J-8000 trial IAU2000A pole by up to
+18.129431 arcsec. It is a serious implementation fault even when both individual
+matrices are finite and near orthogonal. The diagnostic measures pole direction;
+it does not test complete terrestrial-meridian/equinox roll or horizon output.
+
+## Source-convention disposition and recommendation
+
+The ERFA series use extrapolated polynomial fundamental arguments and
+time-dependent amplitudes. The sampled values remain finite and plausible in
+scale, but do not certify their ancient phase or geophysical response.
+Close agreement between formulas is not proof of physical accuracy.
+
+VCW explicitly separates precession at periods longer than 100 centuries.
+The authors discuss IAU2000 nutation terms with longer periods (105/209
+centuries for luni-solar terms; 933/150/129/113 for planetary terms), noting
+very small amplitudes: below 4 mas for one, below 0.1 mas for the others.
+See the [authors' 2010 account](https://syrte.obspm.fr/jsr/journees2010/pdf/Vondrak.pdf)
+and the published 2011 introduction. This is a convention overlap to disclose,
+not evidence for deleting arbitrary series terms or an ancient error bound;
+the quoted amplitudes are not promoted to a bound on the extrapolated model.
+
+**Recommended candidate, not yet adopted:** retain VCW mean axes and use the
+classical IAU2000A forced-nutation angles from `nut00a` as an explicitly named
+nominal hybrid, with VCW-derived mean obliquity and recorded extrapolation.
+Keep IAU1980 as a comparison/reference option if later selected. Do not
+automatically apply the IAU2006-specific `nut06a` secular adjustment to VCW.
+The choice uses the fuller existing forced series without introducing that
+additional precession-specific adjustment; the data do not demonstrate that
+it is physically superior to IAU1980 at J-8000. A finite computational domain
+and declared convention approximation are still required.
+
+Preserve the full standard nutation series rather than silently removing its
+small long-period terms. Document the mixed-model convention and unknown
+physical/numerical angular error; no claim that this is an IAU-standard or
+milliarcsecond-qualified long-term precession-nutation solution follows.
+The observed differences make this a concrete candidate for nominal broad
+sky charts, not an adopted accuracy threshold or universal validity interval.
+
+The remaining full-composition boundary is explicit:
+
+- Specify and verify the equinox/sidereal-angle or CIO/ERA construction,
+  including the terrestrial-origin locator and initial origin convention.
+- Account for reference-ecliptic/convention differences in the admitted hybrid;
+  the obliquity sensitivity diagnostic alone does not prove complete equivalence.
+- Define finite event/site/ephemeris/time-conversion policies and verify the
+  complete orientation matrix, not only its pole.
+- Preserve existing modern behavior and source populations, then admit the
+  observer/correction/product seam with its own acceptance.
+
+No production implementation is activated by this recommendation. K4b.08.R2
+may be reviewed as an assessment with these explicit unresolved composition
+items; parent K4b.08 remains open. The next bounded proposal should settle the
+full orientation/meridian contract before connecting an ancient site or chart.
+Do not rerun this unchanged numerical workload merely for receipt-text edits.
 
 ## Primary references
 

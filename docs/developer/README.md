@@ -4,9 +4,12 @@
 
 The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
 examines nominal forced nutation compatible with existing VCW mean axes and
-explicitly omits ancient polar motion. Source review is delivered; numerical
-diagnostic, complete Mac documentation gate and recommendation review are pending.
-No production nutation prescription or observer/chart adoption is selected.
+explicitly omits ancient polar motion. At `dd1db923`, all 36 Mac documentation
+cases passed and the 1,374-event diagnostic completed with sign-fault detection.
+The report recommends a nominal IAU2000A/VCW candidate and discloses unresolved
+full-origin/convention composition. Final receipt-document verification and user
+review remain pending; no production prescription or observer/chart adoption
+is selected.
 
 The [rotation study](research/earth_rotation_models_guide_v1.md) led to accepted
 K4b.08.R1: #367 merged at main `7935541c` after six focused and 36 documentation

@@ -1262,9 +1262,14 @@ and user review of the recommendation. Model differences do not establish
 physical accuracy. No production, dependency, SDK, catalogue, CLI/worker/chart,
 new acquisition or parent-closure change. The diagnostic runs outside the
 repository under the existing run/provenance convention. Current status:
-source assessment delivered; numerical/documentation Mac acceptance and
-recommendation synthesis pending. Concrete production composition/domain
-requires subsequent explicit agreement and its own bounded implementation gate.
+source assessment and recommendation delivered. At `dd1db923`, 36 Mac
+documentation cases passed in 8.14 s and the 1,374-event diagnostic completed
+with sign-fault detection. The receipt records sampled differences and unknown
+physical errors. The IAU2000A/VCW nominal hybrid is recommended, not adopted;
+full meridian/origin and reference-convention composition remains explicit.
+Final receipt-document verification and user review are pending. Concrete
+production composition/domain requires subsequent explicit agreement and its
+own bounded implementation gate.
 
 ### K4b.08 parent requirements and acceptance
 
