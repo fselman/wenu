@@ -1,5 +1,15 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Nominal ancient orientation assessment
+
+The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
+keeps mean axes, forced nutation, spin and polar motion distinct. Existing VCW
+mean axes are retained. No forced-nutation prescription or compatible
+sidereal-angle/CIO composition has yet been selected. Ancient polar motion
+is explicitly omitted, not measured as zero; unknown physical errors remain
+unknown. The accepted rotation adapter does not replace Skyfield/Astropy's
+other orientation algorithms or extend the modern final-IERS backend.
+
 ## Saved positions in native chart consumers
 
 The saved-position adapter supplies the actual returned native TCB event to
