@@ -2713,3 +2713,33 @@ bytecode and run provenance. Do not repeat the successful runtime, actual-cache,
 fresh-process or stellar rendering workloads. No core, watched stellar owner,
 production/test/dependency/collection/default or numerical-model change is made.
 Bounded user acceptance remains pending; no parent closure is inferred.
+
+## Named Earth rotation model gate
+
+K4b.08.R1 agreement commit `4b4f7ed4` precedes production changes.
+The closest owner is `tests/test_observer_resources.py`; its existing
+analytic reception-time/scale/resource tests remain unchanged. Six additive
+`test_earth_rotation_*` cases protect all polynomial pieces and both sides
+of every join, independent numeric outputs, astronomical year zero/leap years,
+an exact split instant immediately before a discontinuity, finite inclusive
+coverage and wrong-scale/invalid-name refusal, immutable/pickled request
+identity, array shape/refusal, and a real Skyfield timescale constructed without
+modifying the original. A test-only second descriptor verifies named model
+substitution uses the same service/callable and preserves existing requests.
+
+Run that focused selection and the complete documentation gate, with plugin
+autoload disabled, empty PYTEST_ADDOPTS and fresh bytecode/cache/basetemp.
+No existing observer/chart defaults, kernel time contracts, stellar numerical
+owners, dependencies or test collection settings change. Full chart/horizon,
+Astropy adoption and worker context acceptance belong to later agreed slices.
+
+Local isolated checks execute the real SDK record/error source and candidate
+model with stdlib/NumPy, not a complete Wenu import. All 46 published-polynomial
+samples agree within 2e-8 seconds with the executed Astronomy Engine function
+at matched formula years; its upstream commit is
+`865d3da7d8112bbc7911238052c6af4aaf877181`. Independent public split-TT
+evaluation/arithmetic and scalar/array/invalid-input checks pass. Deliberately
+changing the outer-parabola constant is detected by the oracle test.
+These are numerical implementation checks, not empirical physical validation.
+Skyfield/Astropy/pytest are unavailable locally: the real Skyfield seam and
+complete pytest/documentation gates have not run and remain for the Mac.

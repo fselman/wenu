@@ -1,5 +1,30 @@
 # Current scientific contracts and paused work
 
+## Named nominal spin timing
+
+K4b.08.R1's candidate `earth_rotation.py` implements the explicitly selected
+Espenak--Meeus 2006 coefficients with same-parabola remote continuation.
+Its default applies to the new named model boundary only. Finite TT admission,
+split TT-to-UT1 receipt, model identity and extrapolation regime accompany every
+explicit evaluation. Year argument is a continuous proleptic Gregorian TT-year
+fraction; this documented Wenu convention differs from NASA's month-midpoint
+approximation and other libraries' tropical-year approximations.
+The original piecewise discontinuities are retained. No derivative/rate or
+inverse-time smoothness guarantee is made.
+
+No lunar-ephemeris-specific Canon adjustment is applied. Published application
+interval, empirical historical information and caller computational coverage
+are different facts; unknown numerical/physical error is never encoded as zero.
+The model/Skyfield callable alone establishes no observer/axis/site/ephemeris
+or angular-accuracy qualification. Existing VCW mean axes, final-IERS backend,
+ordinary Observer and Astropy defaults remain intact. Later observer integration
+must deliver the same admitted event and rotation choice to every layer; it
+cannot combine this Skyfield Delta-T with a competing implicit Astropy UT1.
+
+See [API](implementation_reference.md#named-nominal-earth-rotation-model),
+[agreed scope](kernel_roadmap_v0.9.5.md#k4b08r1-named-nominal-delta-t-model-and-skyfield-adapter)
+and [research](research/earth_rotation_models_guide_v1.md). Mac acceptance pending.
+
 <a id="companion-states-assessed-boundary-implementation-pending"></a>
 
 ## Companion states: selected exact-event candidate

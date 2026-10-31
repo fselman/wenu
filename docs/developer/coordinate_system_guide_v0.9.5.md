@@ -1801,3 +1801,14 @@ and fresh data-only reload passed at `437ee649`; the [verification receipt](kern
 records separate time events, product identities and numerical residuals.
 These checks do not certify physical/observer accuracy or add planetary reuse.
 See [the API](implementation_reference.md#exact-event-ephemeris-companions).
+
+## Explicit nominal Earth spin timing
+
+K4b.08.R1's `EarthRotationModel` supplies Delta-T and a separate split UT1
+receipt from explicit TT input under finite caller coverage. Its initial named
+default is Espenak--Meeus 2006 with documented continuous Gregorian TT-year
+argument and same-parabola remote extension. Numerical/physical error remains
+unknown. This is independent of the existing VCW mean-axis transform, and
+does not change Observer/Astropy/final-IERS or chart defaults. The SDK's
+continuous-time vocabulary is unchanged; UT1 is not relabelled as TT/TCB.
+See [API and limits](implementation_reference.md#named-nominal-earth-rotation-model).

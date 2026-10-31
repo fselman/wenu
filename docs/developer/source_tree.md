@@ -1,5 +1,10 @@
 # Wenu production source map
 
+K4b.08.R1 adds `earth_rotation.py` for spin timing and its Skyfield seam,
+separate from existing mean-axis orientation and resource-bound reception.
+The existing observer-resource tests own model/domain/isolation contracts.
+No new package, installed command or dependency is introduced.
+
 `stellar_epoch_query.py` owns the separate in-memory window/result/receipt and
 short-lived original-model SDK query lifetime; the immutable codec and watched
 source/model/core owners remain unchanged. No chart or observer adoption.
@@ -153,6 +158,7 @@ concrete Wenu classes.
 | [`minor_body_ephemeris.py`](../../src/wenu/minor_body_ephemeris.py) | Offline minor-body states from one borrowed Horizons SPK resource. |
 | [`minor_body_identity.py`](../../src/wenu/minor_body_identity.py) | Exact installed/provider identity resolution for minor bodies. |
 | [`minor_body_resources.py`](../../src/wenu/minor_body_resources.py) | Explicit offline resolution and lifecycle for minor-body resources. |
+| [`earth_rotation.py`](../../src/wenu/earth_rotation.py) | Named immutable nominal Delta-T models, finite TT admission, separate split UT1 receipts and explicit Skyfield callable; no axis/site/chart adoption. |
 | [`observer.py`](../../src/wenu/observer.py) | Observer. |
 | [`output_policy.py`](../../src/wenu/output_policy.py) | Public output-format vocabulary. |
 | [`positions.py`](../../src/wenu/positions.py) | Astronomical position-provider boundary. |

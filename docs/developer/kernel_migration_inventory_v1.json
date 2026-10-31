@@ -1051,6 +1051,13 @@
       "description": "Synthetic 50S.4B validation snapshot resources."
     },
     {
+      "path": "src/wenu/earth_rotation.py",
+      "git_blob_sha": "3c90dfdba59e7b8d3e34b7f4a123ffe7a40a7cc6",
+      "as_is_directory": "src/wenu",
+      "description": "Named nominal Delta-T policy, finite TT coverage, split UT1 receipts and explicit Skyfield seam; independent from axis orientation and observer/chart adoption.",
+      "baseline_relation": "Added candidate K4b.08.R1; not part of historical baseline census."
+    },
+    {
       "path": "src/wenu/ephemeris_companion.py",
       "git_blob_sha": "4db8e88edc42eaef375b35f6856f9707bd2e10cb",
       "as_is_directory": "src/wenu",
@@ -4325,7 +4332,7 @@
     },
     {
       "path": "tests/test_observer_resources.py",
-      "git_blob_sha": "8b46a4b3d1e949acede038baf2d94b864f4d52bd",
+      "git_blob_sha": "c0c8eeb7388632ea3d75af8dfb15ac520716b77e",
       "test_functions": 7,
       "marks": {},
       "parametrize_decorators": 0,
@@ -4338,7 +4345,13 @@
         "wenu",
         "wenu.observer",
         "zoneinfo"
-      ]
+      ],
+      "current_extension": {
+        "milestone": "K4b.08.R1",
+        "added_test_functions": 6,
+        "status": "local isolated numerical checks only; complete Mac pytest pending",
+        "limits": "Historical test-function/import census fields remain original evidence; six model/adapter tests added to existing owner."
+      }
     },
     {
       "path": "tests/test_open_clusters.py",
@@ -8674,9 +8687,9 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 278,
+    "production_python_files": 279,
     "test_side_python_files": 241,
-    "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
+    "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3/K4 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   },
   "kernel_catalogue_lookup_prerequisite": {
     "base_commit": "5f8fca4c4a391ea54aba05401163bb1c245ce7ff",
@@ -27778,5 +27791,28 @@
       "mac_clean_synchronized": true,
       "local_remote_branch_cleanup": true
     }
+  },
+  "earth_rotation_model_v1": {
+    "milestone": "K4b.08.R1",
+    "agreement_commit": "4b4f7ed4c8ec8e1de2fcab6c59c6239f1740d7db",
+    "base_commit": "11d913c609ce280f8d459d918aeb644af0bc6e15",
+    "status": "candidate; local isolated numerical checks pass; real Skyfield and complete Mac documentation acceptance pending",
+    "owner": "src/wenu/earth_rotation.py",
+    "git_blob_sha": "3c90dfdba59e7b8d3e34b7f4a123ffe7a40a7cc6",
+    "names": [
+      "espenak-meeus-2006/1"
+    ],
+    "default_scope": "new model selection service only; existing Observer/CLI/Astropy/IERS defaults unchanged",
+    "test_owner": "tests/test_observer_resources.py",
+    "formula_source": "https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html",
+    "independent_oracle": {
+      "repository": "cosinekitty/astronomy",
+      "commit": "865d3da7d8112bbc7911238052c6af4aaf877181",
+      "source": "source/python/astronomy/astronomy.py",
+      "git_blob_sha": "1a48fdf620540df22fcf421d0df0c2c016999e52",
+      "comparison": "executed function at 46 matched formula-year samples; no library dependency or copied implementation",
+      "date_convention": "oracle tropical-year dates not adopted"
+    },
+    "limits": "No nutation/polar-motion/site/observer/CLI/chart/worker adoption, inverse UT1 solver, LOD derivative, empirical uncertainty or parent closure. Numerical/physical errors unknown."
   }
 }

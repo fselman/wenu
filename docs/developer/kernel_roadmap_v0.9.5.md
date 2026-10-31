@@ -1,6 +1,6 @@
-# Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
+| Next bounded submilestone | K4b.08.R1 selected: named Espenak--Meeus nominal Delta-T model and Skyfield adapter. Candidate implementation; focused Mac and documentation acceptance pending. Ordinary ancient chart/observer composition stays separate |n kernel and loadable astronomical packages
 
-**Plan revision:** 131, 2026-10-30. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. C1 assessment/resource policy is accepted through #363. C2 is accepted through #364, merged at 6ff7e1b5 with clean synchronized Mac and local/remote branch cleanup confirmed. All 49 runtime cases, actual-cache/fresh-process checks and final 36-case documentation gate passed. Fernando selected K4b.07.CLI1 saved epoch-catalogue selection for wenu_chart atlas-sheet with “Proceed”; parent K4b.07 and observer work remain open.
+**Plan revision:** 132, 2026-10-31. **Status:** K4b.06 is accepted/closed with its explicit R1/observer deferrals. The first K4b.07 exact-epoch persistence slice is accepted through #358, merged at 233f18b1 with clean synchronized Mac and task-branch cleanup confirmed. Runtime, final documentation and both retained-source epoch checks passed. Fernando selected the next nearby-epoch reuse/advancement definition with “Proceed”. Fernando accepted its concrete native query boundary on 2026-10-28 with “Accepted. Proceed.” The bounded service candidate passed 20 Mac runtime and 36 documentation cases plus exact retained-product reciprocal checks at 350de788; final receipt documentation passed 36 Mac cases in 6.80 s at bc5f2b14. Fernando accepted and requested merge/cleanup: #359/#360 are merged at main d4fb035d, with clean synchronized Mac and both task branches removed. Observer-free consumer integration and J-2000/north-polar specimens are accepted through #361; #361/#362 merge and cleanup are confirmed at main f72a2055. C1 assessment/resource policy is accepted through #363. C2 is accepted through #364, merged at 6ff7e1b5 with clean synchronized Mac and local/remote branch cleanup confirmed. All 49 runtime cases, actual-cache/fresh-process checks and final 36-case documentation gate passed. Fernando selected K4b.07.CLI1 saved epoch-catalogue selection for wenu_chart atlas-sheet with “Proceed”; parent K4b.07 and observer work remain open.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,10 +46,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `f72a20557de7b0d86123438c15a73fcaa88b07df`,
-confirmed clean/synchronized on the Mac after #361/#362 merge and local/remote
-task-branch cleanup. Final tree `41d5f114db2b5a11d09663c1d0956179d54c4ca1`
-combines the tested consumer and executive-summary instruction changes.
+**Current accepted base:** main `11d913c609ce280f8d459d918aeb644af0bc6e15`,
+confirmed clean/synchronized on the Mac after #366 merge and local/remote task
+branch deletion. #365 saved stellar epoch CLI and #366 Earth rotation research
+guide are accepted. The guide alone selected no runtime model; the subsequent
+explicit Espenak--Meeus agreement activates only K4b.08.R1 below.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -1227,8 +1228,10 @@ owner and run the complete documentation gate. This is a model/adapter slice;
 no ordinary CLI/chart/worker or Astropy adoption, horizon qualification,
 nutation/polar-motion choice, site model, historical fitting, uncertainty
 propagation or parent K4b.08 closure is implied. Those need their own agreed
-observer-product integration. Status: selected; implementation and acceptance
-pending. The agreement is committed before production changes.
+observer-product integration. Status: candidate implemented after agreement commit
+`4b4f7ed4`; isolated numerical/callable checks pass locally, while the real
+Skyfield seam and complete Mac acceptance remain pending. The parent milestone
+stays open.
 
 **Agreement and status:** on 2026-10-27, after accepting PR #352 and confirming
 clean synchronized Mac main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
