@@ -1197,6 +1197,39 @@ checks, actual J-2000 CLI render/parity and visual acceptance remain pending.
 
 ## K4b.08: Earth-bound observers at ancient and future epochs
 
+### K4b.08.R1: named nominal Delta-T model and Skyfield adapter
+
+**Agreement:** Fernando selected the NASA Espenak--Meeus (2006) route after the
+model study and explicitly authorized it with "Let us go this route." The
+agreed first slice implements the published piecewise coefficients directly in
+Wenu, with their same outer parabola extended before formula year -1999 and
+after +3000. Such values are explicitly extrapolated, not newly qualified
+historical rotation. The model is the default of a new named selection boundary,
+not a silent replacement of existing modern Observer/Astropy/IERS behavior.
+
+**Scope and order:** implement an immutable, versioned
+`espenak-meeus-2006/1` selection with caller-declared finite TT coverage,
+Delta-T seconds and split-JD UT1 receipts, unknown physical error, and an
+array/scalar Skyfield callable. Use a continuous proleptic Gregorian decimal
+TT year (elapsed fraction of the actual calendar year); distinguish this from
+NASA's month-midpoint approximation. No Canon-specific lunar acceleration
+correction is applied to DE440/DE441. Unknown names and dates outside the
+admitted coverage refuse. No arbitrary import, mutable global selection,
+automatic download or extra astronomy dependency. Keep the existing VCW
+mean-axis owner, state SDK time vocabulary and final-IERS reception limits.
+
+**Acceptance:** independent published coefficient/reference cases for every
+piece, all joins tested on both sides (no claim that the original formulas
+are exactly continuous), J-2000/J-8000 adapter cases, split-TT/UT1 arithmetic,
+scalar/array agreement, isolation, finite-coverage/invalid-input refusal and
+real Skyfield timescale composition. Test in the existing observer-resource
+owner and run the complete documentation gate. This is a model/adapter slice;
+no ordinary CLI/chart/worker or Astropy adoption, horizon qualification,
+nutation/polar-motion choice, site model, historical fitting, uncertainty
+propagation or parent K4b.08 closure is implied. Those need their own agreed
+observer-product integration. Status: selected; implementation and acceptance
+pending. The agreement is committed before production changes.
+
 **Agreement and status:** on 2026-10-27, after accepting PR #352 and confirming
 clean synchronized Mac main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
 Fernando requested: “Integrate an earth bound observer to the roadmap, ancient
