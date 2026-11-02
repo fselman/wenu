@@ -78,7 +78,7 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1 and R2 accepted/merged; #368 main 067e3b33 is clean/synchronized and task branches removed. Parents K4b.07/K4b.08 remain open |
+| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1/R2 and R3 definition accepted/merged through #369/main 9eb453b7; clean Mac and branch cleanup confirmed. R3 orientation implementation is a candidate with long-path/Mac qualification pending. Parents K4b.07/K4b.08 remain open |
 | Next bounded submilestone | K4b.08.R3 implementation phase: complete nominal Earth-orientation matrix and receipts; qualify origin transport, convergence/refusal/isolation and measured cost through J-13000..J+13000. Observer/chart integration remains separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
@@ -1343,7 +1343,11 @@ isolation. Qualify short intervals first; then measure cold/warm full-history
 endpoint and intermediate refinement/cost through J-13000..J+13000, including
 domain boundaries. Nonconvergence refuses. Run affected frame/rotation seams
 and the complete documentation gate. The expanded target is selected, not
-already numerically admitted. Implementation/testing evidence is pending.
+already numerically admitted. The implementation candidate and closest-owner tests are delivered. Local
+isolated convention/frame checks passed 75 cases in 2.57 s (NumPy 1.26.4,
+PyERFA 2.0.1.5); full Wenu/Mac seams, documentation and the marked long-history
+endpoint/J0 qualification remain pending. No full-span numerical result,
+practical preparation-speed or physical-accuracy claim follows.
 
 ### K4b.08 parent requirements and acceptance
 

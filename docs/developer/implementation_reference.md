@@ -3157,3 +3157,50 @@ Observer/CLI/Astropy/final-IERS defaults and VCW axes remain unchanged.
 No full ancient observer, horizon correction, polar motion or nutation policy
 is implied. See the [gate](testing_policy.md#named-earth-rotation-model-gate)
 and [research guide](research/earth_rotation_models_guide_v1.md).
+
+## Complete nominal Earth orientation
+
+`wenu.astrometric_coordinates.NominalEarthOrientation` requires keyword
+`coverage` and `path_coverage` TT TimeSpans, and a typed immutable
+`EarthRotationModel`. The path covers the request interval and J2000, entirely
+inside J-13000..J+13000. Rotation coverage must cover the requested events;
+spin timing is not evaluated at intermediate pole-history nodes.
+`policy="vcw2000a-nonrotating-origin/1"` is the only implemented choice.
+
+`evaluate(tt)` returns `NominalOrientationResult` containing exact TT, R1
+rotation/UT1 receipt, unchanged mean-frame receipts, seed/pole/origin,
+backend versions/code hashes, `transport`, `era_rad`,
+`celestial_to_intermediate`, `celestial_to_terrestrial` and
+`terrestrial_to_celestial`. Matrices are immutable row tuples acting on column
+vectors; the last is the transpose of the newly orthonormal full matrix.
+Physical and total numerical error fields are None. Certified
+`maximum_physical_error_rad`/`maximum_numerical_error_rad` requests refuse.
+
+`OriginTransportSettings` defaults: maximum initial step eight TT days,
+refinement tolerance `1e-8` rad, six maximum refinements, 50 million cumulative
+samples. The tolerance applies to the reported nested extrapolation estimate,
+not a certified bound. `OriginTransportReceipt` records history, settings,
+unwrapped locator, polygon/refined locators, estimate, panel counts, samples
+and elapsed time. Work-budget, nonconvergence, malformed backend or missing
+coverage fails without a result or fallback. No mutable shared origin cache.
+
+Example construction only; this does not execute the expensive ancient path:
+
+```python
+from wenu.astrometric_coordinates import NominalEarthOrientation
+from wenu.earth_rotation import EarthRotationModel
+from wenu_kernel.records import TimePoint, TimeSpan
+
+domain = TimeSpan(TimePoint(-3027205, 0, "tt"),
+                  TimePoint(6469295, 0, "tt"))
+orientation = NominalEarthOrientation(
+    coverage=domain, path_coverage=domain,
+    rotation=EarthRotationModel(coverage=domain),
+)
+```
+
+Full-span admission and practical preparation cost remain pending. A prepared
+exact-event result can rotate many directions cheaply, but constructing another
+event integrates its complete history independently. Existing modern/chart
+defaults remain unchanged. See the [definition and component limits](research/nominal_earth_orientation_meridian_contract_v1.md)
+and [qualification gate](testing_policy.md#complete-nominal-earth-orientation-gate).

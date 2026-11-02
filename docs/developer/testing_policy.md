@@ -2743,3 +2743,39 @@ changing the outer-parabola constant is detected by the oracle test.
 These are numerical implementation checks, not empirical physical validation.
 Skyfield/Astropy/pytest are unavailable locally: the real Skyfield seam and
 complete pytest/documentation gates have not run and remain for the Mac.
+
+## Complete nominal Earth orientation gate
+
+K4b.08.R3 definition is accepted through #369. Commit `3c4dacfa` records
+implementation/range agreement before production edits. The closest existing
+owner is `tests/test_astrometric_state.py` (LongTermFrame independent triad,
+matrix/sign/bias, exact-event identity and malformed-backend protections).
+Additive `nominal_orientation` cases protect fixed/great-circle/closed-loop
+analytic transport, independent vector Rodrigues transport, actual short-pole
+path composition, modern complete-matrix comparisons with identical UT1,
+CIO/equinox equivalence, frozen-locator/sign/order/seed faults, exact-split
+identity, immutable results/settings, warm refusal and path/event domains.
+
+First run that owner selected by `nominal_orientation or long_frame`,
+excluding the existing `slow` marker, then the unchanged
+`tests/test_observer_resources.py -k earth_rotation` seam and complete
+documentation gate. Local isolated Python 3.12/NumPy 1.26.4/PyERFA 2.0.1.5
+verification passed 75 convention/frame cases in 2.57 s. It uses fetched source
+dependencies, not the complete application or Mac environment.
+
+After those pass, run
+`tests/test_astrometric_state.py::test_nominal_orientation_full_precession_span_qualification`
+with capture disabled and a retained log/provenance. This is explicitly slow:
+it integrates complete paths from J2000 to J-13000, J0 and J+13000,
+records all refinement/sample/cost/backend/model/matrix receipts as JSON,
+and reports endpoint pole separation and unwrapped-origin phase difference.
+The span is about one precession cycle, not an exact pole/origin/full-matrix
+periodicity assertion. Every event must converge within its declared settings;
+an exhausted work budget/nonconvergence is a failed qualification, never a
+fallback or successful range admission.
+
+Local endpoint transport and Mac qualification are not yet run. Keep draft/
+pending status until evidence is reviewed. This service adds no chart, observer
+translation, corrections, ephemeris dependency, SDK/API pin, provider acquisition,
+persistent cache or current-default change. Physical accuracy remains unknown
+even if every numerical gate passes.

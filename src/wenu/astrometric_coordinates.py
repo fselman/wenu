@@ -10,6 +10,8 @@ from fractions import Fraction
 from hashlib import sha256
 from math import fsum, hypot, inf, isfinite, nextafter
 
+from wenu.earth_rotation import EarthRotationModel, RotationResult
+
 from wenu_kernel.errors import (
     AccuracyUnavailable, InvalidProviderResult, InvalidQuery, OutsideCoverage,
     ProviderEvaluationError, ResourceMismatch, TimeConversionUnavailable,
@@ -386,6 +388,11 @@ class LongTermFrame:
         error_s = _upper(abs(Fraction(epoch)-exact_year)*31557600)
         try:
             import erfa
+            from pathlib import Path
+            hashes = tuple((name, sha256(Path(path).read_bytes()).hexdigest())
+                for name, path in (('convention-owner', __file__),
+                                   ('erfa-ufunc', erfa.ufunc.__file__),
+                                   ('erfa-wrapper', erfa.core.__file__)))
             versions = (str(erfa.__version__), str(erfa.version.erfa_version),
                         str(erfa.version.sofa_version))
             backend = erfa.ltpb if axes == 'mean-equator-equinox' else erfa.ltecm
@@ -500,3 +507,346 @@ def orient_direction_batch(batch, *, admission, orientation):
             raise OutsideCoverage('Outside native source/model coverage.', time=time)
         result.append(OrientedDirection(state, orientation.rotate(state.vector)))
     return OrientedDirectionBatch(batch, admission, orientation, tuple(result))
+
+
+# Complete nominal orientation: explicit opt-in, not an observer realization.
+NOMINAL_ORIENTATION_POLICY = 'vcw2000a-nonrotating-origin/1'
+_NOMINAL_ORIENTATION_PROVENANCE = (
+    'https://iers-conventions.obspm.fr/content/tn36.pdf; section 5.4, Eq. 5.8',
+    'VCW2011/2012 mean axes + unadjusted classical IAU2000A forced nutation',
+    'J2000 c2i06a first row projected onto the nominal equator; full-pole transport',
+    'xp=yp=0 omitted polar motion; s-prime=0 fixed terrestrial-origin convention',
+    'Unknown physical/total numerical error; refinement estimate is not a bound',
+)
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class OriginTransportSettings:
+    """Finite geometric-path refinement; tolerance is an estimate, not a bound.
+
+    Success requires at least four nested paths. Shortest-arc transport along
+    each polygon converges quadratically to smooth-pole parallel transport.
+    Richardson extrapolation removes successive even-power discretization terms.
+    No persistent cache or path skipping; a work-budget failure refuses output.
+    """
+    max_step_days: float = 8.
+    tolerance_rad: float = 1e-8
+    max_refinements: int = 6
+    max_samples: int = 50000000
+
+    def __post_init__(self):
+        for name in ('max_step_days', 'tolerance_rad'):
+            value = getattr(self, name)
+            try:
+                valid = type(value) in (int, float) and isfinite(value) and value > 0
+            except OverflowError:
+                valid = False
+            if not valid:
+                raise InvalidQuery('Positive finite transport step/tolerance required.')
+            object.__setattr__(self, name, float(value))
+        if self.max_step_days > 8 or not 1e-13 <= self.tolerance_rad <= 1e-5:
+            raise InvalidQuery('Unsupported transport step/tolerance.')
+        if (type(self.max_refinements) is not int or not 4 <= self.max_refinements <= 10
+                or type(self.max_samples) is not int or not 32 <= self.max_samples <= 200000000):
+            raise InvalidQuery('Explicit finite transport refinement/work budget required.')
+
+
+@dataclass(frozen=True, slots=True)
+class OriginTransportReceipt:
+    settings: OriginTransportSettings
+    history: TimeSpan
+    locator_rad: float
+    polygon_locators_rad: tuple[float, ...]
+    extrapolated_locators_rad: tuple[float, ...]
+    convergence_estimate_rad: float
+    panels: tuple[int, ...]
+    sample_count: int
+    elapsed_s: float
+    algorithm: str = 'north-gauge-geodesic-polygon-richardson/1'
+    numerical_error_rad: None = None
+
+
+def _orientation_unit(values):
+    import numpy as np
+    a = np.asarray(values, dtype=float)
+    norm = np.linalg.norm(a, axis=-1, keepdims=True)
+    if (a.shape[-1:] != (3,) or not np.all(np.isfinite(a))
+            or not np.all(np.isfinite(norm)) or np.any(norm < 1e-15)):
+        raise InvalidProviderResult('Invalid nominal pole/origin vector.')
+    return a / norm
+
+
+def _orientation_matrix(values):
+    import numpy as np
+    a = np.asarray(values, dtype=float)
+    if (a.shape[-2:] != (3, 3) or not np.all(np.isfinite(a))
+            or np.max(np.abs(a @ np.swapaxes(a, -1, -2) - np.eye(3))) > 2**-39
+            or np.max(np.abs(np.linalg.det(a) - 1)) > 2**-38):
+        raise InvalidProviderResult('Invalid nominal orientation matrix.')
+    return a
+
+
+def _nominal_pole(tt1, tt2):
+    """Vectorized convention evaluation; exact split TT at public endpoints.
+
+    Uses the same corrected ERFA ltpb/ltecm owners as LongTermFrame. The
+    original first-order biased matrices are never orthogonalized or changed.
+    """
+    import erfa
+    import numpy as np
+    year = 2000. + ((np.asarray(tt1) - 2451545.) + np.asarray(tt2)) / 365.25
+    p = _orientation_matrix(erfa.ltpb(year))
+    e = _orientation_matrix(erfa.ltecm(year))
+    mp, ep = _orientation_unit(p[..., 2, :]), _orientation_unit(e[..., 2, :])
+    eps = np.arctan2(np.linalg.norm(np.cross(mp, ep), axis=-1),
+                     np.sum(mp * ep, axis=-1))
+    psi, deps = erfa.nut00a(tt1, tt2)
+    n = _orientation_matrix(erfa.numat(eps, psi, deps))
+    b = _orientation_matrix(n @ p)
+    return _orientation_unit(b[..., 2, :]), b
+
+
+def _pole_gauge(pole):
+    """Exact north-pole gauge triad, including southern Z when nonsingular."""
+    import numpy as np
+    x, y, z = pole
+    if not isfinite(z) or 1 + z < 1e-8:
+        raise InvalidProviderResult('Singular celestial-origin locator coordinates.')
+    return np.array(((1-x*x/(1+z), -x*y/(1+z), -x),
+                     (-x*y/(1+z), 1-y*y/(1+z), -y), pole))
+
+
+def _orientation_r3(angle):
+    from math import cos, sin
+    import numpy as np
+    c, s = cos(angle), sin(angle)
+    return np.array(((c, s, 0.), (-s, c, 0.), (0., 0., 1.)))
+
+
+def _polygon_origin(poles, *, previous=None):
+    """Exact scalar connection integral along shortest great-circle edges.
+
+    Each edge contributes minus the signed solid angle of the triangle
+    (north pole, old pole, new pole). No sampled-pole derivatives or small-angle
+    approximation. This is the discrete counterpart of IERS Eq. 5.8.
+    """
+    import numpy as np
+    p = np.asarray(poles, dtype=float)
+    if p.ndim != 2 or p.shape[1:] != (3,) or not np.all(np.isfinite(p)):
+        raise InvalidProviderResult('Invalid sampled pole history.')
+    if np.any(np.abs(np.linalg.norm(p, axis=1) - 1) > 2**-40):
+        raise InvalidProviderResult('Nonunit sampled pole history.')
+    if np.any(1 + p[:, 2] < 1e-8):
+        raise InvalidProviderResult('Singular sampled origin locator.')
+    if previous is not None:
+        p = np.vstack((previous, p))
+    a, b = p[:-1], p[1:]
+    if np.any(np.sum(a*b, axis=1) < 0):
+        raise InvalidProviderResult('Ambiguous or excessively long transport edge.')
+    numerator = a[:, 0]*b[:, 1] - a[:, 1]*b[:, 0]
+    denominator = ((1+a[:, 2])*(1+b[:, 2])
+                   + a[:, 0]*b[:, 0] + a[:, 1]*b[:, 1])
+    return fsum(float(v) for v in -2*np.arctan2(numerator, denominator))
+
+
+def _transport_origin(pole_function, *, duration_days, seed_locator, history, settings):
+    """Stream the entire path, then compare nested Richardson diagonals."""
+    from math import ceil
+    from time import perf_counter
+    import numpy as np
+    started = perf_counter()
+    if duration_days == 0:
+        return OriginTransportReceipt(settings, history, seed_locator, (), (),
+                                      0., (), 0, perf_counter()-started)
+    panels = max(4, ceil(abs(duration_days)/settings.max_step_days))
+    raw, diagonal, counts, table = [], [], [], []
+    samples = 0
+    for level in range(settings.max_refinements):
+        count = panels * 2**level
+        if samples + count + 1 > settings.max_samples:
+            raise AccuracyUnavailable(f'Origin transport work budget exhausted: {samples} samples; next path {count+1}; diagonals {diagonal!r}.')
+        pieces, previous = [], None
+        for start in range(0, count+1, 16384):
+            stop = min(start+16384, count+1)
+            offsets = (np.arange(start, stop, dtype=float)/count)*duration_days
+            poles = pole_function(offsets)
+            pieces.append(_polygon_origin(poles, previous=previous))
+            previous = poles[-1]
+        samples += count + 1
+        value = seed_locator + fsum(pieces)
+        row = [value]
+        for order in range(1, level+1):
+            row.append(row[-1] + (row[-1]-table[-1][order-1])/(4**order-1))
+        if not all(isfinite(x) for x in row):
+            raise InvalidProviderResult('Nonfinite origin transport refinement.')
+        table.append(row)
+        raw.append(value)
+        diagonal.append(row[-1])
+        counts.append(count)
+        # Also require the last two estimates to agree; a single accidentally
+        # small diagonal difference does not end the refinement.
+        if level >= 3:
+            estimate = max(abs(diagonal[-1]-diagonal[-2]),
+                           abs(diagonal[-2]-diagonal[-3]))
+            if estimate <= settings.tolerance_rad:
+                return OriginTransportReceipt(settings, history, row[-1],
+                    tuple(raw), tuple(diagonal), estimate, tuple(counts), samples,
+                    perf_counter()-started)
+    raise AccuracyUnavailable(f'Origin transport did not converge: {samples} samples; diagonals {diagonal!r}.')
+
+
+@dataclass(frozen=True, slots=True)
+class NominalOrientationResult:
+    """Prepared exact-event orientation, no site/translation/corrections.
+
+    Matrices act on column vectors. The transpose is the inverse of this new
+    orthonormal matrix, not of the original first-order-biased LongTermFrame.
+    """
+    tt: TimePoint
+    coverage: TimeSpan
+    path_coverage: TimeSpan
+    rotation: RotationResult
+    mean_equator: LongTermFrame
+    mean_ecliptic: LongTermFrame
+    backend_versions: tuple[str, ...]
+    backend_hashes: tuple[tuple[str, str], ...]
+    seed_pole: tuple[float, float, float]
+    seed_origin: tuple[float, float, float]
+    pole_icrs: tuple[float, float, float]
+    origin_icrs: tuple[float, float, float]
+    transport: OriginTransportReceipt
+    era_rad: float
+    celestial_to_intermediate: tuple[tuple[float, float, float], ...]
+    celestial_to_terrestrial: tuple[tuple[float, float, float], ...]
+    terrestrial_to_celestial: tuple[tuple[float, float, float], ...]
+    model: ModelRef
+    elapsed_s: float
+    polar_motion_policy: str = 'omitted-xp-yp-zero/1'
+    terrestrial_origin_policy: str = 'fixed-s-prime-zero/1'
+    nutation_policy: str = 'nominal-classical-iau2000a-extrapolated/1'
+    physical_error_rad: None = None
+    numerical_error_rad: None = None
+    provenance: tuple[str, ...] = _NOMINAL_ORIENTATION_PROVENANCE
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class NominalEarthOrientation:
+    """Explicit immutable orientation policy over a finite requested domain.
+
+    path_coverage must include J2000 and the complete caller coverage. Each
+    evaluate call integrates independently; no process-global or previous-event
+    origin cache. Preparing an event may be expensive. Reuse its frozen result
+    only for that same event/model/settings. This does not change modern routes.
+    """
+    coverage: TimeSpan
+    path_coverage: TimeSpan
+    rotation: EarthRotationModel
+    settings: OriginTransportSettings = OriginTransportSettings()
+    policy: str = NOMINAL_ORIENTATION_POLICY
+
+    def __post_init__(self):
+        if (type(self.coverage) is not TimeSpan or type(self.path_coverage) is not TimeSpan
+                or type(self.rotation) is not EarthRotationModel
+                or type(self.settings) is not OriginTransportSettings
+                or type(self.policy) is not str or self.policy != NOMINAL_ORIENTATION_POLICY):
+            raise InvalidQuery('Explicit supported orientation models/settings/coverage required.')
+        if self.coverage.start.scale != 'tt' or self.path_coverage.start.scale != 'tt':
+            raise TimeConversionUnavailable('Orientation and history coverage require TT.')
+        if (_tt_jyear(self.path_coverage.start) < -13000
+                or _tt_jyear(self.path_coverage.stop) > 13000
+                or not self.path_coverage.contains(TimePoint(2451545, 0, 'tt'))
+                or not self.path_coverage.contains(self.coverage.start)
+                or not self.path_coverage.contains(self.coverage.stop)
+                or not self.rotation.coverage.contains(self.coverage.start)
+                or not self.rotation.coverage.contains(self.coverage.stop)):
+            raise OutsideCoverage('Missing event/path coverage inside J-13000..J+13000.')
+
+    def evaluate(self, tt, *, maximum_physical_error_rad=None,
+                 maximum_numerical_error_rad=None):
+        from math import atan2
+        from time import perf_counter
+        import json
+        if type(tt) is not TimePoint:
+            raise InvalidQuery('Explicit split TT event required.')
+        if tt.scale != 'tt':
+            raise TimeConversionUnavailable('Orientation evaluation requires TT.')
+        if not self.coverage.contains(tt):
+            raise OutsideCoverage('Outside caller orientation coverage.', time=tt)
+        for requested in (maximum_physical_error_rad, maximum_numerical_error_rad):
+            if requested is not None:
+                try:
+                    valid = type(requested) in (int, float) and isfinite(requested) and requested >= 0
+                except OverflowError:
+                    valid = False
+                if not valid:
+                    raise InvalidQuery('Error requests must be finite and nonnegative.')
+                raise AccuracyUnavailable('No certified physical/total numerical bound is available.')
+        started = perf_counter()
+        try:
+            import erfa
+            import numpy as np
+            from pathlib import Path
+            hashes = tuple((name, sha256(Path(path).read_bytes()).hexdigest())
+                for name, path in (('convention-owner', __file__),
+                                   ('erfa-ufunc', erfa.ufunc.__file__),
+                                   ('erfa-wrapper', erfa.core.__file__)))
+            versions = (str(erfa.__version__), str(erfa.version.erfa_version),
+                        str(erfa.version.sofa_version), str(np.__version__))
+            # Public frame receipts preserve exact TT and original matrix identity.
+            frames = [LongTermFrame(equinox=tt, validity=self.path_coverage,
+                axes=axes, model_policy=LONG_TERM_FRAME_POLICY) for axes in
+                ('mean-equator-equinox', 'mean-ecliptic-equinox')]
+            seed = TimePoint(2451545, 0, 'tt')
+            pole0, _ = _nominal_pole(seed.jd1, seed.jd2)
+            modern_seed = _orientation_matrix(erfa.c2i06a(seed.jd1, seed.jd2))[0]
+            origin0 = _orientation_unit(modern_seed - np.dot(modern_seed, pole0)*pole0)
+            gauge0 = _pole_gauge(pole0)
+            s0 = atan2(-float(np.dot(origin0, gauge0[1])),
+                       float(np.dot(origin0, gauge0[0])))
+            pole, _ = _nominal_pole(tt.jd1, tt.jd2)
+            duration = float(Fraction(tt.jd1-2451545)+Fraction(tt.jd2))
+            history = TimeSpan(seed, tt) if duration >= 0 else TimeSpan(tt, seed)
+            def pole_function(offsets):
+                p, _ = _nominal_pole(2451545., offsets)
+                # Retain exact-split endpoint poles instead of rounded offsets.
+                if offsets[0] == 0:
+                    p[0] = pole0
+                if offsets[-1] == duration:
+                    p[-1] = pole
+                return p
+            transport = _transport_origin(pole_function, duration_days=duration,
+                seed_locator=s0, history=history, settings=self.settings)
+            c = _orientation_matrix(_orientation_r3(-transport.locator_rad) @ _pole_gauge(pole))
+            rotation = self.rotation.evaluate(tt)
+            era = float(erfa.era00(rotation.ut1_jd1, rotation.ut1_jd2))
+            full = _orientation_matrix(_orientation_r3(era) @ c)
+        except (InvalidQuery, OutsideCoverage, AccuracyUnavailable, InvalidProviderResult):
+            raise
+        except Exception as exc:
+            raise ProviderEvaluationError('Nominal orientation backend/transport failed.', time=tt) from exc
+        matrix_tuple = lambda a: tuple(tuple(float(x) for x in row) for row in a)
+        event = lambda t: (t.jd1, t.jd2.hex(), t.scale)
+        span = lambda s: (event(s.start), event(s.stop))
+        binding = dict(policy=self.policy, tt=event(tt), coverage=span(self.coverage),
+            path_coverage=span(self.path_coverage), versions=versions, backend_hashes=hashes,
+            frames=[f.model.configuration_digest for f in frames],
+            settings=(self.settings.max_step_days, self.settings.tolerance_rad,
+                      self.settings.max_refinements, self.settings.max_samples),
+            seed_pole=[float(x).hex() for x in pole0],
+            seed_origin=[float(x).hex() for x in origin0],
+            locator=transport.locator_rad.hex(),
+            refinements=[x.hex() for x in transport.extrapolated_locators_rad],
+            matrix=[[float(x).hex() for x in row] for row in full],
+            terrestrial='xp=yp=s-prime=0;nominal-axes-not-ITRF')
+        # ModelRef is represented structurally, not with a platform-specific repr.
+        binding['rotation'] = (rotation.model.model_id, rotation.model.version,
+            rotation.model.configuration_digest, span(rotation.coverage),
+            rotation.ut1_jd1, rotation.ut1_jd2.hex(), rotation.delta_t_s.hex())
+        model = ModelRef('wenu.astrometry:nominal-earth-orientation', '1', sha256(
+            json.dumps(binding, sort_keys=True, separators=(',', ':'),
+                       allow_nan=False).encode()).hexdigest(), ())
+        return NominalOrientationResult(tt, self.coverage, self.path_coverage, rotation,
+            *frames, versions, hashes, tuple(map(float, pole0)), tuple(map(float, origin0)),
+            tuple(map(float, pole)), tuple(map(float, c[0])), transport, era,
+            matrix_tuple(c), matrix_tuple(full), matrix_tuple(full.T), model,
+            perf_counter()-started)

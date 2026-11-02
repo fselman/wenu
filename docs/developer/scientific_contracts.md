@@ -1,18 +1,27 @@
 # Current scientific contracts and paused work
 
-## Complete nominal orientation definition candidate
+<a id="complete-nominal-orientation-definition-candidate"></a>
 
-[K4b.08.R3](research/nominal_earth_orientation_meridian_contract_v1.md)
-defines a proposed full-origin/meridian contract, not an implemented service.
-The recommendation uses the same normalized nominal IAU2000A/VCW pole history
-for nonrotating celestial-origin transport, an explicitly seeded J2000 frame
-and split-UT1 ERA. The seed projection, `s'=0` terrestrial-origin convention,
-and later complete-matrix/convergence/cost gates remain proposals for review.
-Fernando selected the expanded J-12000..J+12000 computational target and an
-explicit [component validity ledger](research/nominal_earth_orientation_meridian_contract_v1.md#component-validity-and-extrapolation-limits).
-Published model span, extrapolation permission, tested interval and physical
-accuracy are separate facts. Neither the selected target nor numerical
-computability admits a runtime observer/chart range or a physical-error bound.
+## Complete nominal Earth orientation
+
+The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
+is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
+`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
+orientation-service implementation with target J-13000..J+13000, approximately
+one precession cycle; exact endpoint closure is not required.
+
+The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
+full-pole-history nonrotating-origin transport from the declared J2000 seed,
+and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
+`s'=0` is explicit. It returns complete forward/inverse matrices and immutable
+event/model/backend/transport receipts. Published validity, numerical
+convergence and unknown physical accuracy remain separate; the linked component
+ledger applies to the expanded target.
+
+Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
+and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
+Observer/site/correction/chart integration and existing modern defaults are
+separate from this opt-in orientation service.
 
 ## Ancient orientation assessment boundary
 

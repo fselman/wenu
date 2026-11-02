@@ -1,17 +1,27 @@
 # Wenu developer documentation
 
-## Complete nominal orientation and meridian definition
+<a id="complete-nominal-orientation-and-meridian-definition"></a>
 
-The selected [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
-proposes a consistent celestial-origin and terrestrial-meridian convention for
-the accepted nominal IAU2000A/VCW direction. It uses the full pole-history
-nonrotating-origin definition and the existing split-UT1 rotation service.
-Seed, terrestrial-origin, finite-domain and numerical/workload gates are
-explicit review proposals. Fernando selected the computational target
-J-12000..J+12000 and a component-by-component validity/extrapolation ledger.
-No runtime or observer/chart integration is added. The original documentation
-gate passed at `6e2e25a`; verification of the range/validity revision and user
-definition review remain pending.
+## Complete nominal Earth-orientation implementation
+
+The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
+is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
+`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
+orientation-service implementation with target J-13000..J+13000, approximately
+one precession cycle; exact endpoint closure is not required.
+
+The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
+full-pole-history nonrotating-origin transport from the declared J2000 seed,
+and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
+`s'=0` is explicit. It returns complete forward/inverse matrices and immutable
+event/model/backend/transport receipts. Published validity, numerical
+convergence and unknown physical accuracy remain separate; the linked component
+ledger applies to the expanded target.
+
+Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
+and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
+Observer/site/correction/chart integration and existing modern defaults are
+separate from this opt-in orientation service.
 
 ## Ancient observer orientation assessment
 

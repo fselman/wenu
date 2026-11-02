@@ -848,3 +848,285 @@ def test_long_frame_finite_domain_and_partial_warm_batches_refuse():
     for value in bad:
         with pytest.raises(KernelError):orient_direction_batch(value,admission=a,orientation=frame)
     assert orient_direction_batch(batch,admission=a,orientation=frame)==baseline
+
+
+# Complete Earth orientation extends the existing convention/numerical owner.
+def _nominal_orientation(*, days=10000, settings=None):
+    from wenu.astrometric_coordinates import NominalEarthOrientation, OriginTransportSettings
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    span = TimeSpan(TimePoint(2451545-days, 0, 'tt'), TimePoint(2451545+days, 0, 'tt'))
+    return NominalEarthOrientation(coverage=span, path_coverage=span,
+        rotation=EarthRotationModel(coverage=span),
+        settings=settings or OriginTransportSettings())
+
+
+def _orientation_tt(year):
+    from fractions import Fraction
+    from math import floor
+    day = Fraction(2451545) + (Fraction(year)-2000)*Fraction(1461, 4)
+    whole = floor(day + Fraction(1, 2))
+    return TimePoint(whole, float(day-whole), 'tt')
+
+
+def test_nominal_orientation_analytic_transport_and_closed_loop_phase():
+    import numpy as np
+    from math import cos, sin, pi
+    from wenu.astrometric_coordinates import (
+        OriginTransportSettings, _transport_origin, _pole_gauge, _orientation_r3,
+    )
+    from wenu_kernel.records import TimeSpan
+    history = TimeSpan(TimePoint(2451545, 0, 'tt'), TimePoint(2451546, 0, 'tt'))
+    settings = OriginTransportSettings(max_step_days=.1, tolerance_rad=1e-11,
+                                       max_refinements=8)
+    def run(pole, duration=1.):
+        return _transport_origin(pole, duration_days=duration, seed_locator=.07,
+                                 history=history, settings=settings)
+    def fixed(t):
+        return np.tile((0., 0., 1.), (len(t), 1))
+    assert abs(run(fixed).locator_rad-.07) < 1e-15
+    def great_circle(t):
+        return np.stack((np.sin(.4*t), np.zeros_like(t), np.cos(.4*t)), axis=-1)
+    r = run(great_circle)
+    assert abs(r.locator_rad-.07) < 1e-15
+    theta = .4
+    def circle(t):
+        return np.stack((sin(theta)*np.cos(2*pi*t), sin(theta)*np.sin(2*pi*t),
+                         np.full_like(t, cos(theta))), axis=-1)
+    r = run(circle)
+    expected = .07 - 2*pi*(1-cos(theta))
+    assert abs(r.locator_rad-expected) < 1e-11
+    assert abs(run(circle, -1.).locator_rad-(.14-expected)) < 1e-11
+    assert r.convergence_estimate_rad <= settings.tolerance_rad
+    # Independent vector transport: Rodrigues rotations between consecutive
+    # poles, without the scalar locator/solid-angle formula or Richardson.
+    n = circle(np.linspace(0, 1, 1025))
+    a = (_orientation_r3(-.07) @ _pole_gauge(n[0]))[0]
+    for old, new in zip(n[:-1], n[1:]):
+        v = np.cross(old, new)
+        a = a + np.cross(v, a) + np.cross(v, np.cross(v, a))/(1+np.dot(old, new))
+    from wenu.astrometric_coordinates import _polygon_origin
+    raw = .07 + _polygon_origin(n)
+    frame = _orientation_r3(-raw) @ _pole_gauge(n[-1])
+    np.testing.assert_allclose(a, frame[0], atol=2e-13, rtol=0)
+    # A frozen or sign-reversed locator must visibly break the oracle.
+    assert abs(.07-expected) > .4
+    assert abs((.14-r.locator_rad)-expected) > .9
+
+
+@pytest.mark.parametrize('offset', [-365.25, 0., 9496.125])
+def test_nominal_orientation_modern_complete_matrix_and_equinox_equivalence(offset):
+    import erfa
+    import numpy as np
+    from math import floor
+    from wenu.astrometric_coordinates import _nominal_pole, _orientation_r3
+    m = _nominal_orientation()
+    whole = floor(offset+.5)
+    tt = TimePoint(2451545+whole, offset-whole, 'tt')
+    r = m.evaluate(tt)
+    c, full = np.array(r.celestial_to_intermediate), np.array(r.celestial_to_terrestrial)
+    assert r.tt is tt and r.rotation.tt is tt
+    assert r.physical_error_rad is None and r.numerical_error_rad is None
+    assert r.transport.numerical_error_rad is None
+    np.testing.assert_allclose(full @ np.array(r.terrestrial_to_celestial), np.eye(3),
+                               atol=1e-14, rtol=0)
+    assert abs(np.linalg.det(full)-1) < 1e-14
+    # Standard model is a nearby modern comparison, not exact VCW equivalence.
+    standard = erfa.c2tcio(erfa.c2i06a(tt.jd1, tt.jd2), r.era_rad, np.eye(3))
+    np.testing.assert_allclose(full, standard, atol=2e-7, rtol=0)
+    np.testing.assert_allclose(c[2], r.pole_icrs, atol=1e-15, rtol=0)
+    pole, b = _nominal_pole(tt.jd1, tt.jd2)
+    equinox = b[0] - np.dot(b[0], pole)*pole
+    equinox /= np.linalg.norm(equinox)
+    true_frame = np.array((equinox, np.cross(pole, equinox), pole))
+    eo = erfa.eors(true_frame, r.transport.locator_rad)
+    eq = erfa.c2teqx(true_frame, r.era_rad-eo, np.eye(3))
+    np.testing.assert_allclose(eq, full, atol=2e-15, rtol=0)
+    if offset:
+        frozen = erfa.c2ixys(pole[0], pole[1], 0.)
+        assert np.max(np.abs(frozen-c)) > 1e-9
+        assert np.max(np.abs(c @ _orientation_r3(r.era_rad)-full)) > 1e-5
+        assert np.max(np.abs(_orientation_r3(-r.era_rad) @ c-full)) > .1
+
+
+def test_nominal_orientation_independent_vector_transport_actual_short_path():
+    import numpy as np
+    import erfa
+    from wenu.astrometric_coordinates import _pole_gauge, _orientation_r3
+    r = _nominal_orientation().evaluate(TimePoint(2451645, .125, 'tt'))
+    # Reconstruct the pole independently using the actual ERFA routines.
+    t = np.linspace(0, 100.125, 4001)
+    p = erfa.ltpb(2000+t/365.25)
+    e = erfa.ltecm(2000+t/365.25)
+    mp, ep = p[:, 2], e[:, 2]
+    mp = mp/np.linalg.norm(mp, axis=1)[:, None]
+    ep = ep/np.linalg.norm(ep, axis=1)[:, None]
+    eps = np.arctan2(np.linalg.norm(np.cross(mp, ep), axis=1), np.sum(mp*ep, axis=1))
+    poles = (erfa.numat(eps, *erfa.nut00a(2451545., t)) @ p)[:, 2]
+    poles /= np.linalg.norm(poles, axis=1)[:, None]
+    a = np.array(r.seed_origin)
+    for old, new in zip(poles[:-1], poles[1:]):
+        v = np.cross(old, new)
+        a += np.cross(v, a) + np.cross(v, np.cross(v, a))/(1+np.dot(old, new))
+    np.testing.assert_allclose(a, r.origin_icrs, atol=2e-11, rtol=0)
+    np.testing.assert_allclose(poles[-1], r.pole_icrs, atol=2e-15, rtol=0)
+
+
+def test_nominal_orientation_immutable_exact_event_identity_and_request_isolation():
+    from dataclasses import FrozenInstanceError, replace
+    import pickle
+    m = _nominal_orientation()
+    tt = TimePoint(2451545, .1, 'tt')
+    first = m.evaluate(tt)
+    changed = m.evaluate(TimePoint(2451545, .100000000001, 'tt'))
+    again = m.evaluate(tt)
+    assert first.model == again.model and first.celestial_to_terrestrial == again.celestial_to_terrestrial
+    assert changed.model != first.model
+    assert len(first.backend_hashes) == 3 and all(len(v) == 64 for k, v in first.backend_hashes)
+    assert first.mean_equator.equinox == tt and first.mean_ecliptic.equinox == tt
+    assert first.mean_equator.axes == 'mean-equator-equinox'
+    assert pickle.loads(pickle.dumps(first)) == first
+    with pytest.raises(FrozenInstanceError): m.policy = 'other'
+    with pytest.raises(FrozenInstanceError): first.era_rad = 0.
+    varied = replace(m, settings=replace(m.settings, max_step_days=4.)).evaluate(tt)
+    assert varied.model != first.model
+    assert first.transport.history.stop == tt
+
+
+def test_nominal_orientation_refusal_after_success_and_domain_boundaries():
+    from dataclasses import replace
+    from wenu.astrometric_coordinates import NominalEarthOrientation
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    from wenu_kernel.errors import InvalidQuery, OutsideCoverage, TimeConversionUnavailable, AccuracyUnavailable
+    m = _nominal_orientation()
+    m.evaluate(TimePoint(2451545, 0, 'tt'))
+    for scale in ('tai', 'tdb', 'tcb'):
+        with pytest.raises(TimeConversionUnavailable): m.evaluate(TimePoint(2451545, 0, scale))
+    with pytest.raises(InvalidQuery): m.evaluate(2451545.)
+    with pytest.raises(OutsideCoverage): m.evaluate(TimePoint(2461546, 0, 'tt'))
+    for kw in ({'maximum_physical_error_rad': 1.}, {'maximum_numerical_error_rad': 1.}):
+        with pytest.raises(AccuracyUnavailable): m.evaluate(TimePoint(2451545, 0, 'tt'), **kw)
+    for invalid in (-1., True, float('nan'), 10**400):
+        with pytest.raises(InvalidQuery): m.evaluate(TimePoint(2451545, 0, 'tt'), maximum_physical_error_rad=invalid)
+    with pytest.raises(InvalidQuery): replace(m, policy='unknown')
+    lower, upper = _orientation_tt(-13000), _orientation_tt(13000)
+    span = TimeSpan(lower, upper)
+    full = NominalEarthOrientation(coverage=span, path_coverage=span,
+                                  rotation=EarthRotationModel(coverage=span))
+    for bad in (TimePoint(lower.jd1-1, lower.jd2, 'tt'),
+                TimePoint(upper.jd1+1, upper.jd2, 'tt')):
+        with pytest.raises(OutsideCoverage): full.evaluate(bad)
+        bad_span = TimeSpan(bad, upper) if bad.jd1 < lower.jd1 else TimeSpan(lower, bad)
+        with pytest.raises(OutsideCoverage): replace(full, path_coverage=bad_span)
+    # A narrow request is allowed, but never a path that omits the anchor.
+    ancient = TimeSpan(lower, lower)
+    with pytest.raises(OutsideCoverage): replace(full, coverage=ancient, path_coverage=ancient)
+    narrow = replace(full, coverage=ancient)
+    assert narrow.coverage == ancient and narrow.path_coverage == span
+    with pytest.raises(OutsideCoverage): replace(full, rotation=m.rotation)
+
+
+@pytest.mark.parametrize('changes', [
+    {'max_step_days': 9}, {'max_step_days': 0}, {'max_step_days': 10**400},
+    {'tolerance_rad': True}, {'tolerance_rad': float('inf')}, {'tolerance_rad': 1e-15},
+    {'max_refinements': 3}, {'max_refinements': 4.}, {'max_samples': 0}, {'max_samples': True},
+])
+def test_nominal_orientation_invalid_numerical_settings(changes):
+    from wenu.astrometric_coordinates import OriginTransportSettings
+    from wenu_kernel.errors import InvalidQuery
+    with pytest.raises(InvalidQuery): OriginTransportSettings(**changes)
+
+
+def test_nominal_orientation_backend_faults_seed_and_work_budget(monkeypatch):
+    import erfa
+    import numpy as np
+    from dataclasses import replace
+    from wenu.astrometric_coordinates import OriginTransportSettings, _orientation_r3
+    from wenu_kernel.errors import AccuracyUnavailable, InvalidProviderResult, ProviderEvaluationError
+    m = _nominal_orientation()
+    tt = TimePoint(2451645, 0, 'tt')
+    baseline = m.evaluate(tt)
+    with pytest.raises(AccuracyUnavailable):
+        replace(m, settings=OriginTransportSettings(max_samples=32)).evaluate(tt)
+    original = erfa.c2i06a
+    monkeypatch.setattr(erfa, 'c2i06a', lambda a, b: _orientation_r3(.01) @ original(a, b))
+    shifted = m.evaluate(tt)
+    assert shifted.model != baseline.model
+    assert np.max(np.abs(np.array(shifted.celestial_to_intermediate)-baseline.celestial_to_intermediate)) > .009
+    monkeypatch.setattr(erfa, 'c2i06a', original)
+    monkeypatch.setattr(erfa, 'numat', lambda *a: np.full((3, 3), float('nan')))
+    with pytest.raises(InvalidProviderResult): m.evaluate(tt)
+    monkeypatch.undo()
+    def broken(*args): raise RuntimeError('injected backend fault')
+    monkeypatch.setattr(erfa, 'nut00a', broken)
+    with pytest.raises(ProviderEvaluationError) as caught: m.evaluate(tt)
+    assert isinstance(caught.value.__cause__, RuntimeError)
+
+
+@pytest.mark.parametrize('year', [-13000, -8000, 2000, 13000])
+def test_nominal_orientation_remote_era_independent_decimal_oracle(year):
+    from decimal import Decimal, localcontext
+    from math import pi, remainder
+    import erfa
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    tt = _orientation_tt(year)
+    rr = EarthRotationModel(coverage=TimeSpan(tt, tt)).evaluate(tt)
+    with localcontext() as ctx:
+        ctx.prec = 80
+        days = Decimal(rr.ut1_jd1-2451545) + Decimal.from_float(rr.ut1_jd2)
+        turns = Decimal('0.7790572732640') + Decimal('1.00273781191135448')*days
+        expected = float(turns % 1)*2*pi
+    actual = erfa.era00(rr.ut1_jd1, rr.ut1_jd2)
+    assert abs(remainder(actual-expected, 2*pi)) < 5e-9
+
+
+@pytest.mark.slow
+def test_nominal_orientation_full_precession_span_qualification():
+    """Explicit long-path acceptance: no exact 26,000-year closure assumed."""
+    import json
+    import numpy as np
+    from dataclasses import asdict
+    from math import atan2
+    from wenu.astrometric_coordinates import NominalEarthOrientation
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    span = TimeSpan(_orientation_tt(-13000), _orientation_tt(13000))
+    m = NominalEarthOrientation(coverage=span, path_coverage=span,
+                               rotation=EarthRotationModel(coverage=span))
+    results = []
+    for year in (-13000, 0, 13000):
+        result = m.evaluate(_orientation_tt(year))
+        matrix = np.array(result.celestial_to_terrestrial)
+        np.testing.assert_allclose(matrix @ matrix.T, np.eye(3), atol=2e-14, rtol=0)
+        assert result.transport.convergence_estimate_rad <= m.settings.tolerance_rad
+        assert len(result.transport.panels) >= 4
+        assert result.physical_error_rad is None and result.numerical_error_rad is None
+        assert result.rotation.extrapolated
+        print('ORIENTATION QUALIFICATION ' + json.dumps(asdict(result)), flush=True)
+        results.append(result)
+    left, right = np.array(results[0].pole_icrs), np.array(results[-1].pole_icrs)
+    print('PRECESSION SPAN ' + json.dumps({
+        'years': [-13000, 13000],
+        'pole_separation_rad': atan2(float(np.linalg.norm(np.cross(left, right))), float(np.dot(left, right))),
+        'unwrapped_locator_difference_rad': results[-1].transport.locator_rad-results[0].transport.locator_rad,
+        'exact_periodicity_required': False,
+    }), flush=True)
+
+
+def test_nominal_orientation_transport_singularity_and_nonconvergence_refuse():
+    import numpy as np
+    from math import sin, cos, pi
+    from wenu.astrometric_coordinates import OriginTransportSettings, _transport_origin, _polygon_origin
+    from wenu_kernel.records import TimeSpan
+    from wenu_kernel.errors import AccuracyUnavailable, InvalidProviderResult
+    history=TimeSpan(TimePoint(2451545,0,'tt'),TimePoint(2451546,0,'tt'))
+    def circle(t):
+        return np.stack((sin(.4)*np.cos(2*pi*t),sin(.4)*np.sin(2*pi*t),np.full_like(t,cos(.4))),axis=-1)
+    with pytest.raises(AccuracyUnavailable,match='did not converge'):
+        _transport_origin(circle,duration_days=1.,seed_locator=0.,history=history,
+            settings=OriginTransportSettings(max_step_days=.1,tolerance_rad=1e-13,max_refinements=4))
+    for poles in (np.array([[0.,0.,-1.],[0.,0.,-1.]]),np.array([[0.,0.,1.],[0.,0.,-1.]]),
+                  np.array([[0.,0.,2.],[0.,0.,1.]]),np.array([[float('nan'),0.,1.]])):
+        with pytest.raises(InvalidProviderResult):_polygon_origin(poles)
