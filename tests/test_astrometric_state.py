@@ -1064,7 +1064,7 @@ def test_nominal_orientation_backend_faults_seed_and_work_budget(monkeypatch):
     assert isinstance(caught.value.__cause__, RuntimeError)
 
 
-@pytest.mark.parametrize('year', [-13000, -8000, 2000, 13000])
+@pytest.mark.parametrize('year', [-13000, -8000, 0, 2000, 13000])
 def test_nominal_orientation_remote_era_independent_decimal_oracle(year):
     from decimal import Decimal, localcontext
     from math import pi, remainder
@@ -1073,6 +1073,10 @@ def test_nominal_orientation_remote_era_independent_decimal_oracle(year):
     from wenu_kernel.records import TimeSpan
     tt = _orientation_tt(year)
     rr = EarthRotationModel(coverage=TimeSpan(tt, tt)).evaluate(tt)
+    # Published historical polynomial includes J0; only remote endpoints here
+    # use the extended outer parabola. This is a regime flag, not an error bound.
+    assert rr.extrapolated is (year in (-13000, -8000, 13000))
+    assert rr.outside_published_interval is (year in (-13000, -8000, 13000))
     with localcontext() as ctx:
         ctx.prec = 80
         days = Decimal(rr.ut1_jd1-2451545) + Decimal.from_float(rr.ut1_jd2)
@@ -1082,13 +1086,43 @@ def test_nominal_orientation_remote_era_independent_decimal_oracle(year):
     assert abs(remainder(actual-expected, 2*pi)) < 5e-9
 
 
+def _check_nominal_orientation_qualification(document, year):
+    """Shared numerical receipt checks for fresh execution or verified retention."""
+    import numpy as np
+    from dataclasses import asdict
+    assert year in (-13000, 0, 13000)
+    assert document['tt'] == asdict(_orientation_tt(year))
+    matrix = np.array(document['celestial_to_terrestrial'])
+    inverse = np.array(document['terrestrial_to_celestial'])
+    np.testing.assert_allclose(matrix @ matrix.T, np.eye(3), atol=2e-14, rtol=0)
+    np.testing.assert_allclose(matrix @ inverse, np.eye(3), atol=2e-14, rtol=0)
+    transport = document['transport']
+    assert transport['convergence_estimate_rad'] <= transport['settings']['tolerance_rad']
+    assert len(transport['panels']) >= 4
+    assert document['physical_error_rad'] is None and document['numerical_error_rad'] is None
+    # J0 belongs to the historical polynomial interval; both remote endpoints
+    # use the extrapolated parabola. Unknown physical accuracy is independent.
+    assert document['rotation']['extrapolated'] is (year != 0)
+    assert document['rotation']['outside_published_interval'] is (year != 0)
+
+
+def _nominal_orientation_span_summary(results):
+    import numpy as np
+    from math import atan2
+    left, right = np.array(results[0]['pole_icrs']), np.array(results[-1]['pole_icrs'])
+    return {
+        'years': [-13000, 13000],
+        'pole_separation_rad': atan2(float(np.linalg.norm(np.cross(left, right))), float(np.dot(left, right))),
+        'unwrapped_locator_difference_rad': results[-1]['transport']['locator_rad']-results[0]['transport']['locator_rad'],
+        'exact_periodicity_required': False,
+    }
+
+
 @pytest.mark.slow
 def test_nominal_orientation_full_precession_span_qualification():
     """Explicit long-path acceptance: no exact 26,000-year closure assumed."""
     import json
-    import numpy as np
     from dataclasses import asdict
-    from math import atan2
     from wenu.astrometric_coordinates import NominalEarthOrientation
     from wenu.earth_rotation import EarthRotationModel
     from wenu_kernel.records import TimeSpan
@@ -1097,22 +1131,11 @@ def test_nominal_orientation_full_precession_span_qualification():
                                rotation=EarthRotationModel(coverage=span))
     results = []
     for year in (-13000, 0, 13000):
-        result = m.evaluate(_orientation_tt(year))
-        matrix = np.array(result.celestial_to_terrestrial)
-        np.testing.assert_allclose(matrix @ matrix.T, np.eye(3), atol=2e-14, rtol=0)
-        assert result.transport.convergence_estimate_rad <= m.settings.tolerance_rad
-        assert len(result.transport.panels) >= 4
-        assert result.physical_error_rad is None and result.numerical_error_rad is None
-        assert result.rotation.extrapolated
-        print('ORIENTATION QUALIFICATION ' + json.dumps(asdict(result)), flush=True)
-        results.append(result)
-    left, right = np.array(results[0].pole_icrs), np.array(results[-1].pole_icrs)
-    print('PRECESSION SPAN ' + json.dumps({
-        'years': [-13000, 13000],
-        'pole_separation_rad': atan2(float(np.linalg.norm(np.cross(left, right))), float(np.dot(left, right))),
-        'unwrapped_locator_difference_rad': results[-1].transport.locator_rad-results[0].transport.locator_rad,
-        'exact_periodicity_required': False,
-    }), flush=True)
+        document = asdict(m.evaluate(_orientation_tt(year)))
+        _check_nominal_orientation_qualification(document, year)
+        print('ORIENTATION QUALIFICATION ' + json.dumps(document), flush=True)
+        results.append(document)
+    print('PRECESSION SPAN ' + json.dumps(_nominal_orientation_span_summary(results)), flush=True)
 
 
 def test_nominal_orientation_transport_singularity_and_nonconvergence_refuse():
@@ -1130,3 +1153,26 @@ def test_nominal_orientation_transport_singularity_and_nonconvergence_refuse():
     for poles in (np.array([[0.,0.,-1.],[0.,0.,-1.]]),np.array([[0.,0.,1.],[0.,0.,-1.]]),
                   np.array([[0.,0.,2.],[0.,0.,1.]]),np.array([[float('nan'),0.,1.]])):
         with pytest.raises(InvalidProviderResult):_polygon_origin(poles)
+
+
+def test_nominal_orientation_qualification_checks_delta_t_regime_per_epoch():
+    # Constructed receipt scaffolding tests validation only, not astronomical
+    # orientation values. Actual spin receipts supply each epoch's regime.
+    from copy import deepcopy
+    from dataclasses import asdict
+    from wenu.earth_rotation import EarthRotationModel
+    from wenu_kernel.records import TimeSpan
+    identity = [[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]
+    for year in (-13000, 0, 13000):
+        tt = _orientation_tt(year)
+        rotation = EarthRotationModel(coverage=TimeSpan(tt, tt)).evaluate(tt)
+        document = dict(tt=asdict(tt), celestial_to_terrestrial=identity,
+            terrestrial_to_celestial=identity, physical_error_rad=None,
+            numerical_error_rad=None, rotation=asdict(rotation),
+            transport=dict(convergence_estimate_rad=0.,
+                settings=dict(tolerance_rad=1e-8), panels=[4, 8, 16, 32]))
+        _check_nominal_orientation_qualification(document, year)
+        broken = deepcopy(document)
+        broken['rotation']['extrapolated'] = not rotation.extrapolated
+        with pytest.raises(AssertionError):
+            _check_nominal_orientation_qualification(broken, year)
