@@ -1,16 +1,33 @@
 # Current scientific contracts and paused work
 
+## Complete nominal orientation definition candidate
+
+[K4b.08.R3](research/nominal_earth_orientation_meridian_contract_v1.md)
+defines a proposed full-origin/meridian contract, not an implemented service.
+The recommendation uses the same normalized nominal IAU2000A/VCW pole history
+for nonrotating celestial-origin transport, an explicitly seeded J2000 frame
+and split-UT1 ERA. The seed projection, `s'=0` terrestrial-origin convention,
+and later complete-matrix/convergence/cost gates remain proposals for review.
+Fernando selected the expanded J-12000..J+12000 computational target and an
+explicit [component validity ledger](research/nominal_earth_orientation_meridian_contract_v1.md#component-validity-and-extrapolation-limits).
+Published model span, extrapolation permission, tested interval and physical
+accuracy are separate facts. Neither the selected target nor numerical
+computability admits a runtime observer/chart range or a physical-error bound.
+
 ## Ancient orientation assessment boundary
 
 The [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
-is selected to investigate nominal forced nutation while preserving VCW mean
-axes. No particular nutation algorithm, VCW hybrid, daily-rotation/origin
-construction or observer product is yet admitted.
+is accepted/merged through #368/main `067e3b33`, with clean Mac synchronization
+and branch cleanup confirmed. Its nominal IAU2000A/VCW recommendation is the
+accepted assessment outcome; full meridian/origin composition remained explicit.
+The 1,374-event diagnostic and final 36-case documentation gate passed.
+No observer product or physical-accuracy bound is admitted by those checks.
+
 Ancient polar motion is explicitly omitted (`xp=yp=0`), not reconstructed as
 physically zero; its actual error remains unknown. Observed celestial-pole
 offsets and unpredictable free-core nutation are not supplied. Modern measured
-EOP behavior remains intact. Source inspection and formula differences alone
-establish neither physical accuracy nor compatibility of a full composition.
+EOP behavior remains intact. Formula differences establish neither physical
+accuracy nor compatibility of an untested full composition.
 
 ## Named nominal spin timing
 
