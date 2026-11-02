@@ -173,9 +173,10 @@ historical Greenwich meridian, tectonic motion or site geography.
 
 ## Proposed domain, receipts and failure boundary
 
-Propose the initial computational admission TT Julian years -8000 through +8000,
-with finite caller-request coverage inside it. This is a reviewable scope limit,
-not a physical-accuracy interval established by R2's six sampled windows.
+Fernando selected the computational target TT Julian years -12000 through +12000,
+with finite caller-request coverage inside it. This expands the former proposed
+-8000..+8000 target; it is not a physical-accuracy interval established by R2's
+six sampled windows. See the component validity table below.
 The J2000-to-event history is a declared dependency of every transported origin:
 model-path coverage is separate from narrower caller-request coverage.
 All required models must cover the entire path and event; no extrapolation
@@ -205,6 +206,59 @@ Earth/site translation, aberration, deflection, parallax, light time, atmosphere
 site datum/height, chart-family adoption, worker descriptors or a new SDK scale.
 Those remain later bounded observer/correction/product responsibilities.
 
+## Component validity and extrapolation limits
+
+**Agreed target change, 2026-11-02:** after the original definition passed
+36 Mac documentation cases at `6e2e25a`, Fernando asked about J-12000 to
+J+12000, then instructed “Proceed. Make a note on what the validity range
+limitations of each component model are.” This selects the expanded
+computational target and the following explicit limitations. It does not
+turn the unimplemented numerical method or extrapolated physics into a
+qualified model, or authorize observer/chart integration.
+
+Four distinct facts must stay separate: a published model interval, a caller's
+computational admission, the interval actually tested, and empirical physical
+accuracy. A formula returning a finite value establishes none of the others.
+
+| Component | Published/implemented range or meaning | Limitation for J-12000..J+12000 |
+|---|---|---|
+| VCW2011/2012 mean-equator and mean-ecliptic axes via ERFA | Published long-term span J2000 +/-200,000 Julian years; existing Wenu frame admission is TT Julian years -198000..+202000, further bounded by caller coverage | Target is within that modeled span. Accuracy degrades away from J2000; no per-event numerical or physical angular bound is admitted. The span is not a claim of uniformly modern accuracy. |
+| Classical IAU2000A forced nutation (`nut00a`) | Theory is calibrated/qualified for modern precision use; the inspected implementation states current-epoch precision and does not supply a certified physical-validity interval reaching +/-12,000 | Fundamental-argument polynomials, time-dependent amplitudes and Earth response are extrapolated. No ancient/future precision bound is claimed. R2 sampled six 19-year windows about J-8000, -2000, 0, 2000, 2026, +8000 only; neither new endpoint nor the complete intervening interval was qualified. |
+| IAU1980 and IAU2006-adjusted nutation comparisons | R2 comparison formulas, not selected additional production models. Horizons uses IAU1980 as a long-span operational prescription; `nut06a` adjusts 2000A specifically for IAU2006 precession | Computability/operational precedent does not establish ancient accuracy or VCW compatibility. The new range does not adopt the IAU2006 secular adjustment or another independent precession path. |
+| Espenak--Meeus 2006 Delta-T, Wenu R1 | NASA publishes expressions for calendar years -1999 through +3000. Wenu flags complete calendar years outside that interval and extends the same outer parabola under explicit finite TT coverage | Both remote endpoints use nominal extrapolation, not measured Earth rotation. Secular-parabola/prediction regimes may be extrapolated even inside the published application interval. Unknown Delta-T error propagates to unknown terrestrial rotation/horizon error. No -7200 BCE calibration limit or new fit is claimed. |
+| Earth Rotation Angle (`era00`) | Defining UT1-to-angle relationship, evaluated from split UT1; it has no independent historical Earth-rotation reconstruction interval | Algebraic evaluation at a remote UT1 does not validate the supplied UT1. Domain and physical uncertainty are inherited from the TT-to-UT1 policy; numerical precision must be checked at remote dates. ERA is not a second empirical spin model. |
+| Full celestial origin by pole-history transport | Mathematical nonrotation definition with one declared seed; no production implementation or qualified numerical date range exists yet in Wenu | The entire J2000-to-event history, derivative/transport method, convergence and cost must be admitted. The selected +/-12,000 target is not an already passed numerical gate. No disjoint endpoint or pole-only test can certify the full matrix. |
+| Modern standard frame used as origin seed (`c2i06a`) | Evaluated once at TT J2000.0, then its reference direction is projected onto the nominal hybrid equator | Only the seed is borrowed. Neither the IAU2006 precession polynomial nor modern `s06` series is evaluated at the remote event. This projection is an explicit convention, not a measured ancient alignment. |
+| VCW precession locator `s_A` (Eq.26/Table9) | Published long-term PRECESSION locator; fitted within the VCW long-term study, separately from the complete nutating-origin history | Potential comparison/acceleration ingredient only. It excludes nutation's secular/periodic contribution, is not automatically the exact integral of the corrected biased pole, and must not silently replace the full locator at any date. |
+| Ancient polar motion, celestial-pole offsets and FCN | `xp=yp=0` is the agreed omission; observed pole offsets and unpredictable free-core nutation are unavailable in this nominal route | No physically validated ancient/future range is implied by zeros/omissions. Their actual errors remain unknown throughout the target range; no synthetic final-IERS observations or backward Chandler-phase prediction. |
+| Proposed terrestrial-origin locator `s'=0` | Fixed-origin convention, not a geophysical prediction. ERFA `sp00` approximates a secular drift of a fundamentally observation-dependent polar-motion integral | Do not replace this explicit convention with an extrapolated modern drift. Its physical discrepancy is unknown; it supplies no historical terrestrial reference-frame reconstruction. |
+| Modern final-IERS reception service | Existing Wenu conservative model interval 1950–2050, intersected with actual admitted final-EOP/leap resources; its UTC adapter is post-1972 | Preserved and not extended to +/-12,000. It is a separate modern route, not a fallback for unavailable ancient orientation. |
+| Modern locator/sidereal-time approximations | `s06`, modern IAU2006 precession/GMST developments and empirical `sp00` are model-specific, modern-precision expressions | Excluded as remote-event substitutes in the selected route. A polynomial's ability to return a number is not a long-term admission; matching the moving pole alone does not fix the meridian. |
+
+The orientation layer has no ephemeris or stellar-state dependency, but an
+eventual observer/chart product will have additional, independently intersected
+limits:
+
+| Later dependency | Range/qualification that must be checked |
+|---|---|
+| Earth/Sun geometric ephemeris | JPL publishes DE440 for years 1550–2650 and DE441 for -13200..+17191. Those are source calendar labels, not exact split-JD segment boundaries or interchangeable TT/TDB/TCB events. DE441 broadly encompasses the target, but each selected local file/body/centre/segment, boundary and overlap still needs exact admitted coverage. No selected-resource failure may silently fall back or extrapolate. Published coverage is not uniform accuracy. |
+| Stellar motion/source models | Per-object source/model/capability domains remain authoritative. An orientation range cannot create missing historical models, invent radial velocity/distance, drop usable modern stars or automatically extend a saved catalogue/reuse policy. |
+| TT/TDB/TCB and site/correction services | Each later conversion, spatial convention, fixed-site assumption and correction needs its own admission/receipt. The exact linear TCB/TDB convention does not itself solve TT-to-dynamical-time mapping or historical civil clocks. Ancient UTC/time-zone/leap reconstruction is not supplied. |
+
+Range labels here use astronomical year numbering. J-12000/J+12000 mean TT
+Julian epochs (`2000 + (JD_TT-2451545)/365.25`); NASA's Delta-T application
+years and JPL's published coverage labels are calendar years and must not be
+treated as exact interchangeable event boundaries.
+
+**Required additional acceptance:** retain R2's unchanged evidence as sampled
+comparison only; include J-12000 and J+12000 endpoints, their entire origin
+histories and intermediate negative/positive epochs in the future full-matrix
+gate. Check just-inside/at/outside admission, scale/phase wrapping, refinement,
+failure after warm use and measured long-path cost. If numerical reliability or
+resource coverage fails at a requested event, refuse rather than implying that
+the agreed target has already been achieved. Physical error may remain unknown
+even when all numerical gates pass.
+
 ## Proposed smallest implementation and acceptance boundary
 
 After definition review and explicit implementation selection:
@@ -222,8 +276,9 @@ After definition review and explicit implementation selection:
    forward/inverse, determinant/orthogonality, and complete CIO/equinox matrix
    equivalence. Inject wrong signs/order, frozen/zero locator and bad seed.
    A fault must demonstrably fail its corresponding check.
-5. Exercise J-2000, J-8000 and selected future endpoints with finite-path
-   admission, refinement/cost and failure controls. These are full-frame checks;
+5. Exercise J-12000 and J+12000, retained J-2000/J-8000 references and
+   intermediate negative/positive epochs with finite-path admission, full-history
+   refinement/cost and failure controls. These are full-frame checks;
    retain R2's unchanged pole-only receipt instead of repeating it.
 6. Record cold/warm/sequence costs before admitting a practical algorithm.
    Long-period precession acceleration must not alias the shorter nutation terms.
@@ -241,6 +296,10 @@ Do not close parent K4b.08 or activate observer/chart integration with R3 alone.
 
 Reviewed 2026-11-02:
 
+- NASA Espenak--Meeus polynomial application interval and coefficients:
+  https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html
+- JPL DE440/DE441 published spans and model distinction:
+  https://ssd.jpl.nasa.gov/doc/de440_de441.html
 - IERS Conventions (2010), chapter 5, Eq. (5.8) and sections 5.4–5.5:
   https://iers-conventions.obspm.fr/content/tn36.pdf
 - VCW 2011, Sect. 5, Eqs. (24)–(28), Table 9:

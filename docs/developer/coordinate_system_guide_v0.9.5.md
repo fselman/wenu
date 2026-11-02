@@ -6,8 +6,10 @@ The [K4b.08.R3 definition candidate](research/nominal_earth_orientation_meridian
 distinguishes the pole from the zero of rotation about that pole. It proposes
 nonrotating-origin transport along the same nominal nutating pole history,
 a declared J2000 seed and split-UT1 ERA. The full matrix, rather than pole
-agreement alone, must pass later acceptance. Explicit `s'=0`, seed, finite
-computational domain and numerical method remain review proposals.
+agreement alone, must pass later acceptance. Explicit `s'=0`, seed and numerical-method choices remain review proposals.
+The user-selected computational target is J-12000..J+12000; its component
+model spans, extrapolations and pending numerical limits are explicitly
+recorded in the definition. This is not an admitted physical-accuracy range.
 This orientation changes axes only; it supplies no observer translation,
 apparent correction, historical site/ITRF realization or chart adoption.
 

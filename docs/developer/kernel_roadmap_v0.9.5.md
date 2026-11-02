@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 134, 2026-11-02. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 assessment is accepted/merged through #368. K4b.08.R3 complete-orientation/meridian definition is selected; its concrete mathematical/numerical proposals require review before implementation. Full observer integration remains separate.
+**Plan revision:** 135, 2026-11-02. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 assessment is accepted/merged through #368. K4b.08.R3 complete-orientation/meridian definition is selected; its concrete mathematical/numerical proposals require review before implementation. Full observer integration remains separate.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -1290,9 +1290,14 @@ The source review identifies VCW's published precession locator and the full
 IERS nonrotating-origin definition. The candidate defines a complete celestial
 origin by transporting the same nutating pole history from a declared modern
 reference seed, then composes split-UT1 ERA. It proposes explicit `s'=0` along
-with the agreed ancient `xp=yp=0`, finite initial computational admission
-J-8000..J+8000 and complete-matrix/convergence/workload acceptance.
-These are concrete review proposals, not already qualified runtime choices.
+with the agreed ancient `xp=yp=0` and complete-matrix/convergence/workload
+acceptance.
+The user subsequently selected the expanded J-12000..J+12000 computational
+target with “Proceed. Make a note on what the validity range limitations of each
+component model are.” The linked definition now records each component's
+published span, extrapolation, actual tested interval and unknown physical
+accuracy separately. Seed/origin/numerical choices remain concrete review
+proposals; no runtime date range is already qualified.
 No old mean-axis or modern final-IERS/default behavior changes.
 
 **Gate and exit:** verify current source/public signatures and primary equations,
@@ -1305,8 +1310,10 @@ The later implementation must test full origin/meridian matrices, independent
 formulations, fault/refusal/isolation and actual long-path cost before admission;
 R2's pole-only diagnostics do not substitute for those gates.
 
-Current status: source assessment/definition candidate delivered; Mac
-documentation gate and user review pending.
+Current status: source assessment/definition candidate delivered. Original
+36-case Mac documentation gate passed in 8.40 s at `6e2e25a`; subsequent
+user-selected range expansion/validity-note revision needs its changed-document
+gate. User definition review and production implementation remain separate.
 
 ### K4b.08 parent requirements and acceptance
 

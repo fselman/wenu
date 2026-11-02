@@ -7,8 +7,11 @@ proposes a consistent celestial-origin and terrestrial-meridian convention for
 the accepted nominal IAU2000A/VCW direction. It uses the full pole-history
 nonrotating-origin definition and the existing split-UT1 rotation service.
 Seed, terrestrial-origin, finite-domain and numerical/workload gates are
-explicit review proposals. No runtime or observer/chart integration is added;
-Mac documentation verification and user definition review are pending.
+explicit review proposals. Fernando selected the computational target
+J-12000..J+12000 and a component-by-component validity/extrapolation ledger.
+No runtime or observer/chart integration is added. The original documentation
+gate passed at `6e2e25a`; verification of the range/validity revision and user
+definition review remain pending.
 
 ## Ancient observer orientation assessment
 

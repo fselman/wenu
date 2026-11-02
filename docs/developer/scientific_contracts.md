@@ -7,9 +7,12 @@ defines a proposed full-origin/meridian contract, not an implemented service.
 The recommendation uses the same normalized nominal IAU2000A/VCW pole history
 for nonrotating celestial-origin transport, an explicitly seeded J2000 frame
 and split-UT1 ERA. The seed projection, `s'=0` terrestrial-origin convention,
-J-8000..J+8000 initial computational admission and later complete-matrix/
-convergence/cost gates are proposals for review. No accuracy, runtime or chart
-admission follows from this definition.
+and later complete-matrix/convergence/cost gates remain proposals for review.
+Fernando selected the expanded J-12000..J+12000 computational target and an
+explicit [component validity ledger](research/nominal_earth_orientation_meridian_contract_v1.md#component-validity-and-extrapolation-limits).
+Published model span, extrapolation permission, tested interval and physical
+accuracy are separate facts. Neither the selected target nor numerical
+computability admits a runtime observer/chart range or a physical-error bound.
 
 ## Ancient orientation assessment boundary
 
