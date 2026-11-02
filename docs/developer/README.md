@@ -1,15 +1,26 @@
 # Wenu developer documentation
 
+## Complete nominal orientation and meridian definition
+
+The selected [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
+proposes a consistent celestial-origin and terrestrial-meridian convention for
+the accepted nominal IAU2000A/VCW direction. It uses the full pole-history
+nonrotating-origin definition and the existing split-UT1 rotation service.
+Seed, terrestrial-origin, finite-domain and numerical/workload gates are
+explicit review proposals. No runtime or observer/chart integration is added;
+Mac documentation verification and user definition review are pending.
+
 ## Ancient observer orientation assessment
 
 The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
 examines nominal forced nutation compatible with existing VCW mean axes and
 explicitly omits ancient polar motion. At `dd1db923`, all 36 Mac documentation
 cases passed and the 1,374-event diagnostic completed with sign-fault detection.
-The report recommends a nominal IAU2000A/VCW candidate and discloses unresolved
-full-origin/convention composition. Final receipt-document verification and user
-review remain pending; no production prescription or observer/chart adoption
-is selected.
+The nominal IAU2000A/VCW recommendation and its explicit full-origin/convention
+gaps were accepted. Final receipt documentation passed 36 cases in 7.00 s at
+`1d3278d`; #368 merged at `067e3b33`, with clean synchronized Mac and local/
+remote task-branch cleanup confirmed. R2 is closed as an assessment;
+full observer/chart integration and parent K4b.08 remain open.
 
 The [rotation study](research/earth_rotation_models_guide_v1.md) led to accepted
 K4b.08.R1: #367 merged at main `7935541c` after six focused and 36 documentation

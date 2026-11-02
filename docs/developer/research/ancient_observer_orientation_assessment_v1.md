@@ -13,9 +13,12 @@ or authorization for the entire ancient observer/chart integration.
 
 Source inspection and the bounded numerical comparison are complete. At
 `dd1db923`, all 36 Mac documentation cases passed in 8.14 s and the subsequent
-1,374-event diagnostic completed without error. The receipt and proposed
-recommendation below do not select a production model. Final receipt-document
-verification and user review remain pending. No production, dependency, SDK,
+1,374-event diagnostic completed without error. The recommendation below was accepted as the assessment outcome. Final receipt
+documentation passed 36 cases in 7.00 s at `1d3278d`, followed by user acceptance,
+#368 merge at `067e3b33` and confirmed clean synchronized Mac/branch cleanup.
+R2 is closed as an assessment with explicit full-composition gaps; no production
+implementation was added. The subsequent [R3 definition candidate](nominal_earth_orientation_meridian_contract_v1.md)
+addresses that separate boundary. No production, dependency, SDK,
 default, source catalogue or resource change is introduced.
 
 ## Existing owners and constraints
@@ -198,7 +201,7 @@ and the published 2011 introduction. This is a convention overlap to disclose,
 not evidence for deleting arbitrary series terms or an ancient error bound;
 the quoted amplitudes are not promoted to a bound on the extrapolated model.
 
-**Recommended candidate, not yet adopted:** retain VCW mean axes and use the
+**Accepted assessment recommendation, not implemented:** retain VCW mean axes and use the
 classical IAU2000A forced-nutation angles from `nut00a` as an explicitly named
 nominal hybrid, with VCW-derived mean obliquity and recorded extrapolation.
 Keep IAU1980 as a comparison/reference option if later selected. Do not
@@ -227,7 +230,7 @@ The remaining full-composition boundary is explicit:
   observer/correction/product seam with its own acceptance.
 
 No production implementation is activated by this recommendation. K4b.08.R2
-may be reviewed as an assessment with these explicit unresolved composition
+was accepted as an assessment with these explicit unresolved composition
 items; parent K4b.08 remains open. The next bounded proposal should settle the
 full orientation/meridian contract before connecting an ancient site or chart.
 Do not rerun this unchanged numerical workload merely for receipt-text edits.

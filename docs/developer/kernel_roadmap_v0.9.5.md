@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 133, 2026-10-31. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 orientation assessment is selected; no production nutation prescription or full observer integration is selected by that assessment.
+**Plan revision:** 134, 2026-11-02. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 assessment is accepted/merged through #368. K4b.08.R3 complete-orientation/meridian definition is selected; its concrete mathematical/numerical proposals require review before implementation. Full observer integration remains separate.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -47,14 +47,15 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `7935541c211588e1d4442e535e00feae64c13e84`,
-confirmed clean/synchronized on the Mac on 2026-10-31. #365 saved epoch CLI,
-#366 rotation research and #367 named rotation model are accepted/merged.
-The saved handoff records completed #367 Mac acceptance and branch cleanup;
-the #367 PR records six focused and 36 documentation passes at `639193c6`.
-Fernando selected the nominal forced-nutation assessment with explicit ancient
-polar-motion omission using “Agreed. Proceed.”; K4b.08.R2 records that bounded
-scope below. A concrete nutation prescription and observer product remain pending.
+**Current accepted base:** main `067e3b337b6d2af52cf0447c6f7c229ee9c140df`,
+confirmed clean/synchronized on the Mac with only main/origin-main and local/
+remote R2 branch deletion. #368's accepted R2 assessment passed the 1,374-event
+Mac diagnostic and final 36 documentation cases at `1d3278d`; the merged tree
+equals that tested head. Its nominal IAU2000A/VCW recommendation is accepted
+as the assessment outcome, with full-origin/convention gaps explicit.
+Fernando then selected complete orientation/meridian definition with “Proceed.”
+K4b.08.R3 records that definition-only scope; no runtime implementation or
+full observer/chart product is activated. R1/#367 remains accepted.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -74,8 +75,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1 accepted through #367/main 7935541c. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08.R2: assess nominal forced nutation compatible with existing VCW axes, explicitly omit ancient polar motion, execute bounded diagnostics and recommend a composition. No production model or chart integration selected |
+| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1 and R2 accepted/merged; #368 main 067e3b33 is clean/synchronized and task branches removed. Parents K4b.07/K4b.08 remain open |
+| Next bounded submilestone | K4b.08.R3: define complete nominal orientation and meridian convention from the accepted IAU2000A/VCW assessment. Source assessment and a concrete definition candidate are delivered for review; production algorithm and observer integration remain unselected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1267,9 +1268,45 @@ documentation cases passed in 8.14 s and the 1,374-event diagnostic completed
 with sign-fault detection. The receipt records sampled differences and unknown
 physical errors. The IAU2000A/VCW nominal hybrid is recommended, not adopted;
 full meridian/origin and reference-convention composition remains explicit.
-Final receipt-document verification and user review are pending. Concrete
-production composition/domain requires subsequent explicit agreement and its
-own bounded implementation gate.
+Final receipt-document verification passed all 36 cases in 7.00 s at
+`1d3278d`; Fernando accepted with “Accepted. Proceed.”, then explicitly
+authorized “merge and clean”. #368 merged at `067e3b33`, identical tested tree
+`c476827944a9d44b074e2e939afdfe7559319dc9`; clean synchronized Mac and branch
+deletion are confirmed. R2 is closed as an assessment with the recorded gaps.
+Concrete production composition/domain requires subsequent explicit agreement
+and its own bounded implementation gate.
+
+### K4b.08.R3: complete orientation and meridian definition
+
+**Selection:** after #368 acceptance/merge and confirmed clean synchronized Mac
+main `067e3b337b6d2af52cf0447c6f7c229ee9c140df` with task branches removed,
+Fernando selected “defining the complete orientation and meridian convention
+before integrating the ancient Earth-bound observer” with “Proceed.”
+This is an assessment/contract task, not production implementation.
+
+**Delivered candidate:** [complete-orientation definition](research/nominal_earth_orientation_meridian_contract_v1.md).
+Retain the accepted nominal IAU2000A/VCW recommendation and named R1 timing.
+The source review identifies VCW's published precession locator and the full
+IERS nonrotating-origin definition. The candidate defines a complete celestial
+origin by transporting the same nutating pole history from a declared modern
+reference seed, then composes split-UT1 ERA. It proposes explicit `s'=0` along
+with the agreed ancient `xp=yp=0`, finite initial computational admission
+J-8000..J+8000 and complete-matrix/convergence/workload acceptance.
+These are concrete review proposals, not already qualified runtime choices.
+No old mean-axis or modern final-IERS/default behavior changes.
+
+**Gate and exit:** verify current source/public signatures and primary equations,
+preflight changed links/inventory and run the complete documentation gate.
+User review selects or revises the mathematical contract, seed, terrestrial
+origin and bounded future implementation scope. No new numerical workload,
+production/test/dependency/SDK/resource/catalogue/CLI/chart/worker change,
+site realization, apparent correction or parent closure occurs here.
+The later implementation must test full origin/meridian matrices, independent
+formulations, fault/refusal/isolation and actual long-path cost before admission;
+R2's pole-only diagnostics do not substitute for those gates.
+
+Current status: source assessment/definition candidate delivered; Mac
+documentation gate and user review pending.
 
 ### K4b.08 parent requirements and acceptance
 

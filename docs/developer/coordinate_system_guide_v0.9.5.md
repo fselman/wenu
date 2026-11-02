@@ -1,11 +1,23 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Full celestial origin and terrestrial meridian proposal
+
+The [K4b.08.R3 definition candidate](research/nominal_earth_orientation_meridian_contract_v1.md)
+distinguishes the pole from the zero of rotation about that pole. It proposes
+nonrotating-origin transport along the same nominal nutating pole history,
+a declared J2000 seed and split-UT1 ERA. The full matrix, rather than pole
+agreement alone, must pass later acceptance. Explicit `s'=0`, seed, finite
+computational domain and numerical method remain review proposals.
+This orientation changes axes only; it supplies no observer translation,
+apparent correction, historical site/ITRF realization or chart adoption.
+
 ## Nominal ancient orientation assessment
 
 The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
 keeps mean axes, forced nutation, spin and polar motion distinct. Existing VCW
-mean axes are retained. No forced-nutation prescription or compatible
-sidereal-angle/CIO composition has yet been selected. Ancient polar motion
+mean axes are retained. The nominal IAU2000A/VCW recommendation is accepted as the R2 assessment
+outcome; its complete origin/meridian composition remains to be accepted and
+implemented separately. Ancient polar motion
 is explicitly omitted, not measured as zero; unknown physical errors remain
 unknown. The accepted rotation adapter does not replace Skyfield/Astropy's
 other orientation algorithms or extend the modern final-IERS backend.
