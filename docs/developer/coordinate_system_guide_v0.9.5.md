@@ -470,6 +470,15 @@ altitude \(a\), with Astropy's azimuth convention: zero at geographic north,
 increasing eastward. A horizontal coordinate is incomplete without site,
 instant, Earth-orientation information, and an atmospheric/refraction policy.
 
+For the new K4b.08 route, Fernando selected distinct geometric, vacuum apparent
+and refracted outputs, with SOFA/ERFA as the initial refraction model. The
+[observer atmospheric contract](research/earth_bound_observer_contract_v1.md#selected-sofaerfa-refraction-contract)
+owns the atmosphere/wavelength inputs, observed-angle convention and finite
+domain/accuracy qualification. These agreed requirements are not implemented
+AltAz behavior; current modern vacuum contracts below remain current. A
+refracted altitude must retain its atmosphere identity and must not be labelled
+geometric or vacuum apparent.
+
 Let latitude be \(\phi\), local apparent or sidereal hour angle be
 \(H=\theta_{L}-\alpha\), and declination be \(\delta\). The elementary
 geometric transformation is

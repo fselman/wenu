@@ -2820,8 +2820,19 @@ additional PN derivative inputs. A finite-difference comparison is not a
 certified total bound. Numerical stencil choices or analytic derivatives need
 their own qualification; no such execution is claimed by this document.
 
-Contract review must distinguish accepted behavior from remaining numerical
-velocity and correction proposals. Later runtime gate selection
+The three-output/SOFA refraction consolidation remains documentation only;
+repeat the same complete gate after these source changes. The 36-case Mac pass
+at `611d409c` remains evidence for its prior source. Later runtime acceptance
+must independently check atmospheric units/site-pressure convention, coefficient
+references, observed-angle application/sign, altitude/input-domain refusal,
+zero-pressure limit, missing-input handling and immutable atmosphere identities.
+Protect separate geometric/vacuum/refracted availability, unchanged vacuum
+results and single correction application. Separate numerical round trips from
+physical atmospheric uncertainty; no Wenu accuracy bound is inferred from the
+library's conditional performance or horizon safeguards.
+
+Contract review must distinguish agreed requirements from implemented behavior
+and remaining numerical velocity/correction/atmosphere choices. Later runtime gate selection
 must protect exact event/reference/site/resource bindings, distance and
 population semantics, independent local-triad/observer geometry, unsupported
 accuracy, correction ownership and isolation. Product/CLI/worker and visual

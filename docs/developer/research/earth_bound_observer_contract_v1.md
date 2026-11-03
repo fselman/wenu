@@ -9,8 +9,8 @@ then confirmed clean synchronized Mac main
 `cd5c9b76c6fc25df6adb26b2a086aabf44e5e581`. It is a bounded definition under
 the existing K4b.08 parent, not a new runtime milestone or authorization to
 activate the parent backlog. This document defines required semantics and
-identifies decisions needed to select a later implementation. Accepted site/time choices are identified below; the remaining scientific
-choices are review proposals, not already adopted policies.
+identifies decisions needed to select a later implementation. Accepted site/time, IAU/GR, three-output and SOFA/ERFA refraction choices are
+identified below; unresolved numerical and product choices remain review items.
 
 Deliver an explicit fixed-site, exact-event observer contract before runtime,
 followed separately by observer implementation and product adoption. No code,
@@ -283,14 +283,17 @@ by this definition. Position-only geometric output must not advertise velocity.
 ## Output capabilities and correction ownership
 
 Output meaning is mandatory, independent of display axes or chart style.
-Candidate capabilities below describe distinct quantities, not fallback stages.
+Fernando selected geometric, vacuum apparent and refracted outputs with “The
+three of them” on 2026-11-03, then accepted SOFA/ERFA for refraction with
+“SOFA/ERFA is OK. Proceed.” These are agreed capabilities for the new route,
+not implemented products, an output default or automatic fallback stages.
 
 | Quantity | Necessary inputs and meaning | Must not imply |
 |---|---|---|
 | Nominal orientation-only local direction | Admitted source direction and exact-event R3 matrix/local axes; source origin/status retained | Topocentric parallax, aberration, distance or an apparent observation |
 | Simultaneous geometric topocentric direction/range | Compatible finite source/Earth/site positions at one admitted event; subtract observer position once and normalize | Light-time range, apparent place or refraction |
 | Vacuum apparent direction | Explicit admitted correction policy and required source/Earth/Sun/site PV; identified intermediate stages | Atmospheric or measured ancient accuracy |
-| Refracted direction | Separately selected atmosphere/wavelength model and domain | A default part of vacuum output; not selected here |
+| Refracted apparent direction | Selected SOFA/ERFA atmospheric model applied to the admitted vacuum apparent direction, with explicit atmosphere/wavelength and qualified domain | A default part of vacuum output or a reconstruction of actual ancient weather |
 
 An orientation-only local direction is an explicit approximation capability;
 it must not be selected automatically when parallax/corrections were required.
@@ -312,6 +315,63 @@ remain omitted unless separately selected. Existing solar-system light-time
 owners retain their own contracts; this task adds no new planetary observer.
 Fixed boundaries/contours/grids remain geometry, with no invented parallax.
 
+### Selected SOFA/ERFA refraction contract
+
+The initial model is the SOFA-derived ERFA `refco` coefficient model, with a
+qualified application of its refraction convention. Optical/IR use is the
+initial scientific context; selecting the library does not qualify a radio
+product or a separate low-altitude ray-tracing model. Hohenkerk–Sinclair and
+Bennett/Sæmundsson alternatives are not selected.
+
+The model relates vacuum and observed zenith distances by
+
+```text
+z_vacuum − z_observed = A tan(z_observed) + B tan³(z_observed).
+```
+
+The argument is the refracted zenith distance. The forward application must
+respect this implicit relation and qualify the chosen numerical application;
+evaluating its right side at the vacuum angle is not the defining equation.
+The atmosphere record supplies pressure at the site in hPa, temperature in °C,
+relative humidity on [0,1], and wavelength in micrometres. Sea-level-corrected
+pressure is not the required site pressure. Preserve original units, input
+provenance, model/backend version, coefficients and the application method.
+A declared atmospheric scenario can support an ancient/future calculation;
+it does not recover the actual weather. No atmospheric defaults are selected.
+
+Apply this atmospheric operation once to the vacuum result. Keep all three
+quantities bound to the same site/event/source and correction identities, with
+separate availability and atmospheric assumptions. Missing atmospheric inputs
+must not silently become zero pressure or a vacuum result labelled refracted.
+The chosen product policy must explicitly refuse or report an unavailable
+requested capability. Selecting all three capabilities does not require every
+source to supply every quantity or authorize dropping catalogue rows.
+
+The existing modern `ErfaReceptionBackend` prepares zero refraction coefficients;
+its frozen context admission rejects nonzero `refa`, `refb` and `diurab`.
+Preserve those vacuum/integrity guards. ERFA `atioq` also performs orientation
+and diurnal aberration: rerunning a complete observed-place transformation on
+an already corrected vacuum direction risks duplicate operations. Define the
+atmospheric seam in the existing observer owner; do not mutate a modern context
+or relabel the R3 orientation as one. No wrapper or API is implemented here.
+
+Accuracy must depend on altitude and atmospheric knowledge. ERFA `atioq` gives
+conditional optical performance of about 0.05 arcsec for zenith distances below
+70°, better than 30 arcsec at 85°, and better than 20 arcmin at the horizon,
+assuming accurate meteorology and no gross local effects. These are backend
+statements, not Wenu-certified bounds. Forward/inverse agreement is a separate
+numerical diagnostic. Numerical safeguards near the horizon do not establish
+physical admission. The later implementation must define finite angle/input
+domains, requested-accuracy refusal and explicit low-altitude status; this
+agreement chooses no universal cutoff or below-horizon ray solution.
+
+The coefficient model omits explicit height effects apart from pressure,
+latitude dependence and variable tropospheric lapse rate. WGS84 ellipsoid height
+still owns site geometry; terrain, horizon depression, local vertical anomalies
+and anomalous atmospheric profiles are not supplied by this model. Keep
+atmospheric-input uncertainty, model discrepancy and numerical error separate
+from the vacuum error channels; unknown physical errors remain unknown.
+
 ## Immutable result, reporting and refusal
 
 The future service returns an immutable result binding site/assumption identity,
@@ -319,7 +379,8 @@ exact requested and actual events, time conversions, R1/R3 identities and
 matrices, source/resource hashes, spatial composition and correction policy.
 Carry frame, physical origin, position status, distance/velocity capabilities,
 applied/omitted operations, output units and singular/unavailable statuses.
-Reports must distinguish a nominal horizon from an apparent vacuum direction.
+Reports must distinguish nominal orientation-only, geometric, vacuum apparent
+and refracted quantities, including atmospheric assumptions and availability.
 Do not claim a universal public record class, TOML/CLI syntax, serialization
 format or SDK version in advance of implementation review.
 
@@ -361,8 +422,10 @@ Before selecting runtime scope, resolve these concrete choices together:
    finite domains. Preserve the agreed IAU/GR spatial convention; design and
    qualify the retained approximation order and terms.
 3. Review/qualify the derivative-consistent site-velocity construction and its
-   local numerical/rate admission, including R1/calendar joins. Select geometric
-   versus apparent first output separately; do not claim it from position matrices.
+   local numerical/rate admission, including R1/calendar joins. Preserve all
+   three agreed outputs and SOFA/ERFA refraction; design the ordered correction
+   policy, atmosphere inputs, numerical application and finite admission before
+   runtime. Do not claim apparent capability from position matrices.
 4. Agree capability-aware modern measured-parallax/missing-input treatment
    before population-preserving chart adoption.
 5. Select exact finite events/resources and independent numerical references
@@ -373,7 +436,11 @@ Later runtime tests must cover independent ellipsoid/local-triad geometry,
 longitude sign, poles/zenith/nadir/wrap/horizon cases, site velocity/reference
 composition, exact time/event/resource binding, Earth-centre/EMB confusion,
 distance-dependent capabilities, correction duplication/omission, wrong domains,
-accuracy refusal and request isolation. Modern reference agreement must be
+accuracy refusal and request isolation. Refraction acceptance additionally needs
+independent coefficient/application references, correct observed-angle/sign/units,
+zenith/altitude-domain cases, zero-pressure numerical limit, invalid/missing
+atmosphere refusal, no duplicate corrections and unchanged vacuum results.
+A zero-pressure test does not authorize missing-input fallback. Modern reference agreement must be
 compared under matching policies; remote tests establish numerical composition,
 not historical physical accuracy. Product adoption separately needs actual
 Python/CLI/serial/spawn and visual horizon receipts, including a qualified
@@ -389,3 +456,6 @@ Nineveh-era and future example. None is claimed executed by this contract.
 - [IAU framework: Soffel et al. (2003)](https://arxiv.org/html/astro-ph/0303376v1) and [USNO Circular 179, Section 1.4](https://aa.usno.navy.mil/downloads/Circular_179_bw.pdf): adopted reference-system formulation within GR, β=γ=1; PPN extensions are separate.
 - [JPL/NAIF SPK required reading](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html): ephemeris position/velocity states and resource coverage.
 - [JPL/NAIF state transformation interface](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sxform_c.html): position/velocity frame transforms. This is a reference for the state-transform distinction, not selection of SPICE Earth orientation for R3.
+
+- [ERFA `refco.c`](https://github.com/liberfa/erfa/blob/master/src/refco.c): selected coefficient equation, observed-angle convention, atmospheric input units and model omissions.
+- [ERFA `atioq.c`](https://github.com/liberfa/erfa/blob/master/src/atioq.c): atmospheric application, conditional altitude-dependent accuracy, numerical safeguards and other operations that must not be duplicated.

@@ -234,8 +234,18 @@ PV; the [site-velocity definition](research/earth_bound_observer_contract_v1.md#
 derives the local contribution from the same fixed-site/R1/R3 trajectory and
 consistent spacetime conversion. Do not invent rates at model discontinuities
 or silently substitute constant spin. Retained PN order/terms, numerical rate
-construction, output/correction choices and runtime/CLI qualification remain
+construction, concrete correction policy and runtime/CLI qualification remain
 pending. Accepted orientation evidence is unchanged.
+
+Fernando selected all three output capabilities (geometric, vacuum apparent,
+refracted) and SOFA/ERFA as the initial refraction model. The
+[atmospheric contract](research/earth_bound_observer_contract_v1.md#selected-sofaerfa-refraction-contract)
+owns input units/provenance, observed-angle convention, single application,
+altitude-dependent limitations and explicit unavailability. Keep existing modern
+vacuum/integrity guards; no invented weather or silent zero-pressure fallback.
+Atmospheric defaults, numerical application and finite admission still need
+qualification. This selection supplies neither an ancient-weather reconstruction
+nor a universal error bound or an implemented refracted observer.
 
 [K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
 not an admitted observer model. A barycentric direction, a TT-oriented view and

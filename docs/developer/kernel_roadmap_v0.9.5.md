@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 139, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition is selected; numerical rate design, runtime/CLI implementation, output choices and chart integration remain pending.
+**Plan revision:** 140, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -80,7 +80,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08 observer contract review: site/time and IAU/GR spatial convention agreed; consistent JPL-orbital plus local-site velocity definition selected. Review concrete time/resource/rate numerical design and output/correction choices before selecting runtime. No automatic acquisition, optimization or long integration |
+| Next bounded submilestone | K4b.08 observer contract review: site/time and IAU/GR spatial convention agreed; consistent JPL-orbital plus local-site velocity definition selected. All three outputs and SOFA/ERFA refraction agreed; review concrete time/resource/rate/correction/atmosphere design before selecting runtime. No automatic acquisition, optimization or long integration |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1412,8 +1412,26 @@ No runtime/numerical derivative algorithm, source/test/SDK/dependency/resource,
 CLI/worker/chart or acquisition change is selected. The previous 36-case Mac
 pass at `a07690ea` remains evidence for its prior source. Later implementation
 needs a bounded concrete time/resource/derivative design and independent
-acceptance; apparent-output/correction and remaining population choices remain
+acceptance; concrete correction and remaining population choices remain
 open. This definition does not activate all of K4b.08 or authorize merge/cleanup.
+
+**Output/refraction agreement, 2026-11-03:** Fernando selected geometric,
+vacuum apparent and refracted capabilities with “The three of them”, then
+accepted the recommended initial model with “SOFA/ERFA is OK. Proceed.”
+Consolidate these decisions in the [output/refraction contract](research/earth_bound_observer_contract_v1.md#selected-sofaerfa-refraction-contract)
+and linked scientific/coordinate/testing guidance. Use an explicit atmosphere
+and wavelength, the correct observed-zenith-distance convention, common
+site/event identities and distinct quantities/availability. Preserve the
+existing modern frozen vacuum context. Refraction occurs once; no fabricated
+weather, silent zero pressure, duplicate corrections or relabelled fallback.
+Record backend altitude-dependent limitations without claiming a Wenu bound.
+Concrete atmosphere defaults, finite angle/input admission, numerical application,
+ordered apparent corrections, output defaults and CLI syntax remain unresolved;
+no alternative low-altitude model or radio product is selected. The complete
+documentation gate is the acceptance scope. The 36-case Mac pass at `611d409c`
+certifies its prior source only; the consolidated source needs the same gate.
+No runtime, tests, dependencies, resources, numerical workload or acquisition
+is added by this agreement. It does not close K4b.08 or authorize merge/cleanup.
 
 The guide belongs at the user-requested developer root: update its index and
 the existing documentation-test root allowlist, with no new test/collection or
@@ -2730,6 +2748,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 140: three outputs and SOFA/ERFA refraction | Fernando’s “The three of them” and “SOFA/ERFA is OK. Proceed.” on 2026-11-03 | Consolidate geometric/vacuum apparent/refracted capabilities and the initial SOFA/ERFA model, explicit atmosphere/units/provenance, correction ownership, altitude-dependent limits and refusal semantics. Documentation only; finite admission, numerical application and runtime/product qualification remain pending. |
 | Revision 139: IAU/GR spatial agreement and consistent site-velocity definition | Fernando’s spatial agreement, explicit IAU formulation confirmation and “Proceed” after JPL/local-site clarification on 2026-11-03 | Record standard GR β=γ=1, returned JPL Earth orbital PV and derivative-consistent local motion/IAU conversion, rate/join/domain refusal and required independent future qualification. Documentation only; no numerical algorithm, runtime, tests, acquisition, CLI/product integration or long origin rerun. Retained PN order/terms and remaining output policies require design/review. |
 | Revision 138: time guide and agreed site/time choices | Fernando’s “Agreed” to the explained fixed WGS84 site and explicit request to save a developer guide and select option 3 with optional CLI options 1/2 on 2026-11-03 | Record ephemeris-based primary TT–TDB and explicit optional equality/full-ERFA CLI requirements for the new observer; preserve modern defaults, finite admissions and no silent fallback. Add requested root guide/index and existing-test allowlist only. Concrete time resources/domain/design, spatial composition, velocity, runtime/CLI implementation and numerical qualification remain pending; no new acquisition or long integration. |
 | Revision 137: select K4b.08 observer contract definition | Fernando’s “Proceed” on 2026-11-03 and fresh clean synchronized Mac main cd5c9b76 confirmation | Documentation/review only: explicit site/datum, event/time receipts, compatible states, geometric/apparent outputs, correction and error/refusal semantics. Reconcile accepted #370 orientation evidence; preserve failed-original/successful-continuation distinction. No new milestone ID, runtime, dependency, resource acquisition, chart/CLI/worker, optimization or expensive numerical rerun; parents remain open. |
