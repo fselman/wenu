@@ -2774,8 +2774,32 @@ periodicity assertion. Every event must converge within its declared settings;
 an exhausted work budget/nonconvergence is a failed qualification, never a
 fallback or successful range admission.
 
-Local endpoint transport and Mac qualification are not yet run. Keep draft/
-pending status until evidence is reviewed. This service adds no chart, observer
+The accepted Mac focused gates and corrected retained-evidence continuation
+are recorded in the [R3 receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+The original long run remains failed; its J-13000 result was verified and reused
+alongside fresh J0/J+13000 results. This is not a fresh complete slow pytest
+rerun. Reuse those unchanged receipts; do not rerun integrations for this
+observer-contract documentation task. This service adds no chart, observer
 translation, corrections, ephemeris dependency, SDK/API pin, provider acquisition,
 persistent cache or current-default change. Physical accuracy remains unknown
 even if every numerical gate passes.
+
+
+## Earth-bound observer contract definition gate
+
+The selected K4b.08 [site/event/output definition](research/earth_bound_observer_contract_v1.md)
+is documentation only. Run the complete existing `documentation` gate with
+plugin autoload disabled and fresh temporary/cache/bytecode directories; retain
+run provenance under `~/Software/build/wenu/test/`. Verify current links,
+anchors, source inventory, public import/examples and preserved archives normally.
+No gate-manifest, production, test, dependency, SDK, resource or collection change
+is selected. Reuse accepted R1/R2/R3 and stellar/companion receipts without
+repeating their numerical integrations or acquisition.
+
+Contract review must distinguish accepted behavior from candidate fixed-site,
+time/spatial, velocity and correction policies. Later runtime gate selection
+must protect exact event/reference/site/resource bindings, distance and
+population semantics, independent local-triad/observer geometry, unsupported
+accuracy, correction ownership and isolation. Product/CLI/worker and visual
+acceptance remain separate; a documentation pass supplies no runtime observer
+or ancient physical-accuracy qualification.

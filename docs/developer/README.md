@@ -5,23 +5,27 @@
 ## Complete nominal Earth-orientation implementation
 
 The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
-is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
-`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
-orientation-service implementation with target J-13000..J+13000, approximately
-one precession cycle; exact endpoint closure is not required.
+and implementation are accepted/merged through #369/#370, main `cd5c9b76`.
+The finite computational target is J-13000..J+13000, approximately one
+precession cycle; exact endpoint closure is not required. Three-event
+qualification does not establish uniform physical or numerical accuracy.
 
-The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
-full-pole-history nonrotating-origin transport from the declared J2000 seed,
+The accepted opt-in service composes VCW mean axes, classical nominal
+IAU2000A nutation, full-pole-history nonrotating-origin transport from the declared J2000 seed,
 and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
 `s'=0` is explicit. It returns complete forward/inverse matrices and immutable
 event/model/backend/transport receipts. Published validity, numerical
 convergence and unknown physical accuracy remain separate; the linked component
 ledger applies to the expanded target.
 
-Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
-and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
-Observer/site/correction/chart integration and existing modern defaults are
-separate from this opt-in orientation service.
+PR #370 is accepted/merged at main `cd5c9b76`, with clean synchronized Mac
+and branch cleanup confirmed. Focused Mac checks and the corrected retained-evidence
+continuation passed at `9e319feb`; see the
+[accepted numerical receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result)
+for the failed original run, successful three-event continuation and measured
+costs. Physical and certified total numerical errors remain unknown.
+The selected [observer contract definition](research/earth_bound_observer_contract_v1.md)
+adds no observer/site/correction/chart runtime; modern defaults are unchanged.
 
 ## Ancient observer orientation assessment
 
@@ -176,7 +180,8 @@ explicitly postponed, not completed. Physical accuracy remains unknown; K4b.07/K
 The separately agreed [K4b.08 milestone](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs)
 covers explicit terrestrial sites, historical/future time and Earth-rotation
 policies, compatible relative states and correction/uncertainty reporting through
-existing chart owners. Definition and implementation remain pending. It neither
+existing chart owners. The [site/event/output definition](research/earth_bound_observer_contract_v1.md)
+is the selected documentation task; observer runtime remains unimplemented. It neither
 extends modern final-EOP reception coverage nor inserts a prerequisite before
 K4b.06 dated axes, K4b.07 native persistence or baseline K5 reconciliation.
 

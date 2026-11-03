@@ -1,5 +1,63 @@
 # Kernel migration: as-is functionality and test audit
 
+## Accepted nominal Earth-orientation result
+
+K4b.08.R3 implementation is accepted and merged through
+[PR #370](https://github.com/fselman/wenu/pull/370), main
+`cd5c9b76c6fc25df6adb26b2a086aabf44e5e581`, tree
+`fbf462fcfae5dd94aafe8ccd17fa497353543a8f`, identical to tested head
+`9e319feb1eab2c36de4041e9905976d86dd16ebb`. Fernando confirmed clean synchronized
+Mac main and local/remote branch cleanup; this was freshly reconfirmed on
+2026-11-03 before the observer-contract branch. No merge or cleanup remains.
+
+At production commit `e888781e`, the retained focused Mac run passed 75
+convention/frame cases, six rotation cases and 36 documentation cases.
+A test-only regime correction at `9e319feb` then passed 77 convention/frame
+cases (94 deselected); production bytes were unchanged. Retain:
+
+- `~/Software/build/wenu/test/nominal-orientation-focused-v1-ev4wfs7z`
+- `~/Software/build/wenu/test/nominal-orientation-regime-fix-v1-xr724v6q`
+- `~/Software/build/wenu/test/nominal-orientation-full-span-v1-ub6_g9vq`
+- `~/Software/build/wenu/test/nominal-orientation-continuation-v1-o4l0x_0i`
+
+The original full-span run remains **failed**: J-13000 passed and was exported;
+J0 returned but a test incorrectly required extrapolated Delta-T there; J+13000
+was not reached. J0 correctly uses the historical polynomial regime.
+The corrected continuation at `9e319feb` verified previous provenance,
+production/backend hashes, event/model/settings and R1 receipt; it reused the
+retained J-13000 result and freshly computed J0/J+13000. All three corrected
+checks passed. This is a successful retained-evidence continuation, not a fresh
+complete pytest rerun. Preserve both statuses and their dependency link.
+
+| TT Julian epoch | Origin preparation (s) | Cumulative samples | Convergence estimate (rad) | Unwrapped locator (rad) |
+|---|---:|---:|---:|---:|
+| -13000 | 1071.1793 | 21,230,169 | 2.140228716474013e-9 | -0.3645408418969595 |
+| 0 | 68.0070 | 1,369,699 | 9.835468560469643e-9 | -0.0014007885214102846 |
+| +13000 | 770.3135 | 15,568,794 | 1.43516840078739e-9 | 0.176679982176829 |
+
+Endpoint pole separation is 3.987124 degrees; locator difference is 31.009669
+degrees. The latter diagnoses the origin convention, not daily spin or a
+closed-loop holonomy: the path is not exactly closed. These are three-event
+full-history checks, not a uniform interval error bound, physical qualification
+or exact-periodicity claim. Estimates are not certified numerical bounds.
+Preparation timings are not the cost of applying an already prepared matrix.
+
+Mac backend: NumPy 1.26.3, PyERFA 2.0.1.5, ERFA 2.0.1, SOFA 20231011.
+Convention-owner SHA256:
+`95ecdb3e1741689e5153da2ae31a878ad4d907b37c93e51e6b466f42fc7d25fc`.
+Orientation result identities, respectively:
+
+- J-13000: `4a78976661d5c82d38ee445b8f8a4dafdcaad64b90f89c10c30f87d4c6c32ef1`
+- J0: `3e7fd4633e0f5ccd55fe45e8e7ab08120f679e5722bd65732917a1949707c5fa`
+- J+13000: `249fa2ca0597527c35959117d42e1c1812355956c2d4b4856a3416109efa913d`
+
+This accepts the opt-in orientation service with unknown physical and total
+numerical errors, finite request/path admission and measured preparation cost.
+No site, translation, apparent correction, TT/TDB realization, chart/CLI/worker
+adoption or K4b.08 parent closure follows. The selected next work is the
+[observer contract definition](research/earth_bound_observer_contract_v1.md),
+with runtime scope/scientific choices still subject to review.
+
 ## K4b.07.C2 exact-event companion candidate
 
 Fernando selected C2 with “Proceed” after #363 acceptance/merge/cleanup and

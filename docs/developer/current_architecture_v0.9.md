@@ -1,5 +1,18 @@
 # Wenu current architecture
 
+## Nominal orientation and observer composition boundary
+
+The existing `astrometric_coordinates.py` owner implements the accepted opt-in
+`NominalEarthOrientation` service and immutable full-matrix/event/transport
+receipts through #370/main `cd5c9b76`. Its accepted three-event history evidence
+and cost are recorded in the [numerical receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+It changes axes only; it supplies no site PV, matrix derivative, TT/TDB mapping
+or apparent observation. Existing `astrometric_observation.py` modern
+final-IERS/EPV00/DTDB/APCO admissions remain bounded and unchanged.
+The [observer contract definition](research/earth_bound_observer_contract_v1.md)
+is the selected documentation slice; its candidate composition choices are not
+implemented capabilities. No second renderer or source-propagation owner follows.
+
 ## Saved epoch position consumption
 
 `stellar_epoch_consumer.py` owns captured query-input admission and the lifecycle

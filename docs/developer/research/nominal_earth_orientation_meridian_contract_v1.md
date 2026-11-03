@@ -1,6 +1,6 @@
 # Nominal Earth orientation and meridian contract
 
-Version 1 · 2026-11-02 · K4b.08.R3 accepted definition; implementation selected
+Version 1 · status reconciled 2026-11-03 · K4b.08.R3 accepted definition and implementation
 
 ## Selection, status and scope
 
@@ -14,15 +14,19 @@ implementation, an unqualified observer, or the entire K4b.08 backlog.
 PR #369 was accepted and merged as `9eb453b7`, with all 36 revised documentation
 cases passing at `cdbb5be1`. Clean Mac main and task-branch cleanup are confirmed.
 Fernando then selected implementation of this orientation calculation and its
-numerical qualification, extending the target to J-13000..J+13000. The algorithm
-and numerical workload are not yet qualified. Existing R1/R2 receipts retain
-their narrower claims; observer/chart integration remains separate.
+numerical qualification, extending the target to J-13000..J+13000. The
+implementation and bounded three-event numerical qualification are now
+accepted through #370/main `cd5c9b76`; see the
+[accepted receipt](../kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+It preserves the failed original run and successful corrected continuation;
+no uniform error bound is claimed. R1/R2 retain their narrower claims;
+observer/chart integration remains separate.
 
 ## As-is assessment and placement
 
 | Existing owner | Responsibility to preserve | Missing composition |
 |---|---|---|
-| [Astrometric conventions](../../../src/wenu/astrometric_coordinates.py) | `LongTermFrame` supplies corrected VCW mean-equatorial/ecliptic axes, first-order frame bias and finite TT admission | No full nutating pole history, nonrotating celestial origin or terrestrial meridian |
+| [Astrometric conventions](../../../src/wenu/astrometric_coordinates.py) | `LongTermFrame` supplies corrected VCW mean-equatorial/ecliptic axes, first-order frame bias and finite TT admission | R3 now supplies the nominal full orientation; site/relative-state/correction composition remains separate |
 | [Named rotation](../../../src/wenu/earth_rotation.py) | R1 maps the exact input TT to split UT1 with named Delta-T and provenance | UT1 supplies the rotation angle, not the celestial origin |
 | [Modern reception](../../../src/wenu/astrometric_observation.py) | Final-IERS, modern `xys06a/s06/sp00/epv00/apco` admission and bounded observer realization | Cannot extend its date limits to obtain the proposed ancient model |
 | [Coordinate guide](../coordinate_system_guide_v0.9.5.md) | Axes, physical origin/status, time scale and source event remain separate | A rotation matrix does not supply observer translation/corrections |
@@ -300,7 +304,7 @@ The nominal accepted mathematical definition does not establish that the impleme
 numerical tolerance or performance is already qualified.
 Do not close parent K4b.08 or activate observer/chart integration with R3 alone.
 
-## Orientation-service implementation candidate
+## Accepted orientation-service implementation
 
 The existing `wenu.astrometric_coordinates` owner now exposes
 `NominalEarthOrientation`, `OriginTransportSettings` and immutable
@@ -344,13 +348,12 @@ preparing another event integrates independently. Cold preparation is not
 promised to be chart-interactive. The long-path acceptance prints retained JSON
 receipts at J-13000, J0 and J+13000, then endpoint pole separation and accumulated
 unwrapped-origin phase. It does not demand exact 26,000-year periodicity.
-The J0 result supplies an intermediate negative epoch. All full-path numerical
-and practical-cost admission remains pending until that marked slow gate runs.
-
-Local isolated verification: 75 selected convention/long-frame cases passed in
-2.57 s using Python 3.12, NumPy 1.26.4, PyERFA 2.0.1.5/ERFA 2.0.1/SOFA
-20231011. This fetched dependency subset is not a full Wenu/Mac acceptance run.
-No new endpoint transport result or full-span qualification is claimed.
+The J0 result supplies an intermediate negative epoch. The
+[accepted Mac receipt](../kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result)
+now records all three full-history results through the corrected continuation,
+focused gates, measured cost and retained run dependencies. No fresh complete
+slow pytest rerun or uniform interval bound is claimed. Preserve these receipts
+rather than repeating expensive integrations for a documentation change.
 
 ## Primary sources and source review
 
