@@ -98,7 +98,8 @@ explanation and policy requirements. Option 3 is the primary/default for this
 new observer route; existing modern defaults are unchanged. No silent fallback,
 new implementation or supported interval follows from the selection. Exact
 resources/algorithm, location treatment, accuracy and CLI syntax remain for the
-bounded implementation design. The spatial-composition choice remains open.
+bounded implementation design. The subsequently agreed IAU/GR spatial
+convention and site-velocity definition are recorded below.
 
 The observer input is one explicit split-JD TT event plus its chronology record
 and the selected immutable R3 orientation result. Check exact TT identity,
@@ -147,23 +148,137 @@ body/centre/segment/time coverage and resource identity independently of R3's
 orientation domain. Saved companions are optional inputs, not prerequisites:
 the admitted existing offline provider may supply the same required states.
 
-**Unresolved implementation choice:** qualify a named nominal Newtonian
-site-displacement composition, including TDB-compatible spatial scaling and
-its omitted relativistic terms, or select a more complete geocentric/barycentric
-transformation. The modern APCO result does not qualify either over ±13000.
-This document does not authorize a new relativistic engine or weaken existing
-state-reference guards. State translation must have one owner and occur once.
+**Agreed spatial convention, 2026-11-03:** Fernando accepted the standard
+IAU post-Newtonian geocentric/barycentric transformation and then explicitly
+confirmed “OK, let us go with the IAU formulation” after the PPN discussion.
+Use General Relativity with β=γ=1; adjustable PPN deviations are not selected.
+Time and spatial scale conventions must remain consistent with the admitted
+Earth ephemeris and stellar inputs. Any omitted terms must be explicit,
+justified approximations to this definition, not an automatic geometric fallback.
+The concrete retained approximation order, terms, resources and finite domain
+still need implementation design and qualification. Modern APCO behavior does
+not qualify a new ±13000 observer. State translation has one owner and occurs
+once; existing state-reference guards remain intact.
 
-For a constant terrestrial site, mathematical differentiation gives
-v_site(TT)=d(Mᵀ)/dTT · r_site. A constant nominal angular speed times r_site
-does not automatically implement that derivative. R1 exposes no rate contract;
-its retained piecewise Delta-T jumps need explicit handling. R3 exposes no
-matrix derivative. Before aberration, select and qualify a site-velocity policy,
-including time-rate/spatial conversion to the Earth PV convention. Either a
-consistent derivative or a separately named spin-only approximation needs
-its own assumptions/error disclosure and join refusal/handling. No numerical
-differencing, smoothing across R1 joins or omitted pole-rate term is silently
-authorized. Position-only geometric output must not advertise observer velocity.
+### Site-velocity definition and existing inputs
+
+After clarifying that JPL already supplies the Earth-centre orbital contribution,
+Fernando instructed “Proceed.” This selects continued site-velocity definition
+within the existing K4b.08 contract slice. It does not activate an unreviewed
+numerical algorithm, new rate model, acquisition or runtime implementation.
+The following derivative identities are consequences of the fixed-site,
+R1/R3 and IAU conventions, not claims of an implemented derivative interface.
+
+| Contribution | Existing input | Remaining requirement |
+|---|---|---|
+| Earth-centre orbital position/velocity | Existing JPL ephemeris/state adapter or exact-event companion | Consume returned geometric PV with exact event/body/centre/reference/resource checks; do not integrate a new orbit or finite-difference planetary positions |
+| Fixed terrestrial site | Agreed WGS84 coordinates and explicit height convention | Zero terrestrial-coordinate velocity does not mean zero celestial velocity |
+| Site motion in celestial axes | Same prepared R3 orientation and its R1 TT/UT1 receipt | Derive a consistent orientation rate; R3 currently exposes matrices, not derivatives |
+| Barycentric observer state | Same admitted IAU spacetime transformation and selected TT/TDB realization | Transform position and velocity consistently, including required rates and TCB/TDB-compatible spatial conventions |
+
+For constant r_site, the mathematical site trajectory before barycentric
+composition is
+
+```text
+r_cel(TT) = M(TT)ᵀ r_site,
+v_cel,TT  = d(Mᵀ)/dTT · r_site.
+```
+
+Rates here use TT coordinate seconds. The result is not yet an admitted
+barycentric velocity in TDB seconds. A position rotation cannot simply be
+applied to a zero terrestrial velocity; its own derivative supplies the motion.
+This is the familiar state-transform distinction between a 3×3 position
+rotation and a position/velocity transformation including rotation rates.
+
+For the accepted R3 convention, M=R3(ERA) C(TT), with identity polar-motion
+matrix. Derive both terms, not only nominal daily spin:
+
+```text
+dM/dTT = (dR3/dERA) (dERA/dTT) C + R3 (dC/dTT),
+dERA/dTT = [2π × 1.00273781191135448 / 86400] × dUT1/dTT,
+dUT1/dTT = 1 − d(ΔT)/dTT.
+```
+
+The last equality uses seconds on both scales and holds on smooth model pieces.
+Do not replace it silently with unit rate or borrow an unrelated orientation
+library's Earth spin. Preserve omitted polar motion/CPO/FCN rather than
+introducing a measured-modern rate under the nominal ancient policy.
+
+### Local pole/origin rate without another long transport
+
+The accepted nonrotating-origin definition already gives the derivative of the
+celestial triad at the event. If C has rows a, b, n, where n is the normalized
+pole and b=n×a, then on a smooth mathematical pole history:
+
+```text
+da/dTT = −n (a · dn/dTT),
+db/dTT = −n (b · dn/dTT),
+dC/dTT has rows (da/dTT, db/dTT, dn/dTT).
+```
+
+Thus one prepared exact-event origin and a qualified local pole derivative
+are sufficient mathematically. The definition does not require repeating the
+13–18 minute origin-history integration at neighboring events just to estimate
+velocity. This is a local derivative consequence, not interpolation, a new
+persistent cache or a numerical acceleration result.
+
+Differentiate the intended normalized pole model, including normalization and
+its precession/nutation terms, not a piecewise staircase of binary64 output.
+Whether local derivatives are analytical or evaluated by an admitted numerical
+method remains a concrete implementation choice. Numerical differentiation
+would need scale-aware steps, convergence/roundoff evidence, admitted stencil
+support and refusal on failure; no step size or rate accuracy is selected here.
+The R3 origin convergence estimate alone supplies no velocity-error bound.
+
+### Rate discontinuities, domains and barycentric composition
+
+R1 deliberately retains piecewise polynomial joins. Its decimal TT year also
+uses the actual Gregorian calendar-year length, so its time derivative can
+change at year boundaries adjacent to leap years. This is a property of the
+accepted convention, not evidence of instantaneous physical changes in Earth
+spin. Differentiate each admitted smooth piece with the correct year-length
+factor; do not assume every decimal year is 365.25 days.
+
+**Definition-level refusal rule:** do not advertise a unique instantaneous
+velocity where the selected mathematical position/time model is discontinuous
+or lacks a common two-sided derivative. Identify the offending boundary; return
+no required velocity or apparent result. Position-only behavior keeps its own
+existing admission. No smoothing, averaging, one-sided substitute at a model
+join or constant-spin fallback is selected. Metadata-only regime changes do
+not by themselves prove a mathematical discontinuity; assess the actual model.
+Derivative evaluation support must also stay within admitted orientation/time/
+ephemeris domains. At a finite coverage edge where the mathematical model is
+smooth, an appropriately qualified one-sided numerical method may be proposed;
+it must not extrapolate or be confused with defining a derivative at a kink.
+
+Let the admitted IAU transformation express the barycentric observer position
+as x_obs(t)=x_E(t)+δx_IAU(t), in a single declared barycentric coordinate scale.
+Here δx_IAU is the transformed displacement under that definition, not merely
+the rotated Euclidean site vector. Then, in the same time parameter t:
+
+```text
+v_obs(t) = v_E(t) + d(δx_IAU)/dt.
+```
+
+Consume JPL's returned v_E. Apply the chain rule to the same retained IAU
+transformation and TT/TCG/TCB/TDB relationships used for x_obs, including
+position-dependent time terms where retained. Do not append an independently
+assumed local velocity or count the Earth term twice. If retained spatial terms
+need additional ephemeris derivatives, such as Earth acceleration, obtain and
+qualify them through the admitted ephemeris owner; position/velocity availability
+alone does not prove those derivative capabilities. No hidden zero derivatives,
+new resource acquisition or planetary integration is authorized here.
+
+Bind returned velocity to its position event, site, full orientation/rotation,
+time/spatial policies, ephemeris and derivative algorithm/support/units. Keep
+unknown physical, numerical and rate errors separate; refuse unavailable
+accuracy guarantees. Later independent tests must cover fixed-axis uniform
+spin, moving-pole/origin contributions, time-rate factors, R1/calendar joins,
+resource/coverage edges and derivative consistency with the composed position.
+Use an independent admitted modern state-transform reference under matching
+policies; its frame labels alone do not qualify the ancient nominal model.
+No velocity implementation, test result or apparent-observer product is claimed
+by this definition. Position-only geometric output must not advertise velocity.
 
 ## Output capabilities and correction ownership
 
@@ -243,10 +358,11 @@ Before selecting runtime scope, resolve these concrete choices together:
    qualify actual site heights and review remaining numeric/local-axis details.
 2. Design the selected ephemeris-based TT/TDB realization and its explicitly
    selectable equality/full-ERFA alternatives; qualify actual resources and
-   finite domains. Select the separate spatial-composition policy; existing
-   native states do not decide it.
-3. Select geometric versus apparent first output; apparent requires a qualified
-   velocity policy, including R1 joins. Do not claim it from position matrices.
+   finite domains. Preserve the agreed IAU/GR spatial convention; design and
+   qualify the retained approximation order and terms.
+3. Review/qualify the derivative-consistent site-velocity construction and its
+   local numerical/rate admission, including R1/calendar joins. Select geometric
+   versus apparent first output separately; do not claim it from position matrices.
 4. Agree capability-aware modern measured-parallax/missing-input treatment
    before population-preserving chart adoption.
 5. Select exact finite events/resources and independent numerical references
@@ -269,3 +385,7 @@ Nineveh-era and future example. None is claimed executed by this contract.
 - [IAU 2006 Resolution B3](https://iauarchive.eso.org/static/resolutions/IAU2006_Resol3.pdf): defining TCB/TDB relation, distinct from the TT/TDB realization.
 - [ERFA `dtdb.c`, SOFA-derived implementation notes](https://github.com/liberfa/erfa/blob/master/src/dtdb.c): its stated nanosecond comparison covers 1950–2050 relative to DE405 time ephemerides. This is not a ±13000-year accuracy claim or selection of an extrapolated model.
 - [Accepted orientation definition and component ledger](nominal_earth_orientation_meridian_contract_v1.md), [scientific limits](../scientific_contracts.md#planned-ancient-and-future-earth-bound-observers) and [roadmap](../kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) retain the project-specific assumptions and acceptance boundaries.
+
+- [IAU framework: Soffel et al. (2003)](https://arxiv.org/html/astro-ph/0303376v1) and [USNO Circular 179, Section 1.4](https://aa.usno.navy.mil/downloads/Circular_179_bw.pdf): adopted reference-system formulation within GR, β=γ=1; PPN extensions are separate.
+- [JPL/NAIF SPK required reading](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html): ephemeris position/velocity states and resource coverage.
+- [JPL/NAIF state transformation interface](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sxform_c.html): position/velocity frame transforms. This is a reference for the state-transform distinction, not selection of SPICE Earth orientation for R3.

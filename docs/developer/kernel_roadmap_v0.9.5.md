@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 138, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. Runtime/CLI implementation, spatial composition and chart integration remain separate.
+**Plan revision:** 139, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition is selected; numerical rate design, runtime/CLI implementation, output choices and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -80,7 +80,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08 observer contract/time-guide review: fixed WGS84 site and ephemeris-based primary TT–TDB with optional explicit CLI equality/full-ERFA selection are agreed. Define/qualify concrete realization resources and review remaining spatial/velocity/output choices before selecting runtime. No automatic optimization or acquisition |
+| Next bounded submilestone | K4b.08 observer contract review: site/time and IAU/GR spatial convention agreed; consistent JPL-orbital plus local-site velocity definition selected. Review concrete time/resource/rate numerical design and output/correction choices before selecting runtime. No automatic acquisition, optimization or long integration |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1382,7 +1382,38 @@ optional CLI equality and full-ERFA alternatives. Each needs named provenance,
 finite admission and refusal without automatic fallback; existing modern
 defaults stay unchanged. Specific resources/algorithm/location treatment,
 accuracy, CLI syntax and implementation scope remain to be designed/qualified.
-This is not selection of the separate spatial-composition or velocity policy.
+At that time the spatial-composition and velocity choices remained open; the
+subsequent agreement below resolves the spatial convention and selects the
+consistent site-velocity definition.
+
+**Spatial agreement and velocity-definition continuation, 2026-11-03:**
+Fernando accepted the IAU post-Newtonian spatial recommendation, then clarified
+“OK, let us go with the IAU formulation” after discussing possible deviations
+from GR. Use the standard IAU/GR formulation with β=γ=1; adjustable PPN
+parameters are not selected. Retained approximation order/terms/resources
+remain to be designed and qualified. Explicit justified omissions are distinct
+from an automatic geometric fallback.
+
+After clarifying that JPL supplies Earth-centre orbital position/velocity and
+that only the site contribution needs consistent construction, Fernando said
+“Proceed.” Continue the [site-velocity definition](research/earth_bound_observer_contract_v1.md#site-velocity-definition-and-existing-inputs)
+under this existing contract slice. Use returned JPL Earth PV; derive local
+motion from the same fixed-site/R1/R3 position and the same IAU spacetime
+transformation, with appropriate time/spatial rates and identity bindings.
+The definition distinguishes full rotation/pole/origin rates, R1 polynomial/
+calendar non-differentiability, finite derivative support and additional PN
+input derivatives. No silent smoothing, nominal-spin substitution or newly
+integrated Earth orbit. Local derivative identities do not require repeating
+neighboring long origin transports; they are not implemented speed results.
+
+Scope/gate: update contract, linked guide/scientific limits, testing policy and
+this roadmap; run the same complete documentation gate and retain evidence.
+No runtime/numerical derivative algorithm, source/test/SDK/dependency/resource,
+CLI/worker/chart or acquisition change is selected. The previous 36-case Mac
+pass at `a07690ea` remains evidence for its prior source. Later implementation
+needs a bounded concrete time/resource/derivative design and independent
+acceptance; apparent-output/correction and remaining population choices remain
+open. This definition does not activate all of K4b.08 or authorize merge/cleanup.
 
 The guide belongs at the user-requested developer root: update its index and
 the existing documentation-test root allowlist, with no new test/collection or
@@ -2699,6 +2730,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 139: IAU/GR spatial agreement and consistent site-velocity definition | Fernando’s spatial agreement, explicit IAU formulation confirmation and “Proceed” after JPL/local-site clarification on 2026-11-03 | Record standard GR β=γ=1, returned JPL Earth orbital PV and derivative-consistent local motion/IAU conversion, rate/join/domain refusal and required independent future qualification. Documentation only; no numerical algorithm, runtime, tests, acquisition, CLI/product integration or long origin rerun. Retained PN order/terms and remaining output policies require design/review. |
 | Revision 138: time guide and agreed site/time choices | Fernando’s “Agreed” to the explained fixed WGS84 site and explicit request to save a developer guide and select option 3 with optional CLI options 1/2 on 2026-11-03 | Record ephemeris-based primary TT–TDB and explicit optional equality/full-ERFA CLI requirements for the new observer; preserve modern defaults, finite admissions and no silent fallback. Add requested root guide/index and existing-test allowlist only. Concrete time resources/domain/design, spatial composition, velocity, runtime/CLI implementation and numerical qualification remain pending; no new acquisition or long integration. |
 | Revision 137: select K4b.08 observer contract definition | Fernando’s “Proceed” on 2026-11-03 and fresh clean synchronized Mac main cd5c9b76 confirmation | Documentation/review only: explicit site/datum, event/time receipts, compatible states, geometric/apparent outputs, correction and error/refusal semantics. Reconcile accepted #370 orientation evidence; preserve failed-original/successful-continuation distinction. No new milestone ID, runtime, dependency, resource acquisition, chart/CLI/worker, optimization or expensive numerical rerun; parents remain open. |
 | Revision 131: select saved epoch single-sheet CLI adoption | Fernando’s “Proceed” after the explicit CLI-only proposal, following #364 acceptance and confirmed clean synchronized main 6ff7e1b5/branch cleanup | Select K4b.07.CLI1 file-admitted saved epoch selection through existing query/request owners and focused plus retained J-2000 CLI acceptance; no registry or observer-dependent adoption |

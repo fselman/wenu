@@ -266,10 +266,16 @@ supported interval and numerical qualification still need a bounded design.
 Selecting the approach does not establish universal ancient accuracy or authorize
 new downloads, long numerical workloads or silent extrapolation.
 
-This selection decides the TT–TDB approach. It does not select the separate
-Newtonian-versus-relativistic spatial-composition approximation, site-velocity
-policy, apparent corrections or product adoption. Those remain review items in
-the [observer contract](research/earth_bound_observer_contract_v1.md).
+This time selection is distinct from spatial composition. Fernando subsequently
+selected the standard IAU post-Newtonian spatial formulation within GR,
+β=γ=1. Concrete retained order/terms still require design/qualification;
+adjustable PPN deviations are not selected. JPL already supplies Earth-centre
+orbital PV; site motion must derive consistently from the same fixed-site,
+orientation and spacetime transformation. The
+[observer velocity definition](research/earth_bound_observer_contract_v1.md#site-velocity-definition-and-existing-inputs)
+records this boundary, local derivative identities and rate/domain refusal
+rules. Numerical rate construction, apparent corrections and product adoption
+remain separate; none is implemented by this guide.
 
 ## Implemented Wenu seams and remaining work
 

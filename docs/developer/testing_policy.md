@@ -2806,8 +2806,22 @@ is selected; the guide’s existing-test allowlist extension is documented above
 Reuse accepted R1/R2/R3 and stellar/companion receipts without
 repeating their numerical integrations or acquisition.
 
-Contract review must distinguish accepted behavior from candidate fixed-site,
-time/spatial, velocity and correction policies. Later runtime gate selection
+The spatial/velocity definition update records the agreed IAU/GR convention,
+consumes existing JPL Earth PV and derives local site-rate requirements without
+changing runtime, tests, resources or collection. Its gate remains the complete
+`documentation` selection. The prior 36-case Mac receipt at `a07690ea` applies
+to that prior source; the updated source needs this same gate. Do not repeat
+accepted long origin integrations for these derivative identities.
+
+Later runtime acceptance must independently protect both rotation-rate terms,
+nonrotating-origin/pole derivatives, TT/UT1/time/spatial rate factors, actual
+R1 polynomial/calendar kinks, derivative-support/ephemeris coverage and any
+additional PN derivative inputs. A finite-difference comparison is not a
+certified total bound. Numerical stencil choices or analytic derivatives need
+their own qualification; no such execution is claimed by this document.
+
+Contract review must distinguish accepted behavior from remaining numerical
+velocity and correction proposals. Later runtime gate selection
 must protect exact event/reference/site/resource bindings, distance and
 population semantics, independent local-triad/observer geometry, unsupported
 accuracy, correction ownership and isolation. Product/CLI/worker and visual

@@ -227,8 +227,15 @@ for the new observer; TT=TDB and the full ERFA/Fairhead–Bretagnon model remain
 optional and explicitly requestable through the future CLI. Selection does not
 qualify an interval, invent a time segment in a position SPK or authorize an
 automatic fallback. The site’s fixed WGS84/geodetic/ellipsoid-height convention
-is agreed; the separate spatial-composition and site-velocity policies remain
-open. Runtime/CLI implementation and numerical qualification are pending.
+is agreed. Fernando also selected the standard IAU post-Newtonian spatial
+formulation within GR (β=γ=1), with explicit justified treatment of omitted
+terms and no adjustable PPN deviations. Use JPL-returned Earth-centre orbital
+PV; the [site-velocity definition](research/earth_bound_observer_contract_v1.md#site-velocity-definition-and-existing-inputs)
+derives the local contribution from the same fixed-site/R1/R3 trajectory and
+consistent spacetime conversion. Do not invent rates at model discontinuities
+or silently substitute constant spin. Retained PN order/terms, numerical rate
+construction, output/correction choices and runtime/CLI qualification remain
+pending. Accepted orientation evidence is unchanged.
 
 [K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
 not an admitted observer model. A barycentric direction, a TT-oriented view and
