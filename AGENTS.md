@@ -62,3 +62,9 @@ In particular:
     draft and documentation PRs, and display the same summary in the Work chat
     when opening the PR or materially updating its scope/status. Follow the
     [PR executive summary rule](docs/developer/assistant_instructions.md#pr-executive-summary).
+
+16. Keep required external catalogue data outside disposable builds and Downloads.
+    Follow the [external catalogue ledger](docs/developer/data/external_catalogue_ledger_v1.md)
+    and its 2026-11-03 storage/cleanup rule: large catalogue datasets belong under
+    `/Users/fselman/Developer/wenu-data`; no needed catalogue may remain solely
+    in a build directory. Distribution is undecided.
