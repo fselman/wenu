@@ -1,25 +1,38 @@
 # Wenu coordinate systems, time and astronomical objects
 
-## Full celestial origin and terrestrial meridian proposal
+<a id="full-celestial-origin-and-terrestrial-meridian-proposal"></a>
 
-The [K4b.08.R3 definition candidate](research/nominal_earth_orientation_meridian_contract_v1.md)
-distinguishes the pole from the zero of rotation about that pole. It proposes
-nonrotating-origin transport along the same nominal nutating pole history,
-a declared J2000 seed and split-UT1 ERA. The full matrix, rather than pole
-agreement alone, must pass later acceptance. Explicit `s'=0`, seed and numerical-method choices remain review proposals.
-The user-selected computational target is J-12000..J+12000; its component
-model spans, extrapolations and pending numerical limits are explicitly
-recorded in the definition. This is not an admitted physical-accuracy range.
-This orientation changes axes only; it supplies no observer translation,
-apparent correction, historical site/ITRF realization or chart adoption.
+## Full celestial origin and terrestrial meridian
+
+The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
+is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
+`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
+orientation-service implementation with target J-13000..J+13000, approximately
+one precession cycle; exact endpoint closure is not required.
+
+The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
+full-pole-history nonrotating-origin transport from the declared J2000 seed,
+and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
+`s'=0` is explicit. It returns complete forward/inverse matrices and immutable
+event/model/backend/transport receipts. Published validity, numerical
+convergence and unknown physical accuracy remain separate; the linked component
+ledger applies to the expanded target.
+
+Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
+and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
+Observer/site/correction/chart integration and existing modern defaults are
+separate from this opt-in orientation service.
+
+This orientation changes axes only. It supplies no observer translation,
+apparent correction or historical site/ITRF realization.
 
 ## Nominal ancient orientation assessment
 
 The selected [K4b.08.R2 assessment](research/ancient_observer_orientation_assessment_v1.md)
 keeps mean axes, forced nutation, spin and polar motion distinct. Existing VCW
 mean axes are retained. The nominal IAU2000A/VCW recommendation is accepted as the R2 assessment
-outcome; its complete origin/meridian composition remains to be accepted and
-implemented separately. Ancient polar motion
+outcome; its complete origin/meridian definition is accepted through #369,
+with implementation/qualification now selected separately. Ancient polar motion
 is explicitly omitted, not measured as zero; unknown physical errors remain
 unknown. The accepted rotation adapter does not replace Skyfield/Astropy's
 other orientation algorithms or extend the modern final-IERS backend.

@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 135, 2026-11-02. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 assessment is accepted/merged through #368. K4b.08.R3 complete-orientation/meridian definition is selected; its concrete mathematical/numerical proposals require review before implementation. Full observer integration remains separate.
+**Plan revision:** 136, 2026-11-02. **Status:** K4b.06 is closed with explicit deferrals. K4b.07 persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1 are accepted; its parent remains open. K4b.08.R1 is accepted/merged through #367. K4b.08.R2 assessment is accepted/merged through #368. K4b.08.R3 definition is accepted/merged through #369. Its orientation-service implementation and numerical qualification are selected for J-13000..J+13000. Full observer integration remains separate.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -54,8 +54,11 @@ Mac diagnostic and final 36 documentation cases at `1d3278d`; the merged tree
 equals that tested head. Its nominal IAU2000A/VCW recommendation is accepted
 as the assessment outcome, with full-origin/convention gaps explicit.
 Fernando then selected complete orientation/meridian definition with “Proceed.”
-K4b.08.R3 records that definition-only scope; no runtime implementation or
-full observer/chart product is activated. R1/#367 remains accepted.
+K4b.08.R3 definition was accepted/merged through #369/main `9eb453b7`;
+36 revised documentation cases passed in 8.31 s at `cdbb5be1`. Clean synchronized
+Mac main and local/remote branch cleanup were confirmed. Fernando subsequently
+selected the orientation calculation and numerical checks, extending the target
+to J-13000..J+13000. Observer/chart integration remains separate. R1/#367 remains accepted.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -75,8 +78,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1 and R2 accepted/merged; #368 main 067e3b33 is clean/synchronized and task branches removed. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08.R3: define complete nominal orientation and meridian convention from the accepted IAU2000A/VCW assessment. Source assessment and a concrete definition candidate are delivered for review; production algorithm and observer integration remain unselected |
+| Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1 through #365. K4b.08.R1/R2 and R3 definition accepted/merged through #369/main 9eb453b7; clean Mac and branch cleanup confirmed. R3 orientation implementation is a candidate with long-path/Mac qualification pending. Parents K4b.07/K4b.08 remain open |
+| Next bounded submilestone | K4b.08.R3 implementation phase: complete nominal Earth-orientation matrix and receipts; qualify origin transport, convergence/refusal/isolation and measured cost through J-13000..J+13000. Observer/chart integration remains separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1310,10 +1313,41 @@ The later implementation must test full origin/meridian matrices, independent
 formulations, fault/refusal/isolation and actual long-path cost before admission;
 R2's pole-only diagnostics do not substitute for those gates.
 
-Current status: source assessment/definition candidate delivered. Original
-36-case Mac documentation gate passed in 8.40 s at `6e2e25a`; subsequent
-user-selected range expansion/validity-note revision needs its changed-document
-gate. User definition review and production implementation remain separate.
+**Acceptance and implementation selection, 2026-11-02:** PR #369 was explicitly
+accepted/merged as `9eb453b7189da466bdd9d2d4c8e8707a850a7fe6`; its tree equals
+the tested `cdbb5be1` (36 documentation cases, 8.31 s). Mac main is clean and
+synchronized; both task branches were deleted. Fernando then instructed:
+“Proceed, but extend it to -13000 to +13000. This way we can check the results
+after a full precession cycle.”
+
+This selects implementation of the accepted mathematical definition in the
+existing astrometric-conventions owner, with explicit finite TT request/path
+coverage and immutable model/results, followed by numerical qualification.
+The 26,000-year span is approximately one precession cycle, not an exact
+periodicity or endpoint-equality requirement for the pole, nutation, transported
+origin or terrestrial orientation. Compare the endpoint poles/origins, report
+the accumulated origin phase, and retain intermediate epochs.
+
+Scope: full nominal pole, seeded nonrotating origin, split-UT1 ERA, identity
+polar/terrestrial-origin matrix and full forward/inverse matrices. Preserve
+existing LongTermFrame matrices and modern observer defaults. No observer/site,
+ephemeris acquisition, correction, chart/CLI/worker/SDK/dependency or persistent
+cache format is selected. Physical/numerical certified bounds remain unknown;
+refinement estimates must not be labelled bounds.
+
+Gate: extend closest `tests/test_astrometric_state.py` owner for fixed/moving/
+closed-loop transport, independent scalar/vector formulations, modern full-matrix
+comparison using the same UT1, sign/order/seed/locator fault sensitivity,
+orthogonality/inverse, exact event/model/coverage/scale/refusal and request
+isolation. Qualify short intervals first; then measure cold/warm full-history
+endpoint and intermediate refinement/cost through J-13000..J+13000, including
+domain boundaries. Nonconvergence refuses. Run affected frame/rotation seams
+and the complete documentation gate. The expanded target is selected, not
+already numerically admitted. The implementation candidate and closest-owner tests are delivered. Local
+isolated convention/frame checks passed 75 cases in 2.57 s (NumPy 1.26.4,
+PyERFA 2.0.1.5); full Wenu/Mac seams, documentation and the marked long-history
+endpoint/J0 qualification remain pending. No full-span numerical result,
+practical preparation-speed or physical-accuracy claim follows.
 
 ### K4b.08 parent requirements and acceptance
 
