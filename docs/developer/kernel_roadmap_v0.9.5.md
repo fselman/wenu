@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 137, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The selected next slice is the K4b.08 observer site/event/output contract definition. No observer runtime or chart integration is selected by this documentation task.
+**Plan revision:** 138, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. Runtime/CLI implementation, spatial composition and chart integration remain separate.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -80,7 +80,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08 observer contract definition: explicit site/event, compatible states, geometric/apparent outputs, corrections and error channels. Documentation/review only; runtime selection and optimization remain separate |
+| Next bounded submilestone | K4b.08 observer contract/time-guide review: fixed WGS84 site and ephemeris-based primary TT–TDB with optional explicit CLI equality/full-ERFA selection are agreed. Define/qualify concrete realization resources and review remaining spatial/velocity/output choices before selecting runtime. No automatic optimization or acquisition |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1370,9 +1370,31 @@ Candidate scientific choices and implementation gaps remain explicit review
 items. Preserve modern population/measurements, modern defaults, source/geometry
 responsibilities and the canonical chart pipeline.
 
+**Subsequent review agreement, 2026-11-03:** Fernando accepted the explained
+fixed WGS84/geodetic/ellipsoid-height site convention with “Agreed”, retaining
+source/reference-epoch/uncertainty and qualifying La Ligua’s existing 52 m.
+The proposed numerical height range was not included in that agreement.
+He then requested a physicist’s guide saved in `docs/developer` and instructed:
+“Accept going the third way but 1 and 2 should be optional and requestable
+through the CLI.” The [time-scales guide](time_scales_guide_v1.md) records the
+ephemeris-based TT–TDB primary/default for the new observer, with explicit
+optional CLI equality and full-ERFA alternatives. Each needs named provenance,
+finite admission and refusal without automatic fallback; existing modern
+defaults stay unchanged. Specific resources/algorithm/location treatment,
+accuracy, CLI syntax and implementation scope remain to be designed/qualified.
+This is not selection of the separate spatial-composition or velocity policy.
+
+The guide belongs at the user-requested developer root: update its index and
+the existing documentation-test root allowlist, with no new test/collection or
+production changes. The smallest acceptance gate remains the complete
+`documentation` selection and user review. The prior 36-case Mac receipt at
+`ccc26159` applies to that prior source; the updated head needs the same gate.
+No new download, long integration or runtime/CLI delivery is activated here.
+
 **Gate and limits:** complete existing documentation gate, current links/anchors/
 source inventory and user review. Reconcile stale R3 status with its accepted
-receipts in this documentation change. No production/test/SDK/dependency,
+receipts in this documentation change. Apart from the existing documentation
+root allowlist, no production/test/SDK/dependency,
 resource acquisition, serialization, CLI/worker/chart or numerical workload
 change. Do not repeat accepted long integrations. Later observer implementation,
 product adoption and any performance work require separate bounded selection;
@@ -2677,6 +2699,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 138: time guide and agreed site/time choices | Fernando’s “Agreed” to the explained fixed WGS84 site and explicit request to save a developer guide and select option 3 with optional CLI options 1/2 on 2026-11-03 | Record ephemeris-based primary TT–TDB and explicit optional equality/full-ERFA CLI requirements for the new observer; preserve modern defaults, finite admissions and no silent fallback. Add requested root guide/index and existing-test allowlist only. Concrete time resources/domain/design, spatial composition, velocity, runtime/CLI implementation and numerical qualification remain pending; no new acquisition or long integration. |
 | Revision 137: select K4b.08 observer contract definition | Fernando’s “Proceed” on 2026-11-03 and fresh clean synchronized Mac main cd5c9b76 confirmation | Documentation/review only: explicit site/datum, event/time receipts, compatible states, geometric/apparent outputs, correction and error/refusal semantics. Reconcile accepted #370 orientation evidence; preserve failed-original/successful-continuation distinction. No new milestone ID, runtime, dependency, resource acquisition, chart/CLI/worker, optimization or expensive numerical rerun; parents remain open. |
 | Revision 131: select saved epoch single-sheet CLI adoption | Fernando’s “Proceed” after the explicit CLI-only proposal, following #364 acceptance and confirmed clean synchronized main 6ff7e1b5/branch cleanup | Select K4b.07.CLI1 file-admitted saved epoch selection through existing query/request owners and focused plus retained J-2000 CLI acceptance; no registry or observer-dependent adoption |
 | Revision 130: select exact-event companion implementation | Fernando's “Proceed” after #363 acceptance/merge/cleanup, confirmed clean synchronized main 244f4cb4 and the explicit C2 result/gate proposal | Select bounded offline DE440/DE441 routing, exact Earth/Sun evaluation and immutable preparation/reload with the specified owner and actual-cache gates; no observer work, nonzero planetary reuse, new acquisition or parent closure |

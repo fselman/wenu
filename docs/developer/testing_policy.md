@@ -2787,13 +2787,23 @@ even if every numerical gate passes.
 
 ## Earth-bound observer contract definition gate
 
+The subsequent time-guide/decision update adds `time_scales_guide_v1.md` at the
+requested developer root. Extend only the existing `ACTIVE_DEVELOPER` allowlist
+in `tests/test_current_documentation.py` so its unchanged root-authority/index
+check admits this guide. That check protects unregistered authority files and
+missing developer-index links; no new phrase test, test file, collection or
+gate-manifest change is needed. Re-run this same complete documentation gate
+after the guide/links and agreed site/time decisions change. Prior 36-case Mac
+receipt at `ccc26159` remains valid for that prior source, not the new head.
+
 The selected K4b.08 [site/event/output definition](research/earth_bound_observer_contract_v1.md)
 is documentation only. Run the complete existing `documentation` gate with
 plugin autoload disabled and fresh temporary/cache/bytecode directories; retain
 run provenance under `~/Software/build/wenu/test/`. Verify current links,
 anchors, source inventory, public import/examples and preserved archives normally.
-No gate-manifest, production, test, dependency, SDK, resource or collection change
-is selected. Reuse accepted R1/R2/R3 and stellar/companion receipts without
+No gate-manifest, production, dependency, SDK, resource or collection change
+is selected; the guide’s existing-test allowlist extension is documented above.
+Reuse accepted R1/R2/R3 and stellar/companion receipts without
 repeating their numerical integrations or acquisition.
 
 Contract review must distinguish accepted behavior from candidate fixed-site,

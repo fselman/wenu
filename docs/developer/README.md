@@ -1,5 +1,13 @@
 # Wenu developer documentation
 
+## Time scales in Wenu
+
+The [physicist’s time guide](time_scales_guide_v1.md) explains proper time,
+TCB/TDB/TCG/TT, atomic realizations and UT1. It records the selected
+ephemeris-based TT–TDB approach for the new observer, with equality and the
+full ERFA model as explicit future CLI alternatives. These are agreed
+requirements; new runtime/CLI implementation and qualification remain pending.
+
 <a id="complete-nominal-orientation-and-meridian-definition"></a>
 
 ## Complete nominal Earth-orientation implementation

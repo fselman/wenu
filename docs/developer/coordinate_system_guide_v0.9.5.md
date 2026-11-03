@@ -843,6 +843,13 @@ epochs or silently discard time-scale metadata.
 
 # 5. Time vocabulary
 
+For the physical meaning of proper time, barycentric/geocentric coordinate
+times, atomic realizations and Earth-rotation time, use the
+[time-scales guide](time_scales_guide_v1.md). It owns the agreed ephemeris-based
+TT–TDB selection and optional equality/ERFA CLI requirements; these new-route
+capabilities are not yet implemented. The calendar and epoch conventions below
+remain current and do not supply a hidden time conversion.
+
 Wenu must distinguish:
 
 - **UTC:** civil timestamp and leap-second representation;

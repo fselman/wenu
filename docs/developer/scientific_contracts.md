@@ -221,6 +221,15 @@ Parent K4b.06, K4b.07 persistence and K4b.08 Earth-bound observation remain open
 
 ## Planned ancient and future Earth-bound observers
 
+The [time-scales guide](time_scales_guide_v1.md#agreed-wenu-time-policy) records
+Fernando’s 2026-11-03 selection: ephemeris-based TT–TDB is the primary/default
+for the new observer; TT=TDB and the full ERFA/Fairhead–Bretagnon model remain
+optional and explicitly requestable through the future CLI. Selection does not
+qualify an interval, invent a time segment in a position SPK or authorize an
+automatic fallback. The site’s fixed WGS84/geodetic/ellipsoid-height convention
+is agreed; the separate spatial-composition and site-velocity policies remain
+open. Runtime/CLI implementation and numerical qualification are pending.
+
 [K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
 not an admitted observer model. A barycentric direction, a TT-oriented view and
 a site-dependent horizon are distinct products. Preserve the current modern

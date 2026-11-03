@@ -9,8 +9,8 @@ then confirmed clean synchronized Mac main
 `cd5c9b76c6fc25df6adb26b2a086aabf44e5e581`. It is a bounded definition under
 the existing K4b.08 parent, not a new runtime milestone or authorization to
 activate the parent backlog. This document defines required semantics and
-identifies decisions needed to select a later implementation. Candidate
-scientific choices below are review proposals, not already adopted policies.
+identifies decisions needed to select a later implementation. Accepted site/time choices are identified below; the remaining scientific
+choices are review proposals, not already adopted policies.
 
 Deliver an explicit fixed-site, exact-event observer contract before runtime,
 followed separately by observer implementation and product adoption. No code,
@@ -54,9 +54,13 @@ unknown; it must never be inferred from the requested observing epoch. Preserve
 the original values alongside any canonical longitude representation. Reject
 nonfinite values, booleans and incompatible coordinate kinds.
 
-**Candidate first site policy:** reuse WGS84 ellipsoid geometry and the modern
-backend's admitted height interval −1000..10000 m. Interpret height as ellipsoid
-height, never as an unqualified map elevation or height above mean sea level.
+**Agreed initial site convention, 2026-11-03:** use fixed WGS84 ellipsoid
+geometry, geodetic latitude and explicit ellipsoid height. Fernando accepted
+this explained convention with “Agreed”. Qualify La Ligua’s existing 52 m
+before treating it as ellipsoid height. A proposed −1000..10000 m numerical
+height admission remains a separate unselected implementation limit; it was
+not part of that agreement. Interpret height as ellipsoid height, never as an
+unqualified map elevation or height above mean sea level.
 Record a named fixed-coordinate assumption: longitude, latitude and ellipsoid
 height are held constant in the declared nominal terrestrial axes. A supplied
 modern reference epoch does not make these ancient ITRF coordinates. Plate
@@ -86,6 +90,16 @@ error treatment must be declared in the later implementation.
 
 ## Event and time contract
 
+**Agreed time approach, 2026-11-03:** Fernando selected the ephemeris-based
+TT–TDB route (review option 3) and required optional explicit CLI selection of
+TT=TDB (option 1) and the full ERFA model (option 2). The
+[time guide](../time_scales_guide_v1.md#agreed-wenu-time-policy) owns the
+explanation and policy requirements. Option 3 is the primary/default for this
+new observer route; existing modern defaults are unchanged. No silent fallback,
+new implementation or supported interval follows from the selection. Exact
+resources/algorithm, location treatment, accuracy and CLI syntax remain for the
+bounded implementation design. The spatial-composition choice remains open.
+
 The observer input is one explicit split-JD TT event plus its chronology record
 and the selected immutable R3 orientation result. Check exact TT identity,
 coverage, policy/backend binding and R1 rotation receipt before use. UT1 must
@@ -102,7 +116,7 @@ is selected; existing qualified modern UTC behavior remains available unchanged.
 | Required link | Contract |
 |---|---|
 | TT → UT1 | Existing selected R1 receipt, including Delta-T regime/extrapolation and unknown physical error |
-| TT ↔ TDB | Explicit admitted model/receipt with finite coverage, realization/location convention, provenance and known/unknown error. No automatic equality or extension of modern DTDB accuracy |
+| TT ↔ TDB | Selected ephemeris-based primary route; equality and full ERFA are explicit optional CLI requirements. Each requires finite coverage, realization/location convention, provenance and known/unknown error. No automatic equality, silent fallback or extension of modern DTDB accuracy |
 | TDB ↔ TCB | Existing explicit `TcbTdbAdapter` admission and receipt; this linear definition does not supply the previous link |
 | Chronology → nominal event | Retain the source receipt and uncertainty; conversion of a central value alone does not propagate an uncertainty interval |
 
@@ -225,9 +239,12 @@ separates this definition gate from later runtime qualification.
 
 Before selecting runtime scope, resolve these concrete choices together:
 
-1. Accept/revise fixed WGS84 site/height and local-axis conventions.
-2. Select a finite TT/TDB realization and spatial-composition policy for the
-   intended epochs; existing native states do not decide these.
+1. Preserve the agreed fixed WGS84/geodetic/ellipsoid-height convention;
+   qualify actual site heights and review remaining numeric/local-axis details.
+2. Design the selected ephemeris-based TT/TDB realization and its explicitly
+   selectable equality/full-ERFA alternatives; qualify actual resources and
+   finite domains. Select the separate spatial-composition policy; existing
+   native states do not decide it.
 3. Select geometric versus apparent first output; apparent requires a qualified
    velocity policy, including R1 joins. Do not claim it from position matrices.
 4. Agree capability-aware modern measured-parallax/missing-input treatment
