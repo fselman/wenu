@@ -273,11 +273,25 @@ evidence. Failed or interrupted runs must not retain a misleading passed status.
 Apply this convention to subsequent assistant commands and delivered run recipes.
 It is an operational rule, not a new astronomical model or source-snapshot schema.
 
-A merged branch alone never makes a directory safe to delete. Before cleanup,
-check that it contains no unique input/data or required acceptance evidence,
-supplies no selected executable or active installation, and has no active
-consumers. Preserve dependencies referenced by retained runs. Existing directories
-receive records only where provenance can be recovered; unknown fields remain
-explicitly unknown. Inspect existing `~/wenu-output` content and retention needs
-before relocation/cleanup; do not delete, overwrite or relabel those results as
-a new run merely to tidy the home directory.
+After Fernando accepts a PR, remove its disposable build and test products.
+Retain only active installations, unique needed inputs, expensive numerical
+results and small logs/provenance records; an acceptance-evidence label does
+not justify retaining a whole temporary tree. Check dependencies before deletion
+and separate retained data from disposable artifacts. Never delete an active
+installation or the only copy of a needed resource as build cleanup.
+
+Fernando's 2026-11-03 storage instruction establishes
+`/Users/fselman/Developer/wenu-data` as the persistent external location for
+large catalogue datasets (roughly 1 GB or more, considering the complete logical
+dataset, not only individual files). No needed catalogue, of any size, may
+remain dependent on a disposable build directory. Use the
+[external catalogue ledger](data/external_catalogue_ledger_v1.md) for required
+roles, editions, verified paths/sizes/hashes, consumers and relocation status.
+Resolve any existing Downloads/build dependency through the data owner; move
+and verify data and update consumers before deleting the old copy. Do not
+silently replace admitted regular payloads with symlinks or bypass integrity
+checks. Large ephemeris resources are tracked separately in the same ledger.
+Small packaged resources and existing valid managed data locations need not
+move merely because this directory exists. New data transfers require provenance;
+unknown existing facts stay unknown. Distribution will be decided later; this
+instruction authorizes no new acquisition, redistribution or automatic download.

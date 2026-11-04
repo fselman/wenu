@@ -1,5 +1,13 @@
 # Wenu developer documentation
 
+## External catalogue storage
+
+The [external catalogue ledger](data/external_catalogue_ledger_v1.md) records
+needed catalogue/resource roles and the 2026-11-03 instruction to keep large
+external datasets under `/Users/fselman/Developer/wenu-data`. No needed catalogue
+may depend on disposable build storage. Mac inventory, verified relocation and
+consumer checks are tracked explicitly; distribution remains undecided.
+
 ## Time scales in Wenu
 
 The [physicist’s time guide](time_scales_guide_v1.md) explains proper time,

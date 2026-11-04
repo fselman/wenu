@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 140, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 142, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -12,6 +12,55 @@ describes already accepted 49B/49C work; it does not implement this kernel.
 Confirm the new release name against existing tags before creating a release.
 No tag or package-version change is made here. The baseline is pinned by its
 immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
+
+## External catalogue storage and accepted-build cleanup
+
+**User-selected operational work, 2026-11-03:** Fernando instructed creation of
+`/Users/fselman/Developer/wenu-data` for large required catalogues (about 1 GB
+or more), a ledger under docs, no needed catalogue left in build, and a later
+separate distribution decision. This is selected resource/storage maintenance
+across the existing K3.38, K4a.03 and K4b.07 ownership boundaries; it does not
+reopen their accepted science or introduce a new scientific milestone.
+It takes operational priority during the observer-contract review; the agreed
+observer runtime sequence is otherwise unchanged.
+
+Deliver the [external catalogue ledger](data/external_catalogue_ledger_v1.md),
+storage/cleanup instructions, Mac directory creation and a source/path/consumer
+inventory. Distinguish runtime catalogue, preparation-only source, selected
+saved epoch product, ephemeris resource, disposable build and expensive result.
+Retain explicit unknown paths/sizes and pending migration; a folder name or
+size alone cannot prove a runtime dependency. After inventory, relocate needed
+external data with hashes/provenance and update its actual owner/consumers before
+removing the build copy. No needed catalogue, including smaller ones, remains
+solely in disposable build storage. Do not introduce symlink bypasses or a new
+catalogue loader just to move bytes. Data are external to Git and build outputs.
+
+After PR acceptance discard reproducible build/test artifacts; retain only
+active installations, unique required inputs, expensive numerical results and
+small evidence records. Preserve accepted numerical data, not entire temporary
+trees by default. Distribution, new downloads, science/model changes and broad
+runtime path redesign are outside this request.
+
+Acceptance: complete existing documentation gate for ledger/instructions;
+observed Mac creation/inventory and verified relocation with actual consumer
+checks before declaring migration complete. Directory creation, new storage
+policy and a written ledger are not proof that all datasets were found/moved.
+Focused owner gates apply if a consumer path implementation actually changes.
+No new long numerical integration is required for storage verification.
+
+**Observed initial relocation, 2026-11-03:** `wenu-data` exists and all 36
+Mac documentation cases passed in 4.85 s at `5f255743`; inventory had zero
+scan errors. Three saved TCB catalogues moved from build to
+`wenu-data/stellar-epochs/` with complete byte/hash, public-loader and exact-event
+query checks. Both DE441 parts moved from managed cache to
+`wenu-data/ephemerides/jpl-de441-v1/`; public pinned-resource admission and
+Earth/Sun PV parity at three events passed on the corrected v2 retry. The first
+v1 attempt failed before moving files because its test `jd1` type was wrong;
+preserve both receipts. The [ledger](data/external_catalogue_ledger_v1.md#verified-relocations-and-current-consumer-paths)
+owns exact current locations, hashes, pin index, query replacements and evidence.
+Remaining payload/custom-input classification precedes blanket build deletion;
+distribution stays undecided. These storage receipts do not close the open
+scientific parents or authorize merge/branch cleanup.
 
 ## Product review correction PR.03: finite constellation segments
 
@@ -2748,6 +2797,8 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 142: verified initial external-data relocation | Fernando’s reported Mac inventory, three-catalogue relocation and successful corrected DE441 relocation on 2026-11-03 | Record actual stable paths, pin/query consumers, complete data/hash checks and three-event PV parity; preserve the failed-before-move v1 receipt. Remaining build payload/custom-input classification stays explicit; no new science or distribution. |
+| Revision 141: external catalogue storage and build cleanup | Fernando’s explicit directory/ledger/no-needed-catalogue-in-build request on 2026-11-03, following his accepted-PR cleanup clarification | Establish external large-dataset location and catalogue ledger, distinguish runtime/preparation/derived resources, inventory and verify relocation/consumer paths, discard reproducible accepted-build artifacts. Distribution deferred; no science changes or automatic acquisition. Mac relocation remains pending until observed. |
 | Revision 140: three outputs and SOFA/ERFA refraction | Fernando’s “The three of them” and “SOFA/ERFA is OK. Proceed.” on 2026-11-03 | Consolidate geometric/vacuum apparent/refracted capabilities and the initial SOFA/ERFA model, explicit atmosphere/units/provenance, correction ownership, altitude-dependent limits and refusal semantics. Documentation only; finite admission, numerical application and runtime/product qualification remain pending. |
 | Revision 139: IAU/GR spatial agreement and consistent site-velocity definition | Fernando’s spatial agreement, explicit IAU formulation confirmation and “Proceed” after JPL/local-site clarification on 2026-11-03 | Record standard GR β=γ=1, returned JPL Earth orbital PV and derivative-consistent local motion/IAU conversion, rate/join/domain refusal and required independent future qualification. Documentation only; no numerical algorithm, runtime, tests, acquisition, CLI/product integration or long origin rerun. Retained PN order/terms and remaining output policies require design/review. |
 | Revision 138: time guide and agreed site/time choices | Fernando’s “Agreed” to the explained fixed WGS84 site and explicit request to save a developer guide and select option 3 with optional CLI options 1/2 on 2026-11-03 | Record ephemeris-based primary TT–TDB and explicit optional equality/full-ERFA CLI requirements for the new observer; preserve modern defaults, finite admissions and no silent fallback. Add requested root guide/index and existing-test allowlist only. Concrete time resources/domain/design, spatial composition, velocity, runtime/CLI implementation and numerical qualification remain pending; no new acquisition or long integration. |
