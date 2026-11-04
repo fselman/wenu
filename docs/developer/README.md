@@ -8,6 +8,15 @@ external datasets under `/Users/fselman/Developer/wenu-data`. No needed catalogu
 may depend on disposable build storage. Mac inventory, verified relocation and
 consumer checks are tracked explicitly; distribution remains undecided.
 
+## TT–TDB resource and calculation review
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) assesses existing owners, published JPL/INPOP
+time resources, split-date inversion and geocentric versus site-event semantics.
+A prepared DE440 time series is recommended for a first geocentric qualification;
+no compatible long-span DE441 time product is established. The bounded review
+is selected; its implementation/resource choices remain proposals. Runtime,
+acquisition, SDK changes and product adoption are not activated.
+
 ## Time scales in Wenu
 
 The [physicist’s time guide](time_scales_guide_v1.md) explains proper time,

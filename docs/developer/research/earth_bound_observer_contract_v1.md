@@ -405,6 +405,16 @@ stay explicitly unavailable under the requested capability. No hidden fallback,
 download or mutation. Future worker transport needs explicit immutable input
 admission and process-local ownership; it is not implemented by this definition.
 
+## Concrete TT–TDB design continuation
+
+The [2026-11-04 realization review](tt_tdb_realization_design_v1.md) assesses
+existing owners and primary resources and proposes geocentric scalar inversion,
+explicit equality/full-ERFA alternatives and a separate site-event seam. Its
+modern-first qualification is a proposal, not a selected implementation or an
+ancient/future observer. Long-span compatible time resources, retained PN
+site terms and certified numerical admission remain explicit blockers. This
+continuation does not alter the agreed site, GR, velocity or output requirements.
+
 ## Review gate and later acceptance
 
 For this documentation task, execute the complete existing `documentation`

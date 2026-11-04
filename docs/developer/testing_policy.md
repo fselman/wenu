@@ -2785,6 +2785,19 @@ persistent cache or current-default change. Physical accuracy remains unknown
 even if every numerical gate passes.
 
 
+## TT–TDB design review gate
+
+The selected [TT–TDB design review](research/tt_tdb_realization_design_v1.md) uses the complete existing `documentation`
+gate: unchanged selection, test owners and dependencies, plugin autoload disabled,
+fresh cache/temp paths and run provenance. Prefer `PYTHONDONTWRITEBYTECODE=1`
+for this documentation run. Check active links/anchors and source inventory.
+No new test or phrase assertion is needed for this review. The proposed later
+numerical gate is documented in the review, including independent same-resource
+interpolation, cross-model comparison, sign/units, split arithmetic, bounded
+inversion/coverage, explicit policy/no fallback, unknown-error refusal and
+location/rate seams. Those checks are unexecuted future acceptance proposals.
+Reuse expensive R3 evidence; do not rerun its origin integrations.
+
 ## Earth-bound observer contract definition gate
 
 The subsequent time-guide/decision update adds `time_scales_guide_v1.md` at the

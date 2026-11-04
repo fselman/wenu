@@ -277,6 +277,16 @@ records this boundary, local derivative identities and rate/domain refusal
 rules. Numerical rate construction, apparent corrections and product adoption
 remain separate; none is implemented by this guide.
 
+## Concrete realization review
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) now owns the resource assessment and proposed
+split-date calculation. It distinguishes a published DE440 time-series candidate
+from retained position-only resources and unresolved long-span time admission.
+It also separates geocentric mapping from the site's relativity-of-simultaneity
+term and identifies the existing SDK's finite-numerical-bound requirement.
+The proposed first geocentric implementation is not selected; this guide's
+agreed three-policy requirement and modern-default preservation remain current.
+
 ## Implemented Wenu seams and remaining work
 
 | Owner | Current behavior to preserve | Remaining boundary |

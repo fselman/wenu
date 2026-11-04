@@ -859,6 +859,10 @@ TT–TDB selection and optional equality/ERFA CLI requirements; these new-route
 capabilities are not yet implemented. The calendar and epoch conventions below
 remain current and do not supply a hidden time conversion.
 
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) supplies the concrete resource/inversion proposal
+and geocentric/site-event distinction. Its unresolved finite admissions do not
+change the implemented calendar, epoch, coordinate or modern reception semantics.
+
 Wenu must distinguish:
 
 - **UTC:** civil timestamp and leap-second representation;
