@@ -5,23 +5,27 @@
 ## Complete nominal Earth orientation
 
 The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
-is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
-`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
-orientation-service implementation with target J-13000..J+13000, approximately
-one precession cycle; exact endpoint closure is not required.
+and implementation are accepted/merged through #369/#370, main `cd5c9b76`.
+The finite computational target is J-13000..J+13000, approximately one
+precession cycle; exact endpoint closure is not required. Three-event
+qualification does not establish uniform physical or numerical accuracy.
 
-The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
-full-pole-history nonrotating-origin transport from the declared J2000 seed,
+The accepted opt-in service composes VCW mean axes, classical nominal
+IAU2000A nutation, full-pole-history nonrotating-origin transport from the declared J2000 seed,
 and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
 `s'=0` is explicit. It returns complete forward/inverse matrices and immutable
 event/model/backend/transport receipts. Published validity, numerical
 convergence and unknown physical accuracy remain separate; the linked component
 ledger applies to the expanded target.
 
-Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
-and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
-Observer/site/correction/chart integration and existing modern defaults are
-separate from this opt-in orientation service.
+PR #370 is accepted/merged at main `cd5c9b76`, with clean synchronized Mac
+and branch cleanup confirmed. Focused Mac checks and the corrected retained-evidence
+continuation passed at `9e319feb`; see the
+[accepted numerical receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result)
+for the failed original run, successful three-event continuation and measured
+costs. Physical and certified total numerical errors remain unknown.
+The selected [observer contract definition](research/earth_bound_observer_contract_v1.md)
+adds no observer/site/correction/chart runtime; modern defaults are unchanged.
 
 ## Ancient orientation assessment boundary
 
@@ -217,6 +221,32 @@ Parent K4b.06, K4b.07 persistence and K4b.08 Earth-bound observation remain open
 
 ## Planned ancient and future Earth-bound observers
 
+The [time-scales guide](time_scales_guide_v1.md#agreed-wenu-time-policy) records
+Fernando’s 2026-11-03 selection: ephemeris-based TT–TDB is the primary/default
+for the new observer; TT=TDB and the full ERFA/Fairhead–Bretagnon model remain
+optional and explicitly requestable through the future CLI. Selection does not
+qualify an interval, invent a time segment in a position SPK or authorize an
+automatic fallback. The site’s fixed WGS84/geodetic/ellipsoid-height convention
+is agreed. Fernando also selected the standard IAU post-Newtonian spatial
+formulation within GR (β=γ=1), with explicit justified treatment of omitted
+terms and no adjustable PPN deviations. Use JPL-returned Earth-centre orbital
+PV; the [site-velocity definition](research/earth_bound_observer_contract_v1.md#site-velocity-definition-and-existing-inputs)
+derives the local contribution from the same fixed-site/R1/R3 trajectory and
+consistent spacetime conversion. Do not invent rates at model discontinuities
+or silently substitute constant spin. Retained PN order/terms, numerical rate
+construction, concrete correction policy and runtime/CLI qualification remain
+pending. Accepted orientation evidence is unchanged.
+
+Fernando selected all three output capabilities (geometric, vacuum apparent,
+refracted) and SOFA/ERFA as the initial refraction model. The
+[atmospheric contract](research/earth_bound_observer_contract_v1.md#selected-sofaerfa-refraction-contract)
+owns input units/provenance, observed-angle convention, single application,
+altitude-dependent limitations and explicit unavailability. Keep existing modern
+vacuum/integrity guards; no invented weather or silent zero-pressure fallback.
+Atmospheric defaults, numerical application and finite admission still need
+qualification. This selection supplies neither an ancient-weather reconstruction
+nor a universal error bound or an implemented refracted observer.
+
 [K4b.08](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs) records agreed capability,
 not an admitted observer model. A barycentric direction, a TT-oriented view and
 a site-dependent horizon are distinct products. Preserve the current modern
@@ -227,7 +257,10 @@ declared apparent/atmospheric corrections. No assumed ancient UTC, predicted
 leap table, fabricated EOP, silent zero offsets or distant-future extrapolation.
 Unknown errors remain unknown; explicitly approximate horizons must disclose
 their assumptions. Persisted Earth PV alone supplies no Earth rotation or site.
-Detailed model/domain/product qualification precedes implementation.
+The selected [site/event/output definition](research/earth_bound_observer_contract_v1.md)
+records the candidate contract and unresolved implementation choices. Detailed
+model/domain/product qualification precedes implementation; the definition
+alone admits no new observer output.
 
 ## Accepted date-oriented atlas boundary
 

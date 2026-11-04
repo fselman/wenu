@@ -3199,8 +3199,13 @@ orientation = NominalEarthOrientation(
 )
 ```
 
-Full-span admission and practical preparation cost remain pending. A prepared
-exact-event result can rotate many directions cheaply, but constructing another
-event integrates its complete history independently. Existing modern/chart
+PR #370's bounded orientation implementation and three-event qualification
+are accepted at main `cd5c9b76`; see the
+[accepted receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+The corrected retained-evidence continuation passed; it is not a fresh full
+pytest rerun or a uniform interval error bound. Remote preparation took about
+13–18 minutes on the measured Mac. A prepared exact-event result can rotate
+many directions cheaply, but constructing another event integrates its complete
+history independently. Existing modern/chart
 defaults remain unchanged. See the [definition and component limits](research/nominal_earth_orientation_meridian_contract_v1.md)
 and [qualification gate](testing_policy.md#complete-nominal-earth-orientation-gate).

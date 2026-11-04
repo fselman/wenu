@@ -2774,8 +2774,67 @@ periodicity assertion. Every event must converge within its declared settings;
 an exhausted work budget/nonconvergence is a failed qualification, never a
 fallback or successful range admission.
 
-Local endpoint transport and Mac qualification are not yet run. Keep draft/
-pending status until evidence is reviewed. This service adds no chart, observer
+The accepted Mac focused gates and corrected retained-evidence continuation
+are recorded in the [R3 receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+The original long run remains failed; its J-13000 result was verified and reused
+alongside fresh J0/J+13000 results. This is not a fresh complete slow pytest
+rerun. Reuse those unchanged receipts; do not rerun integrations for this
+observer-contract documentation task. This service adds no chart, observer
 translation, corrections, ephemeris dependency, SDK/API pin, provider acquisition,
 persistent cache or current-default change. Physical accuracy remains unknown
 even if every numerical gate passes.
+
+
+## Earth-bound observer contract definition gate
+
+The subsequent time-guide/decision update adds `time_scales_guide_v1.md` at the
+requested developer root. Extend only the existing `ACTIVE_DEVELOPER` allowlist
+in `tests/test_current_documentation.py` so its unchanged root-authority/index
+check admits this guide. That check protects unregistered authority files and
+missing developer-index links; no new phrase test, test file, collection or
+gate-manifest change is needed. Re-run this same complete documentation gate
+after the guide/links and agreed site/time decisions change. Prior 36-case Mac
+receipt at `ccc26159` remains valid for that prior source, not the new head.
+
+The selected K4b.08 [site/event/output definition](research/earth_bound_observer_contract_v1.md)
+is documentation only. Run the complete existing `documentation` gate with
+plugin autoload disabled and fresh temporary/cache/bytecode directories; retain
+run provenance under `~/Software/build/wenu/test/`. Verify current links,
+anchors, source inventory, public import/examples and preserved archives normally.
+No gate-manifest, production, dependency, SDK, resource or collection change
+is selected; the guide’s existing-test allowlist extension is documented above.
+Reuse accepted R1/R2/R3 and stellar/companion receipts without
+repeating their numerical integrations or acquisition.
+
+The spatial/velocity definition update records the agreed IAU/GR convention,
+consumes existing JPL Earth PV and derives local site-rate requirements without
+changing runtime, tests, resources or collection. Its gate remains the complete
+`documentation` selection. The prior 36-case Mac receipt at `a07690ea` applies
+to that prior source; the updated source needs this same gate. Do not repeat
+accepted long origin integrations for these derivative identities.
+
+Later runtime acceptance must independently protect both rotation-rate terms,
+nonrotating-origin/pole derivatives, TT/UT1/time/spatial rate factors, actual
+R1 polynomial/calendar kinks, derivative-support/ephemeris coverage and any
+additional PN derivative inputs. A finite-difference comparison is not a
+certified total bound. Numerical stencil choices or analytic derivatives need
+their own qualification; no such execution is claimed by this document.
+
+The three-output/SOFA refraction consolidation remains documentation only;
+repeat the same complete gate after these source changes. The 36-case Mac pass
+at `611d409c` remains evidence for its prior source. Later runtime acceptance
+must independently check atmospheric units/site-pressure convention, coefficient
+references, observed-angle application/sign, altitude/input-domain refusal,
+zero-pressure limit, missing-input handling and immutable atmosphere identities.
+Protect separate geometric/vacuum/refracted availability, unchanged vacuum
+results and single correction application. Separate numerical round trips from
+physical atmospheric uncertainty; no Wenu accuracy bound is inferred from the
+library's conditional performance or horizon safeguards.
+
+Contract review must distinguish agreed requirements from implemented behavior
+and remaining numerical velocity/correction/atmosphere choices. Later runtime gate selection
+must protect exact event/reference/site/resource bindings, distance and
+population semantics, independent local-triad/observer geometry, unsupported
+accuracy, correction ownership and isolation. Product/CLI/worker and visual
+acceptance remain separate; a documentation pass supplies no runtime observer
+or ancient physical-accuracy qualification.

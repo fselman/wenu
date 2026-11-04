@@ -5,23 +5,27 @@
 ## Full celestial origin and terrestrial meridian
 
 The accepted [K4b.08.R3 definition](research/nominal_earth_orientation_meridian_contract_v1.md)
-is merged through #369/main `9eb453b7`, with 36 documentation cases passed at
-`cdbb5be1` and clean Mac/branch cleanup confirmed. Fernando selected its
-orientation-service implementation with target J-13000..J+13000, approximately
-one precession cycle; exact endpoint closure is not required.
+and implementation are accepted/merged through #369/#370, main `cd5c9b76`.
+The finite computational target is J-13000..J+13000, approximately one
+precession cycle; exact endpoint closure is not required. Three-event
+qualification does not establish uniform physical or numerical accuracy.
 
-The candidate composes VCW mean axes, classical nominal IAU2000A nutation,
-full-pole-history nonrotating-origin transport from the declared J2000 seed,
+The accepted opt-in service composes VCW mean axes, classical nominal
+IAU2000A nutation, full-pole-history nonrotating-origin transport from the declared J2000 seed,
 and R1 split-UT1 ERA. Polar motion is omitted; terrestrial-origin locator
 `s'=0` is explicit. It returns complete forward/inverse matrices and immutable
 event/model/backend/transport receipts. Published validity, numerical
 convergence and unknown physical accuracy remain separate; the linked component
 ledger applies to the expanded target.
 
-Local isolated convention/frame checks passed 75 cases. Full Wenu/Mac gates
-and J-13000/J0/J+13000 full-history convergence/cost qualification remain pending.
-Observer/site/correction/chart integration and existing modern defaults are
-separate from this opt-in orientation service.
+PR #370 is accepted/merged at main `cd5c9b76`, with clean synchronized Mac
+and branch cleanup confirmed. Focused Mac checks and the corrected retained-evidence
+continuation passed at `9e319feb`; see the
+[accepted numerical receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result)
+for the failed original run, successful three-event continuation and measured
+costs. Physical and certified total numerical errors remain unknown.
+The selected [observer contract definition](research/earth_bound_observer_contract_v1.md)
+adds no observer/site/correction/chart runtime; modern defaults are unchanged.
 
 This orientation changes axes only. It supplies no observer translation,
 apparent correction or historical site/ITRF realization.
@@ -466,6 +470,15 @@ altitude \(a\), with Astropy's azimuth convention: zero at geographic north,
 increasing eastward. A horizontal coordinate is incomplete without site,
 instant, Earth-orientation information, and an atmospheric/refraction policy.
 
+For the new K4b.08 route, Fernando selected distinct geometric, vacuum apparent
+and refracted outputs, with SOFA/ERFA as the initial refraction model. The
+[observer atmospheric contract](research/earth_bound_observer_contract_v1.md#selected-sofaerfa-refraction-contract)
+owns the atmosphere/wavelength inputs, observed-angle convention and finite
+domain/accuracy qualification. These agreed requirements are not implemented
+AltAz behavior; current modern vacuum contracts below remain current. A
+refracted altitude must retain its atmosphere identity and must not be labelled
+geometric or vacuum apparent.
+
 Let latitude be \(\phi\), local apparent or sidereal hour angle be
 \(H=\theta_{L}-\alpha\), and declination be \(\delta\). The elementary
 geometric transformation is
@@ -838,6 +851,13 @@ epochs or silently discard time-scale metadata.
 <a id="5-time-vocabulary"></a>
 
 # 5. Time vocabulary
+
+For the physical meaning of proper time, barycentric/geocentric coordinate
+times, atomic realizations and Earth-rotation time, use the
+[time-scales guide](time_scales_guide_v1.md). It owns the agreed ephemeris-based
+TT–TDB selection and optional equality/ERFA CLI requirements; these new-route
+capabilities are not yet implemented. The calendar and epoch conventions below
+remain current and do not supply a hidden time conversion.
 
 Wenu must distinguish:
 
