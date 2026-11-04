@@ -8,6 +8,15 @@ external datasets under `/Users/fselman/Developer/wenu-data`. No needed catalogu
 may depend on disposable build storage. Mac inventory, verified relocation and
 consumer checks are tracked explicitly; distribution remains undecided.
 
+## Selected DE440t resource qualification
+
+After #373 merge and clean synchronized main `81314326`, Fernando selected
+[DE440t acquisition/reader inspection](kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification).
+The [ledger](data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition)
+keeps actual Mac status explicit. Persistent resource bytes, segment coverage
+and JPL scalar-reference comparison are pending observation. No converter,
+observer or ancient/future time coverage is selected.
+
 ## TT–TDB resource and calculation review
 
 The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) assesses existing owners, published JPL/INPOP

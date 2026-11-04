@@ -25,6 +25,21 @@ are evidence about published candidates, not local-file admission or numerical
 validation. Accepted R1/R3 integrations and existing modern defaults are reused
 unchanged. The parent K4b.08 remains open.
 
+## Subsequently selected resource step
+
+On 2026-11-04, after this review merged through #373/main `81314326`,
+Fernando selected DE440t acquisition and reader qualification. See the
+[roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
+and [resource ledger](../data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition).
+This supersedes the earlier lack of acquisition authority only for that bounded
+resource step. Mac acquisition remains pending observation; implementation of
+the proposed geocentric converter and the long-span/site/error choices remain
+unselected. JPL's [BSP README](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/README.txt),
+[reference values](https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de440t/testpo.440t)
+and [reference-reader description](https://ssd.jpl.nasa.gov/ftp/eph/planets/fortran/testeph1.f)
+provide the concrete scalar sign/units/target checks. They do not turn a resource
+comparison into a certified conversion bound.
+
 ## As-is owners and constraints at the exact base
 
 | Owner | Observed implementation | Consequence |

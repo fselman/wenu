@@ -42,6 +42,32 @@ is relocated, preserve/repair those references or retire their consumers before
 deleting it. This existing audit deduplication is not permission to replace
 strictly admitted catalogue or saved-epoch payloads with symlinks.
 
+## Selected DE440t time-resource acquisition
+
+Fernando selected this bounded acquisition/inspection on 2026-11-04 after
+#373 merge at main `81314326`. Proposed persistent destination:
+`/Users/fselman/Developer/wenu-data/ephemerides/jpl-de440t-v1/`.
+This is a time-resource role distinct from the retained geometric DE440/DE441
+pins; it does not replace those files or become an ordinary runtime default.
+
+**Status: pending observed Mac acquisition.** Exact local bytes/SHA-256,
+time-segment descriptors, actual TDB coverage and installed reader/reference
+results are unknown until reported. Retain the binary, JPL BSP README,
+`header.440t`, `testpo.440t`, `testeph1.f`, format description and source
+provenance. Acquisition receipts belong under the existing data `operations/`
+directory, outside disposable builds. Never overwrite an existing edition or
+silently retry/reacquire a retained payload.
+
+The [selected roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
+requires scalar reader agreement with JPL reference values and the complete
+documentation gate after actual results are recorded. A 1 ns comparison
+threshold is diagnostic, not an admitted total error bound. Source use was
+checked on 2026-11-04 against the
+[JPL SSD FAQ](https://ssd.jpl.nasa.gov/faq.html#permission):
+public-domain data, recommended source/date citation and no implied endorsement.
+This authorizes the selected local acquisition, not a distribution decision.
+No converter, observer, future CLI, rate or ancient/future coverage is delivered.
+
 ## Large supporting resources, kept distinct from catalogues
 
 | Resource | Role / existing owner | Verified location and size | Action |
