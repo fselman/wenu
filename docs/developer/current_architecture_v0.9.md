@@ -1,5 +1,14 @@
 # Wenu current architecture
 
+## TT–TDB design boundary
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) is a documentation assessment, not an implemented
+adapter. Existing convention, resource and kernel-time owners remain unchanged.
+The current bounded SDK requires finite numerical errors; unknown errors must
+not be encoded as zero. Geocentric scalar conversion and site-event linking
+have distinct semantics. Prepared-resource admission and long-span time coverage
+remain unimplemented; the proposed first geocentric slice needs user selection.
+
 ## Nominal orientation and observer composition boundary
 
 The existing `astrometric_coordinates.py` owner implements the accepted opt-in
@@ -973,3 +982,4 @@ deterministic import/test/render routes. This is not new acquisition authority.
 Complete Mac audit/documentation acceptance is pending. After acceptance,
 Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
 independent astronomical package extraction remain separate.
+

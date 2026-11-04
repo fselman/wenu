@@ -277,6 +277,16 @@ records this boundary, local derivative identities and rate/domain refusal
 rules. Numerical rate construction, apparent corrections and product adoption
 remain separate; none is implemented by this guide.
 
+## Concrete realization review
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) now owns the resource assessment and proposed
+split-date calculation. It distinguishes a published DE440 time-series candidate
+from retained position-only resources and unresolved long-span time admission.
+It also separates geocentric mapping from the site's relativity-of-simultaneity
+term and identifies the existing SDK's finite-numerical-bound requirement.
+The proposed first geocentric implementation is not selected; this guide's
+agreed three-policy requirement and modern-default preservation remain current.
+
 ## Implemented Wenu seams and remaining work
 
 | Owner | Current behavior to preserve | Remaining boundary |
@@ -320,3 +330,4 @@ this guide or its documentation tests.
 9. [IERS explanatory supplement to Bulletins A and B](https://iers.obspm.fr/eoppc/bul/bulb/explanatory.pdf): UT1, ERA and Earth-orientation quantities.
 10. [ERFA `dtdb.c`, SOFA-derived implementation notes](https://github.com/liberfa/erfa/blob/master/src/dtdb.c): full Fairhead–Bretagnon model, location term and stated comparison limits.
 11. [Park et al. (2021), The JPL Planetary and Lunar Ephemerides DE440 and DE441, Section 2.3](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf): ephemeris coordinate time and relativistic TT/TDB transformation.
+

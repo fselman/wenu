@@ -1,5 +1,13 @@
 # Wenu implementation reference
 
+## TT–TDB implementation proposal status
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) records exact-base owners and a proposed
+prepared-resource/inversion seam. No new API, CLI value, time adapter, resource
+loader or dependency is implemented. `TcbTdbAdapter` remains TCB/TDB only;
+`TimeService` retains its finite-error/direct-pair contract. Modern reception
+and existing pinned geometric ephemerides retain their admissions.
+
 ## Saved epoch consumers
 
 Explicit imports in `wenu.stellar_epoch_consumer`:
@@ -3209,3 +3217,4 @@ many directions cheaply, but constructing another event integrates its complete
 history independently. Existing modern/chart
 defaults remain unchanged. See the [definition and component limits](research/nominal_earth_orientation_meridian_contract_v1.md)
 and [qualification gate](testing_policy.md#complete-nominal-earth-orientation-gate).
+

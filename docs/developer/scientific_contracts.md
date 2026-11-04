@@ -219,6 +219,16 @@ retained-source parity and user visual review. See the
 Unknown physical/total errors and the finite frame domain are unchanged.
 Parent K4b.06, K4b.07 persistence and K4b.08 Earth-bound observation remain open.
 
+## TT–TDB realization design review
+
+The [TT–TDB design review](research/tt_tdb_realization_design_v1.md) separates published-resource metadata from actual
+binary admission, numerical inversion from physical accuracy, and geocentric
+time conversion from site-event linking. Prepared DE440 qualification is a
+proposal; long-span DE441-compatible time coverage remains unresolved. Preserve
+all three agreed selectable policies, single location-term application and
+explicit unavailability. No new numerical certificate, SDK change, runtime,
+acquisition or supported observer interval is established by this review.
+
 ## Planned ancient and future Earth-bound observers
 
 The [time-scales guide](time_scales_guide_v1.md#agreed-wenu-time-policy) records
@@ -1514,3 +1524,4 @@ parallax algorithm or physical time-validity guarantee is added.
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
 source facts and
+

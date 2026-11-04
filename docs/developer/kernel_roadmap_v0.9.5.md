@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 142, 2026-11-03. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The active slice is the K4b.08 observer contract/time guide. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 143, 2026-11-04. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The selected active slice is the bounded K4b.08 TT–TDB design review. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -129,7 +129,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | K4b.08 observer contract review: site/time and IAU/GR spatial convention agreed; consistent JPL-orbital plus local-site velocity definition selected. All three outputs and SOFA/ERFA refraction agreed; review concrete time/resource/rate/correction/atmosphere design before selecting runtime. No automatic acquisition, optimization or long integration |
+| Next bounded submilestone | Selected K4b.08 TT–TDB design review at main 7f0f7486: assess actual owners and published time resources, geocentric/site semantics, finite inversion/admission and explicit alternatives. Prepared DE440 qualification is proposed; long-span resource and site/PN/rate design remain unresolved. No runtime or acquisition selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1402,6 +1402,38 @@ for original failure, continuation dependencies, estimates and measured cost.
 This is not a fresh complete slow pytest rerun, uniform interval error bound
 or physical-accuracy qualification. Clean synchronized Mac and branch cleanup
 are confirmed. Site/observer/correction/chart capabilities remain separate.
+
+### K4b.08 selected TT–TDB design review
+
+**Agreement, 2026-11-04:** after #371/#372 merge and confirmed clean synchronized
+Mac main `7f0f7486c8cf9b19ee8a8bf1ca2ad088ee561ec5`, Fernando said “Proceed”
+to the bounded TT–TDB design review. Both local/remote branches were deleted;
+six disposable documentation caches (23,304 bytes) were removed. Small logs,
+inventories/provenance and data remain; cleanup receipt:
+`~/Software/build/wenu/test/merged-docs-cleanup-v1-rb88rklq/run-provenance.json`.
+
+**Deliverable:** [resource/calculation proposal](research/tt_tdb_realization_design_v1.md)
+covering existing owners, published time-resource evidence, geocentric versus
+site-event terms, finite domains, split-date inversion, explicit equality and
+full-ERFA alternatives and independent future acceptance references. Keep this
+under existing K4b.08; no new intermediate ID or automatic runtime order.
+
+**Assessment outcome:** JPL publishes a DE440t time candidate; actual binary
+admission remains pending. The checked DE441 header has no final time-series
+coefficients and no DE441t entry was found in the checked BSP directory. This
+does not prove global absence. Compatible long-span time resources remain
+unresolved. First prepared geocentric DE440 qualification is a recommendation
+for user review, not an approved implementation. Mixed DE431/DE441 or new scalar
+time integration require separate selection, coverage/compatibility and cost
+qualification; do not replace the agreed primary route with silent ERFA/equality.
+Existing SDK finite-error constraints and site-event/PN/rate seams remain explicit.
+
+**Gate/limits:** complete existing documentation gate and user review. No runtime,
+SDK/dependency/test-manifest, CLI/worker/chart, acquisition, new orbit/time
+integration or repeated expensive R3 calculation. All runtime scope, oracle
+installation and resource acquisition require later bounded selection. Keep
+parent K4b.08 open; distribution deferred. No merge/branch cleanup is authorized
+for this new review merely by the previous explicit #371/#372 merge instruction.
 
 ### K4b.08 selected observer contract definition
 
@@ -2797,6 +2829,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 143: selected TT–TDB design review | Fernando’s “Proceed” on 2026-11-04 after the bounded proposal and clean synchronized main 7f0f7486/cleanup receipt | Documentation/resource assessment only; concrete prepared-geocentric candidate and independent gate proposed, long-span/site/error admissions unresolved. No runtime, acquisition, SDK change or long integration |
 | Revision 142: verified initial external-data relocation | Fernando’s reported Mac inventory, three-catalogue relocation and successful corrected DE441 relocation on 2026-11-03 | Record actual stable paths, pin/query consumers, complete data/hash checks and three-event PV parity; preserve the failed-before-move v1 receipt. Remaining build payload/custom-input classification stays explicit; no new science or distribution. |
 | Revision 141: external catalogue storage and build cleanup | Fernando’s explicit directory/ledger/no-needed-catalogue-in-build request on 2026-11-03, following his accepted-PR cleanup clarification | Establish external large-dataset location and catalogue ledger, distinguish runtime/preparation/derived resources, inventory and verify relocation/consumer paths, discard reproducible accepted-build artifacts. Distribution deferred; no science changes or automatic acquisition. Mac relocation remains pending until observed. |
 | Revision 140: three outputs and SOFA/ERFA refraction | Fernando’s “The three of them” and “SOFA/ERFA is OK. Proceed.” on 2026-11-03 | Consolidate geometric/vacuum apparent/refracted capabilities and the initial SOFA/ERFA model, explicit atmosphere/units/provenance, correction ownership, altitude-dependent limits and refusal semantics. Documentation only; finite admission, numerical application and runtime/product qualification remain pending. |
@@ -3742,3 +3775,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
