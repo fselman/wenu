@@ -13,9 +13,11 @@ consumer checks are tracked explicitly; distribution remains undecided.
 After #373 merge and clean synchronized main `81314326`, Fernando selected
 [DE440t acquisition/reader inspection](kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification).
 The [ledger](data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition)
-keeps actual Mac status explicit. Persistent resource bytes, segment coverage
-and JPL scalar-reference comparison are pending observation. No converter,
-observer or ancient/future time coverage is selected.
+records successful Mac acquisition/reader inspection at `473e66c6`: retained
+152,747,008-byte DE440t, verified time-segment coverage and all 421 JPL scalar
+reference checks. Exact hashes/reader/provenance are in the ledger. Final
+documentation acceptance is pending; no converter, observer or ancient/future
+time coverage is selected. Reader agreement is not a physical error bound.
 
 ## TT–TDB resource and calculation review
 

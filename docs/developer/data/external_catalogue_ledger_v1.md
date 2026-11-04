@@ -50,13 +50,43 @@ Fernando selected this bounded acquisition/inspection on 2026-11-04 after
 This is a time-resource role distinct from the retained geometric DE440/DE441
 pins; it does not replace those files or become an ordinary runtime default.
 
-**Status: pending observed Mac acquisition.** Exact local bytes/SHA-256,
-time-segment descriptors, actual TDB coverage and installed reader/reference
-results are unknown until reported. Retain the binary, JPL BSP README,
-`header.440t`, `testpo.440t`, `testeph1.f`, format description and source
-provenance. Acquisition receipts belong under the existing data `operations/`
-directory, outside disposable builds. Never overwrite an existing edition or
-silently retry/reacquire a retained payload.
+**Observed status, 2026-11-04:** Fernando reported successful acquisition and
+reader qualification at source `473e66c69a593f754a7de803f17aacc495db7758`.
+Final destination is the directory above; the binary is `de440t.bsp`.
+The complete documentation gate for these actual ledger updates remains pending.
+
+| Verified field | Observed value |
+|---|---|
+| Binary size | 152,747,008 bytes |
+| Binary SHA-256 | `4f003b4437a8b479aaca262716a779e3683413200adfd6353c4901aab5de800e` |
+| Actual time segment | Center 1000000000 → target 1000000001, frame 1, SPK type 2, source `DE-0440LE-0440` |
+| Actual native coverage | TDB JD 2287184.5..2688976.5; geocentric TT−TDB scalar in seconds |
+| Reader | jplephem 2.24, NumPy 1.26.3; installed code paths/digests in acquisition receipt |
+| JPL reference agreement | All 421 target-17/component-1 scalar rows; maximum absolute difference 2.168404344971009e-19 s, below the 1 ns diagnostic criterion |
+
+Operational provenance:
+`/Users/fselman/Developer/wenu-data/operations/de440t-acquisition-v1-589yt12a/run-provenance.json`,
+final status `passed`. It records exact source URLs, serial HTTPS commands,
+transfers, file byte counts/SHA-256 and installed reader code identities.
+Retained companions include the BSP README, header, reference values, Fortran
+reference-reader description, ASCII format, source-policy snapshot, SPK comments,
+`inspection-v1.json` and `scalar-reference-v1.json`. HTTP headers remain with
+the acquisition receipt. No source payload resides in a disposable build.
+
+The recorded raw samples, each with integer `jd1` and fractional `jd2`, are:
+
+| TDB jd1 | TDB jd2 | Geocentric TT−TDB (s) |
+|---|---|---|
+| 2451545 | 0.0 | 9.9290115710493e-05 |
+| 2451545 | 0.25 | 9.205430002157797e-05 |
+| 2460000 | 0.125 | −0.0012770134997629272 |
+
+These are scalar reader values, not TT-input inversion or a site-event conversion.
+The reference comparison qualifies this resource/reader path at the published
+check points, not a uniform interval bound, physical accuracy or future solver.
+The acquisition digest identifies the retained HTTPS bytes; no independent
+publisher checksum was supplied. Do not download/re-evaluate unchanged resources
+for documentation acceptance. Preserve the resource and receipt through cleanup.
 
 The [selected roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
 requires scalar reader agreement with JPL reference values and the complete

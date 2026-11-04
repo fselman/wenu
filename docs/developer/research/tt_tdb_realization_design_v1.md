@@ -32,8 +32,14 @@ Fernando selected DE440t acquisition and reader qualification. See the
 [roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
 and [resource ledger](../data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition).
 This supersedes the earlier lack of acquisition authority only for that bounded
-resource step. Mac acquisition remains pending observation; implementation of
-the proposed geocentric converter and the long-span/site/error choices remain
+resource step. Fernando subsequently reported successful Mac acquisition and
+reader inspection at `473e66c6`: the actual type-2 time segment covers native
+TDB JD 2287184.5..2688976.5; all 421 JPL scalar references agree within
+2.168404344971009e-19 s. Exact resource/hash/reader identity and receipt belong
+to the linked ledger. This is published-point reader agreement, not a certified
+time-conversion/physical error or implementation of TT-input inversion.
+Final updated documentation acceptance remains pending; implementation of the
+proposed geocentric converter and the long-span/site/error choices remain
 unselected. JPL's [BSP README](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/README.txt),
 [reference values](https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de440t/testpo.440t)
 and [reference-reader description](https://ssd.jpl.nasa.gov/ftp/eph/planets/fortran/testeph1.f)
