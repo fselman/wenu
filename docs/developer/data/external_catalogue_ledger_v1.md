@@ -53,7 +53,8 @@ pins; it does not replace those files or become an ordinary runtime default.
 **Observed status, 2026-11-04:** Fernando reported successful acquisition and
 reader qualification at source `473e66c69a593f754a7de803f17aacc495db7758`.
 Final destination is the directory above; the binary is `de440t.bsp`.
-The complete documentation gate for these actual ledger updates remains pending.
+The complete Mac documentation gate passed 36 cases in 5.25 s at `fb3d2c2c`;
+subsequent ledger/decision edits need their own documentation acceptance.
 
 | Verified field | Observed value |
 |---|---|
@@ -97,6 +98,30 @@ checked on 2026-11-04 against the
 public-domain data, recommended source/date citation and no implied endorsement.
 This authorizes the selected local acquisition, not a distribution decision.
 No converter, observer, future CLI, rate or ancient/future coverage is delivered.
+
+## Selected DE431t long-span time resource
+
+Fernando selected DE431t on 2026-11-04 with “Aceptemos de431t”.
+The [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource)
+owns scope/order and acceptance. Source candidate:
+[JPL DE431t](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de431t.bsp).
+Planned persistent directory:
+`/Users/fselman/Developer/wenu-data/ephemerides/jpl-de431t-v1/`.
+
+Status: selected, acquisition/qualification pending. Local presence, exact bytes,
+SHA-256, actual time-segment descriptors/coverage and accepted errors are unknown.
+The displayed directory size and nominal approximately −13200..+17191 years
+are discovery metadata, not verified local identity or admitted time coverage.
+Retain DE440t as the modern reference and existing DE441 geometric pins.
+DE431-time/DE441-state compatibility, interpolation precision and any seam
+need qualification; resource selection does not certify them. No payload is
+downloaded or runtime default changed by this ledger update.
+
+Direct DE441 time lookup evidence is retained at
+`~/Software/build/wenu/test/de441-time-query-v1-u7r5hfhf/run-provenance.json`:
+NO_MATCH in both local parts and the single SSD kernel's complete remote index,
+with FOUND in the DE440t control. This does not checksum-admit the complete
+remote DE441 payload. Captured small range bytes remain with the evidence.
 
 ## Large supporting resources, kept distinct from catalogues
 
