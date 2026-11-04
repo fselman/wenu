@@ -3217,4 +3217,3 @@ many directions cheaply, but constructing another event integrates its complete
 history independently. Existing modern/chart
 defaults remain unchanged. See the [definition and component limits](research/nominal_earth_orientation_meridian_contract_v1.md)
 and [qualification gate](testing_policy.md#complete-nominal-earth-orientation-gate).
-

@@ -2851,4 +2851,3 @@ population semantics, independent local-triad/observer geometry, unsupported
 accuracy, correction ownership and isolation. Product/CLI/worker and visual
 acceptance remain separate; a documentation pass supplies no runtime observer
 or ancient physical-accuracy qualification.
-

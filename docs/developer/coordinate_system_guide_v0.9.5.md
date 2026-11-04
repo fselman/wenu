@@ -1873,4 +1873,3 @@ unknown. This is independent of the existing VCW mean-axis transform, and
 does not change Observer/Astropy/final-IERS or chart defaults. The SDK's
 continuous-time vocabulary is unchanged; UT1 is not relabelled as TT/TCB.
 See [API and limits](implementation_reference.md#named-nominal-earth-rotation-model).
-

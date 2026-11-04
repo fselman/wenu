@@ -469,4 +469,3 @@ Nineveh-era and future example. None is claimed executed by this contract.
 
 - [ERFA `refco.c`](https://github.com/liberfa/erfa/blob/master/src/refco.c): selected coefficient equation, observed-angle convention, atmospheric input units and model omissions.
 - [ERFA `atioq.c`](https://github.com/liberfa/erfa/blob/master/src/atioq.c): atmospheric application, conditional altitude-dependent accuracy, numerical safeguards and other operations that must not be duplicated.
-

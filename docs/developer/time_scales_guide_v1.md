@@ -330,4 +330,3 @@ this guide or its documentation tests.
 9. [IERS explanatory supplement to Bulletins A and B](https://iers.obspm.fr/eoppc/bul/bulb/explanatory.pdf): UT1, ERA and Earth-orientation quantities.
 10. [ERFA `dtdb.c`, SOFA-derived implementation notes](https://github.com/liberfa/erfa/blob/master/src/dtdb.c): full Fairhead–Bretagnon model, location term and stated comparison limits.
 11. [Park et al. (2021), The JPL Planetary and Lunar Ephemerides DE440 and DE441, Section 2.3](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf): ephemeris coordinate time and relativistic TT/TDB transformation.
-
