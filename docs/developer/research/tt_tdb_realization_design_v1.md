@@ -180,9 +180,12 @@ No automatic policy switch on resource, coverage or convergence failure.
 ## Long-span resource decision and unselected alternatives
 
 **Selected 2026-11-04:** Fernando said “Aceptemos de431t”. Use DE431t as the
-long-span geocentric TT−TDB resource, with acquisition, actual time-segment
-coverage, reader/interpolation checks and DE431-time/DE441-state compatibility
-qualification still pending. DE440t remains the modern reference. This selects
+long-span geocentric TT−TDB resource. Bounded acquisition, actual time-segment
+inspection, all-record join diagnostics and sampled DE440t overlap were
+subsequently reported passed at `e9ac9d4f`; exact bytes/hash, actual native
+coverage and retained receipts belong to the external ledger. Independent
+source/interpolation and DE431-time/DE441-state compatibility qualification
+and acceptance remain pending. DE440t remains the modern reference. This selects
 the resource, not a certified interval/error, automatic seam, converter or site
 transformation. See the
 [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource).
