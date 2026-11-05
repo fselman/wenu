@@ -42,6 +42,87 @@ is relocated, preserve/repair those references or retire their consumers before
 deleting it. This existing audit deduplication is not permission to replace
 strictly admitted catalogue or saved-epoch payloads with symlinks.
 
+## Selected DE440t time-resource acquisition
+
+Fernando selected this bounded acquisition/inspection on 2026-11-04 after
+#373 merge at main `81314326`. Proposed persistent destination:
+`/Users/fselman/Developer/wenu-data/ephemerides/jpl-de440t-v1/`.
+This is a time-resource role distinct from the retained geometric DE440/DE441
+pins; it does not replace those files or become an ordinary runtime default.
+
+**Observed status, 2026-11-04:** Fernando reported successful acquisition and
+reader qualification at source `473e66c69a593f754a7de803f17aacc495db7758`.
+Final destination is the directory above; the binary is `de440t.bsp`.
+The complete Mac documentation gate passed 36 cases in 5.25 s at `fb3d2c2c`;
+subsequent ledger/decision edits need their own documentation acceptance.
+
+| Verified field | Observed value |
+|---|---|
+| Binary size | 152,747,008 bytes |
+| Binary SHA-256 | `4f003b4437a8b479aaca262716a779e3683413200adfd6353c4901aab5de800e` |
+| Actual time segment | Center 1000000000 → target 1000000001, frame 1, SPK type 2, source `DE-0440LE-0440` |
+| Actual native coverage | TDB JD 2287184.5..2688976.5; geocentric TT−TDB scalar in seconds |
+| Reader | jplephem 2.24, NumPy 1.26.3; installed code paths/digests in acquisition receipt |
+| JPL reference agreement | All 421 target-17/component-1 scalar rows; maximum absolute difference 2.168404344971009e-19 s, below the 1 ns diagnostic criterion |
+
+Operational provenance:
+`/Users/fselman/Developer/wenu-data/operations/de440t-acquisition-v1-589yt12a/run-provenance.json`,
+final status `passed`. It records exact source URLs, serial HTTPS commands,
+transfers, file byte counts/SHA-256 and installed reader code identities.
+Retained companions include the BSP README, header, reference values, Fortran
+reference-reader description, ASCII format, source-policy snapshot, SPK comments,
+`inspection-v1.json` and `scalar-reference-v1.json`. HTTP headers remain with
+the acquisition receipt. No source payload resides in a disposable build.
+
+The recorded raw samples, each with integer `jd1` and fractional `jd2`, are:
+
+| TDB jd1 | TDB jd2 | Geocentric TT−TDB (s) |
+|---|---|---|
+| 2451545 | 0.0 | 9.9290115710493e-05 |
+| 2451545 | 0.25 | 9.205430002157797e-05 |
+| 2460000 | 0.125 | −0.0012770134997629272 |
+
+These are scalar reader values, not TT-input inversion or a site-event conversion.
+The reference comparison qualifies this resource/reader path at the published
+check points, not a uniform interval bound, physical accuracy or future solver.
+The acquisition digest identifies the retained HTTPS bytes; no independent
+publisher checksum was supplied. Do not download/re-evaluate unchanged resources
+for documentation acceptance. Preserve the resource and receipt through cleanup.
+
+The [selected roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
+requires scalar reader agreement with JPL reference values and the complete
+documentation gate after actual results are recorded. A 1 ns comparison
+threshold is diagnostic, not an admitted total error bound. Source use was
+checked on 2026-11-04 against the
+[JPL SSD FAQ](https://ssd.jpl.nasa.gov/faq.html#permission):
+public-domain data, recommended source/date citation and no implied endorsement.
+This authorizes the selected local acquisition, not a distribution decision.
+No converter, observer, future CLI, rate or ancient/future coverage is delivered.
+
+## Selected DE431t long-span time resource
+
+Fernando selected DE431t on 2026-11-04 with “Aceptemos de431t”.
+The [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource)
+owns scope/order and acceptance. Source candidate:
+[JPL DE431t](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de431t.bsp).
+Planned persistent directory:
+`/Users/fselman/Developer/wenu-data/ephemerides/jpl-de431t-v1/`.
+
+Status: selected, acquisition/qualification pending. Local presence, exact bytes,
+SHA-256, actual time-segment descriptors/coverage and accepted errors are unknown.
+The displayed directory size and nominal approximately −13200..+17191 years
+are discovery metadata, not verified local identity or admitted time coverage.
+Retain DE440t as the modern reference and existing DE441 geometric pins.
+DE431-time/DE441-state compatibility, interpolation precision and any seam
+need qualification; resource selection does not certify them. No payload is
+downloaded or runtime default changed by this ledger update.
+
+Direct DE441 time lookup evidence is retained at
+`~/Software/build/wenu/test/de441-time-query-v1-u7r5hfhf/run-provenance.json`:
+NO_MATCH in both local parts and the single SSD kernel's complete remote index,
+with FOUND in the DE440t control. This does not checksum-admit the complete
+remote DE441 payload. Captured small range bytes remain with the evidence.
+
 ## Large supporting resources, kept distinct from catalogues
 
 | Resource | Role / existing owner | Verified location and size | Action |

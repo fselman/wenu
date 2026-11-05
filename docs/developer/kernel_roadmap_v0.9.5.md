@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 143, 2026-11-04. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The selected active slice is the bounded K4b.08 TT–TDB design review. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 146, 2026-11-04. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, pending acquisition and qualification under K4b.08. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -129,7 +129,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | Selected K4b.08 TT–TDB design review at main 7f0f7486: assess actual owners and published time resources, geocentric/site semantics, finite inversion/admission and explicit alternatives. Prepared DE440 qualification is proposed; long-span resource and site/PN/rate design remain unresolved. No runtime or acquisition selected |
+| Next bounded submilestone | Complete documentation acceptance/review of selected K4b.08 DE440t resource qualification. Actual Mac acquisition/reader comparison passed at 473e66c6: 421 JPL scalar points, retained resource/hash/coverage. No subsequent converter, SDK, observer or long-span implementation selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1402,6 +1402,111 @@ for original failure, continuation dependencies, estimates and measured cost.
 This is not a fresh complete slow pytest rerun, uniform interval error bound
 or physical-accuracy qualification. Clean synchronized Mac and branch cleanup
 are confirmed. Site/observer/correction/chart capabilities remain separate.
+
+### K4b.08 selected DE431t long-span time resource
+
+**Agreement, 2026-11-04:** Fernando said “Aceptemos de431t” after the direct
+DE441 time-segment lookup below. DE431t is the selected long-span geocentric
+TT−TDB resource; DE440t remains the qualified modern reference. This records
+the resource choice under existing K4b.08, without creating a new milestone ID.
+The choice explicitly permits assessment of DE431-based time with retained
+DE441 geometric states; their compatibility and errors remain to be qualified.
+
+**As-is evidence:** Fernando reported the direct query at clean synchronized
+`fb3d2c2cc5d71b0e3b035739a50a84186afeadbe`, final status passed. The requested
+center/target pair 1000000000 → 1000000001 returned NO_MATCH in both retained
+DE441 parts and in the single SSD `de441.bsp`, whose complete segment index
+was read using bounded HTTPS ranges. The DE440t control returned FOUND and,
+at native TDB JD 2451545, X = 9.9290115710493e-05 s and derivative
+−3.348740732862016e-10 s/s (jplephem's type-2 per-day derivative divided by
+86400). Retain
+`~/Software/build/wenu/test/de441-time-query-v1-u7r5hfhf/run-provenance.json`
+and its captured range bytes. This is an index/lookup result, not a complete
+remote DE441 checksum or independent rate-accuracy qualification.
+
+**Selected resource; pending work:** acquire/inspect the exact JPL DE431t
+release in persistent external storage, record source/date, complete bytes/hash,
+comments, reader identity, actual time segments and coverage, then qualify
+scalar reading and assess compatibility with DE440t/DE441. The nominal
+approximately −13200..+17191 range is discovery metadata; do not admit that
+interval for the time segment before inspecting it. Resolve the reported
+early-release Chebyshev representation concern through actual release evidence
+and independent checks, rather than declaring the retained file defective.
+Existing geometric pins remain unchanged. No custom DE441 time integration
+is selected, and contacting JPL is not a prerequisite to recording this choice.
+
+**Order and acceptance:** record this decision first. The next resource task
+needs its bounded acquisition/qualification recipe and acceptance criteria
+before execution; this documentation change performs no acquisition or runtime
+integration. Prerequisites remain explicit persistent storage, current provider
+checks and retained source/provenance. Resource qualification must distinguish
+published-point reader agreement, interpolation diagnostics, cross-model
+discrepancy and physical uncertainty. Unknown errors stay unknown; no automatic
+modern/long-span seam or fallback is admitted. The smallest gate for this
+decision-only update is the complete existing documentation gate; the prior
+36-case pass is prior-head evidence. Converter, site-event/rate admission,
+observer/CLI/chart adoption and parent closure remain pending.
+
+### K4b.08 selected DE440t resource qualification
+
+**Agreement, 2026-11-04:** after #373 merge and clean synchronized Mac main
+`8131432661d3374f68b585de71204a80d4b87783`, Fernando selected the proposed
+DE440t resource step with “Proceed”. The prior task branch is deleted locally
+and remotely; one 3,884-byte cache was removed, preserving failed/successful
+logs and provenance. Receipt:
+`~/Software/build/wenu/test/tt-tdb-docs-cleanup-v1-4ehzfiwu/run-provenance.json`.
+
+**Scope:** acquire JPL `de440t.bsp` and small primary reference/header/format
+inputs once, into persistent external storage under
+`/Users/fselman/Developer/wenu-data/ephemerides/`. Record exact source/date,
+bytes/SHA-256, installed reader identity, comments, actual time-segment
+descriptors and TDB coverage. Compare its TT−TDB scalar with JPL's published
+`testpo.440t` target-17/component-1 values in seconds at their native TDB dates.
+JPL `testeph1.f` documents that target/coordinate convention; the BSP README
+documents pseudo-target 1000000001 relative to 1000000000 and seconds in X.
+Use installed `jplephem` directly for inspection, not the geometric Wenu state
+adapter. No dependency installation is selected.
+
+**Provider check, 2026-11-04:** JPL SSD FAQ states its data are public domain,
+recommends source/date citation and disclaims endorsement. Use one serial
+HTTPS transfer per retained file, no automatic retry/fallback or mirror.
+Distribution decisions remain deferred. Preserve incomplete/failed acquisition
+receipts and any downloaded payload; do not redownload a retained resource
+merely to repeat checks.
+
+**Acceptance:** observed actual time-segment/coverage/finite-reader inspection,
+nonempty JPL scalar reference comparison (diagnostic threshold 1 ns), retained
+byte hashes and complete existing documentation gate after actual ledger updates.
+The diagnostic threshold is a reader/reference agreement criterion, not a
+certified numerical/physical conversion error. Actual Mac acquisition and
+inspection passed as recorded below. A digest established during HTTPS
+acquisition records these bytes; it is not a separate publisher checksum.
+The coordinate/time guide remains current: resource inspection changes no
+implemented coordinate semantics.
+
+**Observed Mac result, 2026-11-04:** source `473e66c6`, final status passed.
+DE440t is retained at
+`/Users/fselman/Developer/wenu-data/ephemerides/jpl-de440t-v1/de440t.bsp`,
+152,747,008 bytes, SHA-256
+`4f003b4437a8b479aaca262716a779e3683413200adfd6353c4901aab5de800e`.
+Actual scalar segment is center 1000000000 → target 1000000001, frame 1/type 2,
+native TDB JD 2287184.5..2688976.5. jplephem 2.24/NumPy 1.26.3 reproduced all
+421 JPL reference scalars with maximum absolute difference
+2.168404344971009e-19 s. Retain
+`/Users/fselman/Developer/wenu-data/operations/de440t-acquisition-v1-589yt12a/run-provenance.json`
+and the [ledger companions](data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition).
+The complete Mac documentation gate passed 36 cases in 5.25 s at
+`fb3d2c2c`; PR #374 remains unmerged. Retain
+`~/Software/build/wenu/test/de440t-resource-docs-v1-j4i0i2xj/run-provenance.json`.
+Subsequent decision-only edits need the documentation gate, without new resource
+transfer or repetition of the accepted scalar comparison.
+
+**Limits:** no TT↔TDB solver, bounded `TimeService` adapter, new SDK/schema,
+ordinary ephemeris selection/default, equality/ERFA runtime, site-event,
+observer/CLI/worker/chart, rate qualification or long numerical integration.
+The subsequent DE431t resource choice is recorded above; no mixed-model
+runtime or ancient/future time interval has yet been qualified.
+Parent K4b.08 remains open. New branch merge/cleanup needs its own request.
 
 ### K4b.08 selected TT–TDB design review
 
@@ -2829,6 +2934,8 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 145: record observed DE440t acquisition/reader result | Fernando’s reported successful Mac run at 473e66c6 on 2026-11-04 | Record actual persistent bytes/hash/time coverage, reader identity and all 421 JPL scalar checks. Final documentation gate/review pending; no converter, total error certificate or broader time domain |
+| Revision 144: select DE440t resource qualification | Fernando’s “Proceed” on 2026-11-04 after the explicit resource proposal and clean synchronized main 81314326 | Authorize one persistent acquisition with primary metadata/reference checks and ledger/docs acceptance; no converter, SDK/dependency/default, observer or remote time coverage change |
 | Revision 143: selected TT–TDB design review | Fernando’s “Proceed” on 2026-11-04 after the bounded proposal and clean synchronized main 7f0f7486/cleanup receipt | Documentation/resource assessment only; concrete prepared-geocentric candidate and independent gate proposed, long-span/site/error admissions unresolved. No runtime, acquisition, SDK change or long integration |
 | Revision 142: verified initial external-data relocation | Fernando’s reported Mac inventory, three-catalogue relocation and successful corrected DE441 relocation on 2026-11-03 | Record actual stable paths, pin/query consumers, complete data/hash checks and three-event PV parity; preserve the failed-before-move v1 receipt. Remaining build payload/custom-input classification stays explicit; no new science or distribution. |
 | Revision 141: external catalogue storage and build cleanup | Fernando’s explicit directory/ledger/no-needed-catalogue-in-build request on 2026-11-03, following his accepted-PR cleanup clarification | Establish external large-dataset location and catalogue ledger, distinguish runtime/preparation/derived resources, inventory and verify relocation/consumer paths, discard reproducible accepted-build artifacts. Distribution deferred; no science changes or automatic acquisition. Mac relocation remains pending until observed. |

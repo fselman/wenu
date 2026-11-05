@@ -25,6 +25,27 @@ are evidence about published candidates, not local-file admission or numerical
 validation. Accepted R1/R3 integrations and existing modern defaults are reused
 unchanged. The parent K4b.08 remains open.
 
+## Subsequently selected resource step
+
+On 2026-11-04, after this review merged through #373/main `81314326`,
+Fernando selected DE440t acquisition and reader qualification. See the
+[roadmap scope](../kernel_roadmap_v0.9.5.md#k4b08-selected-de440t-resource-qualification)
+and [resource ledger](../data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition).
+This supersedes the earlier lack of acquisition authority only for that bounded
+resource step. Fernando subsequently reported successful Mac acquisition and
+reader inspection at `473e66c6`: the actual type-2 time segment covers native
+TDB JD 2287184.5..2688976.5; all 421 JPL scalar references agree within
+2.168404344971009e-19 s. Exact resource/hash/reader identity and receipt belong
+to the linked ledger. This is published-point reader agreement, not a certified
+time-conversion/physical error or implementation of TT-input inversion.
+The complete Mac documentation gate passed 36 cases in 5.25 s at `fb3d2c2c`.
+The proposed geocentric converter and site/error implementation remain unselected;
+the subsequent DE431t resource decision is recorded below. JPL's [BSP README](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/README.txt),
+[reference values](https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de440t/testpo.440t)
+and [reference-reader description](https://ssd.jpl.nasa.gov/ftp/eph/planets/fortran/testeph1.f)
+provide the concrete scalar sign/units/target checks. They do not turn a resource
+comparison into a certified conversion bound.
+
 ## As-is owners and constraints at the exact base
 
 | Owner | Observed implementation | Consequence |
@@ -156,14 +177,32 @@ default extrapolation. Remote ERFA or equality requests need explicit finite
 nominal-use admission and unknown-error reporting before being exposed.
 No automatic policy switch on resource, coverage or convergence failure.
 
-## Long-span options requiring a decision
+## Long-span resource decision and unselected alternatives
+
+**Selected 2026-11-04:** Fernando said “Aceptemos de431t”. Use DE431t as the
+long-span geocentric TT−TDB resource, with acquisition, actual time-segment
+coverage, reader/interpolation checks and DE431-time/DE441-state compatibility
+qualification still pending. DE440t remains the modern reference. This selects
+the resource, not a certified interval/error, automatic seam, converter or site
+transformation. See the
+[roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource).
+
+The direct Mac query reported NO_MATCH for center/target 1000000000 → 1000000001
+in both DE441 parts and the single SSD DE441 kernel, with a successful DE440t
+control. Receipt:
+`~/Software/build/wenu/test/de441-time-query-v1-u7r5hfhf/run-provenance.json`.
+The single remote file was index-inspected using HTTPS ranges, not fully acquired
+or checksum-admitted. The generic “starting with DE430” README does not establish
+a time segment in every later kernel.
+
+Alternatives below remain unselected except for the DE431t choice:
 
 1. Locate and qualify a compatible prepared DE441-derived time product, including
    actual long-span coverage and construction evidence. No such product was
    established by this review.
 2. Qualify an explicitly mixed time/PV model, such as DE431 time with DE441 PV.
-   This is an alternative proposal, not an approved replacement or a guarantee
-   that the two transformations remain equivalent at remote dates.
+   DE431t is now the selected time resource; compatibility qualification remains
+   pending. Selection does not guarantee equivalence at remote dates.
 3. Prepare a DE441-based time ephemeris by integrating the relativistic time
    equations along returned planetary trajectories. This integrates a scalar
    time relation, not new planetary orbits. Earth/Sun alone are insufficient for
@@ -175,7 +214,7 @@ No automatic policy switch on resource, coverage or convergence failure.
    Quadrature, secular cancellation, interpolation, cumulative errors and costs
    need a separately agreed qualification plan. No long integration is selected.
 
-None of these alternatives receives implicit priority from this list. R3's
+DE431t has explicit priority through Fernando's resource selection. R3's
 J−13000..J+13000 target remains an orientation target; no observer/time interval
 is enlarged. Do not silently bridge DE440/DE441 or two time models at a seam.
 
