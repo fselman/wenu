@@ -1470,8 +1470,13 @@ TT−TDB seconds and its derivative convention and separately notes a revised
 DE430 fit; that note does not resolve the actual DE431t interpolation question.
 The [SSD FAQ](https://ssd.jpl.nasa.gov/faq.html) describes public-domain data,
 recommended citation and no implied endorsement, subject to its fair-use
-policy. Use conservative serial acquisition and check the linked policy before
-the payload transfer. Redistribution remains undecided. No binary acquired
+policy. The FAQ's policy link is malformed (`https://https://...`); the
+[SSD API policy](https://ssd-api.jpl.nasa.gov/) was checked directly. It requires
+necessary, nonredundant serial API requests, cache reuse and backoff on errors;
+automated API clients must identify product/version/contact in User-Agent.
+The planned transfer uses the static BSP endpoint rather than an API; retain
+the same conservative serial/cache/backoff behavior and identify Wenu plus its
+public repository contact. Redistribution remains undecided. No binary acquired
 and no numerical resource result is claimed by this plan update.
 
 
