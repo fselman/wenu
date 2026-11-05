@@ -111,8 +111,9 @@ Verified persistent directory:
 **Observed status, 2026-11-05:** bounded execution selected with “Proceed”;
 Fernando reported acquisition, inspection, continuity and sampled overlap passed
 at guarded clean/upstream-equal `e9ac9d4f375ad7ee84700246fd0f1e24640b7866`.
-Independent interpolation/reference and DE431-time/DE441-state qualification
-and user acceptance remain pending. No time converter or runtime default changed.
+Independent sampled CSPICE/jplephem evaluation subsequently passed at
+`da7a6ce1`; source-fit/physical accuracy, quantified DE431-time/DE441-state
+compatibility and user acceptance remain unresolved. No time converter or runtime default changed.
 
 | Verified field | Observed value |
 |---|---|
@@ -128,6 +129,8 @@ and user acceptance remain pending. No time converter or runtime default changed
 | Reader | Installed jplephem 2.24 / NumPy 1.26.3; reader-source hashes retained in inspection receipt |
 | Scalar/rate meaning | X=TT−TDB seconds; jplephem type-2 per-day derivatives divided by 86400 |
 | J2000 scalar/rate | 9.930292877067607e−05 s; −3.3487405569024295e−10 s/s |
+| Independent sampled reader check | CSPICE minus jplephem: exact scalar/rate agreement at 274 native events; this is not zero-error certification |
+| Analytic synthetic control | Quadratic scalar, explicitly constructed; max value error 4.336808689942018e−19 s, max rate error 5.169878828456423e−26 s/s; sign and seconds/day faults detected |
 | Full join diagnostic | All 1,387,503 joins; max offset jump 8.44703606649351e−19 s, RMS 1.0993616229678614e−19 s; max rate jump 1.5616863601811328e−25 s/s, RMS 2.3645078824116576e−26 s/s |
 | DE440t full-overlap sample | 4,097 points across native TDB JD 2287184.5..2688976.5; DE431t−DE440t min −251.7787827575695 ns, max +371.7583856080296 ns, RMS 192.2346077185821 ns; max absolute rate difference 1.1779073924790056e−16 s/s |
 | DE440t modern sample | 36,526 daily 1950–2050 points; min −15.103186111530086 ns, max +40.64268513002869 ns, mean 12.813737307005185 ns, RMS 20.562177119423982 ns; max absolute rate difference 2.302022823840742e−17 s/s |
@@ -143,6 +146,14 @@ versioned execution recipe):
   `/Users/fselman/Software/build/wenu/test/de431t-continuity-v1-wutz7so9/`.
 - Model comparison, `overlap_v1.json` and two retained sampled NPZ arrays:
   `/Users/fselman/Software/build/wenu/test/de431t-de440t-overlap-v1-mbr266sk/`.
+- Independent reader check at `da7a6ce1`, `reader_comparison_v1.json`,
+  `de431t_reader_samples_v1.npz`, explicitly synthetic
+  `synthetic_scalar_v1.bsp` and `compare_de431t_readers_v1.py`:
+  `/Users/fselman/Software/build/wenu/test/de431t-independent-reader-v1-i3p6g992/`.
+- Receipt-head documentation at `da7a6ce1`, 36 passed in 7.04 s, whitespace
+  and final clean-source checks passed; includes installed-reader inventory:
+  `/Users/fselman/Software/build/wenu/test/de431t-receipt-docs-v1-drrpq19y/`.
+  Final independent-reader/assessment edits require their own gate.
 - Recipe-head documentation, 36 passed in 8.64 s:
   `/Users/fselman/Software/build/wenu/test/de431t-recipe-docs-v1-vg_d6xbz/`.
   This gate is prior-head evidence for subsequent receipt edits.
@@ -152,8 +163,14 @@ Join continuity used the same decoded coefficients and long-double endpoint
 sums/derivative weights; it is not an independent interpolation oracle.
 Sampled DE440t differences are cross-model discrepancies, not errors against
 truth, uniform bounds or a proposed seam correction. Retain DE440t as the modern
-reference and existing DE441 geometric pins. Mixed-model compatibility, numerical
-admission, source interpolation fidelity and physical accuracy remain unqualified.
+reference and existing DE441 geometric pins. The separately qualified synthetic
+control and independent CSPICE reader corroborate sampled evaluation of the
+same retained coefficients; exact reader agreement cannot populate an SDK
+zero-error field. Source-fit fidelity, uniform evaluator-error certification
+and physical accuracy remain unknown. The
+[compatibility assessment](../research/tt_tdb_realization_design_v1.md#de431-time-with-de441-states-compatibility-assessment)
+records common published time-scale conventions but no quantified mixed-model
+error bound or runtime admission.
 
 **Primary-source discovery, 2026-11-05:** JPL's
 [DE431 ASCII README](https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de431/README.txt)
