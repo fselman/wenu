@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 148, 2026-11-05. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with acquisition, segment inspection, all-record continuity and sampled DE440t overlap reported passed at `e9ac9d4f` under K4b.08. Independent interpolation and DE431-time/DE441-state qualification and acceptance remain pending. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 149, 2026-11-05. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with acquisition, segment inspection, all-record continuity and sampled DE440t overlap reported passed at `e9ac9d4f` under K4b.08. Independent sampled reader evaluation also passed at `da7a6ce1`. The mixed-model assessment records common scale conventions but no quantified compatibility bound; source-fit/physical accuracy and user acceptance remain unresolved. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -1506,7 +1506,8 @@ DE431t/DE440t overlap at clean guarded source
 both remain unmerged. The [external ledger](data/external_catalogue_ledger_v1.md#selected-de431t-long-span-time-resource)
 owns exact resource bytes/hash, actual time coverage, reader/layout, values and
 retained receipts. The complete recipe-head documentation gate passed 36 cases
-in 8.64 s; these receipt-documentation edits require their own gate.
+in 8.64 s. The subsequent complete receipt-head gate passed 36 cases in
+7.04 s at `da7a6ce1`; final independent-reader/assessment edits need their own gate.
 
 The actual direct time segment covers native TDB JD −3100015.5..8000016.5;
 it has 1,387,504 eight-day records and degree-10 polynomials. All 1,387,503
@@ -1518,15 +1519,31 @@ The 4,097-point whole-overlap comparison with DE440t spans
 continuity and sampled cross-model differences, not independent interpolation
 or physical error bounds, nor a demonstration of remote model equivalence.
 
-**Order and acceptance:** acquisition and initial inspection observations are
-complete; user acceptance, independent same-resource/reference interpolation
-evidence and explicit DE431-time/DE441-state compatibility qualification remain
-pending. Check existing independent readers before proposing a separately
-selected oracle installation. The 2026-11-05 primary-source discovery found
-`ascii/de431/` and its README explicitly excluding TT−TDB; the mentioned
-`ascii/de431t/` returned HTTP 404. No `testpo.431t` URL is assumed and no
-published DE431t scalar check set is established. The historical coefficient
-concern remains unresolved; continuity alone cannot settle it.
+**Independent reader observation, 2026-11-05:** Fernando reported the existing
+installed CSPICE/SpiceyPy direct-segment reader and jplephem agreed exactly in
+scalar and rate at 274 identical native events, including endpoints, selected
+joins and J2000. The analytic quadratic synthetic control passed with maximum
+value error 4.336808689942018e−19 s and rate error 5.169878828456423e−26 s/s;
+deliberate sign and seconds/day faults were detected. Receipt:
+`~/Software/build/wenu/test/de431t-independent-reader-v1-i3p6g992/run-provenance.json`.
+This is independent sampled evaluation of the same retained coefficients, not
+a zero-error admission or proof of fidelity to the original integration.
+
+**Order and acceptance:** acquisition, initial inspection, continuity,
+sampled overlap and independent reader observations are complete. The
+[compatibility assessment](research/tt_tdb_realization_design_v1.md#de431-time-with-de441-states-compatibility-assessment)
+finds common published time-scale conventions but no established uniform
+mixed-model error bound. The bounded resource/assessment deliverable is for
+user review after its final documentation gate; it does not select a converter
+or admit certified ancient/future observer accuracy. Source-fit precision and
+the historical coefficient concern remain unresolved. No new oracle
+installation or long integration is activated.
+
+The 2026-11-05 primary-source discovery found `ascii/de431/` and its README
+explicitly excluding TT−TDB; the mentioned `ascii/de431t/` returned HTTP 404.
+No `testpo.431t` URL is assumed and no published DE431t scalar check set is
+established. Neither continuity nor agreement between readers can resolve the
+original-fit question.
 
 Keep DE440t as the modern reference and existing DE441 geometric pins unchanged.
 No automatic seam/fallback, custom DE441 time integration, certified numerical
