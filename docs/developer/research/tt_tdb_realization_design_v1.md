@@ -180,9 +180,15 @@ No automatic policy switch on resource, coverage or convergence failure.
 ## Long-span resource decision and unselected alternatives
 
 **Selected 2026-11-04:** Fernando said “Aceptemos de431t”. Use DE431t as the
-long-span geocentric TT−TDB resource, with acquisition, actual time-segment
-coverage, reader/interpolation checks and DE431-time/DE441-state compatibility
-qualification still pending. DE440t remains the modern reference. This selects
+long-span geocentric TT−TDB resource. Bounded acquisition, actual time-segment
+inspection, all-record join diagnostics and sampled DE440t overlap were
+subsequently reported passed at `e9ac9d4f`; exact bytes/hash, actual native
+coverage and retained receipts belong to the external ledger. At `da7a6ce1`,
+Fernando also reported exact CSPICE/jplephem agreement at 274 native events
+and a passed analytic synthetic value/rate/fault control. This establishes
+sampled independent reader evaluation, not source-fit/physical accuracy. The
+mixed-model assessment below records the limits; quantified compatibility and
+user acceptance remain unresolved. DE440t remains the modern reference. This selects
 the resource, not a certified interval/error, automatic seam, converter or site
 transformation. See the
 [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource).
@@ -217,6 +223,47 @@ Alternatives below remain unselected except for the DE431t choice:
 DE431t has explicit priority through Fernando's resource selection. R3's
 J−13000..J+13000 target remains an orientation target; no observer/time interval
 is enlarged. Do not silently bridge DE440/DE441 or two time models at a seam.
+
+## DE431 time with DE441 states: compatibility assessment
+
+**Assessed 2026-11-05; no runtime admission.** The selected resource is acquired
+and readable, and independent CSPICE/jplephem sampled evaluation passed.
+The existing [resource ledger](../data/external_catalogue_ledger_v1.md#selected-de431t-long-span-time-resource)
+owns numerical receipts. Distinguish three separate questions:
+
+| Question | Evidence and result |
+|---|---|
+| Shared coordinate-scale convention | [Folkner et al. (2014), Section II.C](https://ipnpr.jpl.nasa.gov/progress_report/42-196/196C.pdf) and [Park et al. (2021), Section 2.3](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440_and_de441.pdf) both describe TDB relative to TCB and TT relative to TCG, with the same published LB, LG and reference epoch. No scale-name mismatch is demonstrated. This does not equate their numerical ephemeris realizations |
+| Realization/model compatibility | The time relation depends on Earth velocity, external potentials and other retained relativistic terms. DE431t with DE441 states is explicitly heterogeneous: reader success and common scale definitions do not reproduce a DE441-derived time integration. No uniform mixed-model error bound is established |
+| Coefficient/evaluator fidelity | Independent readers agree at the 274 selected events, and every adjoining record has the reported continuity. Both readers consume the same fitted representation. No comparison to the original integrated time series or higher-fidelity same-model fit has been established |
+
+The common constants are LB=1.550519768e−8, LG=6.969290134e−10 and
+reference epoch JD 2443144.5003725 in the cited formulations. Preserve each
+formula's sign and normalization conventions if implemented; this assessment
+does not introduce a constant correction or re-zero the time ephemeris.
+Park et al. describe revised trajectories/model terms and fitted parameters
+relative to the earlier ephemerides. Consequently the observed modern
+DE431t/DE440t discrepancies cannot be promoted to a DE431t/DE441 error bound,
+especially outside the measured overlap.
+
+**Historical fit concern:** [Irwin's first-hand 2017 report](https://sourceforge.net/p/timeephem/timeephem-devel/message/35729726/)
+describes insufficient coefficients in original DE430t/DE431t versions and
+explicit uncertainty about subsequent updates. The retained release identity,
+degree, continuity and independent reader agreement do not establish whether
+that original fit issue affects these bytes. Do not label the current file
+defective or the issue resolved. Contacting JPL and new integration remain
+unselected; neither is imposed as a prerequisite to reviewing this resource.
+
+**Assessment outcome:** common stated scale conventions support documenting the
+combination as a candidate mixed realization; they are not a scientific
+accuracy certificate or authorization to expose it as a qualified converter.
+A future candidate must bind both resources/models and their actual domains,
+preserve unknown source-fit/physical/mixed-model errors, and select numerical
+admission and site-event/rate semantics separately. Geocentric scalar evaluation
+does not supply the terrestrial site term. No new fallback, seam, integration,
+error-schema change or implementation milestone is activated. Bounded resource
+inspection and this assessment are ready for review after the documentation
+gate; parent K4b.08 remains open.
 
 ## Proposed implementation gate and open decisions
 

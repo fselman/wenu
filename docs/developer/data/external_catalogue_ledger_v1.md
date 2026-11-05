@@ -105,17 +105,82 @@ Fernando selected DE431t on 2026-11-04 with “Aceptemos de431t”.
 The [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource)
 owns scope/order and acceptance. Source candidate:
 [JPL DE431t](https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de431t.bsp).
-Planned persistent directory:
+Verified persistent directory:
 `/Users/fselman/Developer/wenu-data/ephemerides/jpl-de431t-v1/`.
 
-Status: selected, acquisition/qualification pending. Local presence, exact bytes,
-SHA-256, actual time-segment descriptors/coverage and accepted errors are unknown.
-The displayed directory size and nominal approximately −13200..+17191 years
-are discovery metadata, not verified local identity or admitted time coverage.
-Retain DE440t as the modern reference and existing DE441 geometric pins.
-DE431-time/DE441-state compatibility, interpolation precision and any seam
-need qualification; resource selection does not certify them. No payload is
-downloaded or runtime default changed by this ledger update.
+**Observed status, 2026-11-05:** bounded execution selected with “Proceed”;
+Fernando reported acquisition, inspection, continuity and sampled overlap passed
+at guarded clean/upstream-equal `e9ac9d4f375ad7ee84700246fd0f1e24640b7866`.
+Independent sampled CSPICE/jplephem evaluation subsequently passed at
+`da7a6ce1`; source-fit/physical accuracy, quantified DE431-time/DE441-state
+compatibility and user acceptance remain unresolved. No time converter or runtime default changed.
+
+| Verified field | Observed value |
+|---|---|
+| Payload | `de431t.bsp`, regular file |
+| Complete bytes | 3,696,366,592 |
+| Local SHA-256 | `ecbff54a438b8bcd211d36007962dd5acfe67e1d579a143291bd647eed023896` |
+| Identity checks | Serial HEAD/GET release identity and size; stream digest equals local reread digest; hash rechecked before diagnostics. No publisher checksum established |
+| Source comments | DE431, integrated 26 May 2013; source label `DE-0431LE-0431` |
+| Comments SHA-256 | `219e9412a44e5b807c43c72a67820a534102ca1f6c61ccfa9961294713f29446` |
+| Direct time segment | Unique index 14, type 2, centre 1000000000 → target 1000000001, frame 1 |
+| Actual native coverage | TDB JD −3100015.5..8000016.5; seconds from J2000 −479654827200..479387937600 |
+| Polynomial layout | 1,387,504 records, 691,200 s/record, 35 doubles/record, 11 coefficients/component, degree 10 |
+| Reader | Installed jplephem 2.24 / NumPy 1.26.3; reader-source hashes retained in inspection receipt |
+| Scalar/rate meaning | X=TT−TDB seconds; jplephem type-2 per-day derivatives divided by 86400 |
+| J2000 scalar/rate | 9.930292877067607e−05 s; −3.3487405569024295e−10 s/s |
+| Independent sampled reader check | CSPICE minus jplephem: exact scalar/rate agreement at 274 native events; this is not zero-error certification |
+| Analytic synthetic control | Quadratic scalar, explicitly constructed; max value error 4.336808689942018e−19 s, max rate error 5.169878828456423e−26 s/s; sign and seconds/day faults detected |
+| Full join diagnostic | All 1,387,503 joins; max offset jump 8.44703606649351e−19 s, RMS 1.0993616229678614e−19 s; max rate jump 1.5616863601811328e−25 s/s, RMS 2.3645078824116576e−26 s/s |
+| DE440t full-overlap sample | 4,097 points across native TDB JD 2287184.5..2688976.5; DE431t−DE440t min −251.7787827575695 ns, max +371.7583856080296 ns, RMS 192.2346077185821 ns; max absolute rate difference 1.1779073924790056e−16 s/s |
+| DE440t modern sample | 36,526 daily 1950–2050 points; min −15.103186111530086 ns, max +40.64268513002869 ns, mean 12.813737307005185 ns, RMS 20.562177119423982 ns; max absolute rate difference 2.302022823840742e−17 s/s |
+
+Retained evidence (each directory contains `run-provenance.json` and the exact
+versioned execution recipe):
+
+- Acquisition:
+  `/Users/fselman/Developer/wenu-data/operations/de431t-acquisition-v1-xmrzeqba/`.
+- Inspection, `inspection.json` and full `comments_v1.txt`:
+  `/Users/fselman/Software/build/wenu/test/de431t-inspection-v1-tx1fnl2x/`.
+- Join diagnostics, `continuity_v1.json`:
+  `/Users/fselman/Software/build/wenu/test/de431t-continuity-v1-wutz7so9/`.
+- Model comparison, `overlap_v1.json` and two retained sampled NPZ arrays:
+  `/Users/fselman/Software/build/wenu/test/de431t-de440t-overlap-v1-mbr266sk/`.
+- Independent reader check at `da7a6ce1`, `reader_comparison_v1.json`,
+  `de431t_reader_samples_v1.npz`, explicitly synthetic
+  `synthetic_scalar_v1.bsp` and `compare_de431t_readers_v1.py`:
+  `/Users/fselman/Software/build/wenu/test/de431t-independent-reader-v1-i3p6g992/`.
+- Receipt-head documentation at `da7a6ce1`, 36 passed in 7.04 s, whitespace
+  and final clean-source checks passed; includes installed-reader inventory:
+  `/Users/fselman/Software/build/wenu/test/de431t-receipt-docs-v1-drrpq19y/`.
+  Final independent-reader/assessment edits require their own gate.
+- Recipe-head documentation, 36 passed in 8.64 s:
+  `/Users/fselman/Software/build/wenu/test/de431t-recipe-docs-v1-vg_d6xbz/`.
+  This gate is prior-head evidence for subsequent receipt edits.
+
+The resource is readable at actual native endpoints and four additional samples.
+Join continuity used the same decoded coefficients and long-double endpoint
+sums/derivative weights; it is not an independent interpolation oracle.
+Sampled DE440t differences are cross-model discrepancies, not errors against
+truth, uniform bounds or a proposed seam correction. Retain DE440t as the modern
+reference and existing DE441 geometric pins. The separately qualified synthetic
+control and independent CSPICE reader corroborate sampled evaluation of the
+same retained coefficients; exact reader agreement cannot populate an SDK
+zero-error field. Source-fit fidelity, uniform evaluator-error certification
+and physical accuracy remain unknown. The
+[compatibility assessment](../research/tt_tdb_realization_design_v1.md#de431-time-with-de441-states-compatibility-assessment)
+records common published time-scale conventions but no quantified mixed-model
+error bound or runtime admission.
+
+**Primary-source discovery, 2026-11-05:** JPL's
+[DE431 ASCII README](https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de431/README.txt)
+explicitly excludes TT−TDB from that ASCII set and points to `de431t`.
+The `https://ssd.jpl.nasa.gov/ftp/eph/planets/ascii/de431t/` endpoint returned
+HTTP 404. The checked parent listing contains `de431/` but no `de431t/`.
+A bounded 2,000,001-byte read of `testpo.431` exceeded the inspection cap;
+it was not fully inspected and is not an established TT−TDB reference.
+Do not invent a `testpo.431t` endpoint or infer global absence of references.
+The historical coefficient concern remains unresolved.
 
 Direct DE441 time lookup evidence is retained at
 `~/Software/build/wenu/test/de441-time-query-v1-u7r5hfhf/run-provenance.json`:
