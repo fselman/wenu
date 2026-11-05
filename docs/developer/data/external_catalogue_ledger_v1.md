@@ -108,7 +108,11 @@ owns scope/order and acceptance. Source candidate:
 Planned persistent directory:
 `/Users/fselman/Developer/wenu-data/ephemerides/jpl-de431t-v1/`.
 
-Status: selected, acquisition/qualification pending. Local presence, exact bytes,
+Status: bounded acquisition/inspection and qualification selected on 2026-11-05
+with “Proceed”, after clean synchronized Mac confirmation at `a03aa2e4`.
+Execution and acceptance remain pending; follow the agreed recipe in the linked
+roadmap. Remote HEAD advertised 3,696,366,592 bytes on 2026-11-05; this is not
+a verified local size. Local presence, exact bytes,
 SHA-256, actual time-segment descriptors/coverage and accepted errors are unknown.
 The displayed directory size and nominal approximately −13200..+17191 years
 are discovery metadata, not verified local identity or admitted time coverage.
