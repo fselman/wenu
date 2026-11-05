@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 147, 2026-11-05. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with bounded acquisition/inspection and qualification selected on 2026-11-05 under K4b.08; execution and acceptance remain pending. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 148, 2026-11-05. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with acquisition, segment inspection, all-record continuity and sampled DE440t overlap reported passed at `e9ac9d4f` under K4b.08. Independent interpolation and DE431-time/DE441-state qualification and acceptance remain pending. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -1476,8 +1476,8 @@ necessary, nonredundant serial API requests, cache reuse and backoff on errors;
 automated API clients must identify product/version/contact in User-Agent.
 The planned transfer uses the static BSP endpoint rather than an API; retain
 the same conservative serial/cache/backoff behavior and identify Wenu plus its
-public repository contact. Redistribution remains undecided. No binary acquired
-and no numerical resource result is claimed by this plan update.
+public repository contact. Redistribution remains undecided. These source checks do not themselves acquire
+or qualify a binary; actual subsequently reported execution is recorded below.
 
 
 **Agreement, 2026-11-04:** Fernando said “Aceptemos de431t” after the direct
@@ -1499,28 +1499,42 @@ at native TDB JD 2451545, X = 9.9290115710493e-05 s and derivative
 and its captured range bytes. This is an index/lookup result, not a complete
 remote DE441 checksum or independent rate-accuracy qualification.
 
-**Selected resource; pending work:** acquire/inspect the exact JPL DE431t
-release in persistent external storage, record source/date, complete bytes/hash,
-comments, reader identity, actual time segments and coverage, then qualify
-scalar reading and assess compatibility with DE440t/DE441. The nominal
-approximately −13200..+17191 range is discovery metadata; do not admit that
-interval for the time segment before inspecting it. Resolve the reported
-early-release Chebyshev representation concern through actual release evidence
-and independent checks, rather than declaring the retained file defective.
-Existing geometric pins remain unchanged. No custom DE441 time integration
-is selected, and contacting JPL is not a prerequisite to recording this choice.
+**Observed execution, 2026-11-05:** Fernando reported successful acquisition,
+hash-bound offline segment inspection, all-record continuity and sampled
+DE431t/DE440t overlap at clean guarded source
+`e9ac9d4f375ad7ee84700246fd0f1e24640b7866`. PR #376 is stacked on #374;
+both remain unmerged. The [external ledger](data/external_catalogue_ledger_v1.md#selected-de431t-long-span-time-resource)
+owns exact resource bytes/hash, actual time coverage, reader/layout, values and
+retained receipts. The complete recipe-head documentation gate passed 36 cases
+in 8.64 s; these receipt-documentation edits require their own gate.
 
-**Order and acceptance:** the decision is recorded and the bounded recipe
-above is now selected; acquisition and qualification execution remain pending.
-Prerequisites remain explicit persistent storage, current provider checks and
-retained source/provenance. This documentation change performs no acquisition
-or runtime integration. Resource qualification must distinguish
-published-point reader agreement, interpolation diagnostics, cross-model
-discrepancy and physical uncertainty. Unknown errors stay unknown; no automatic
-modern/long-span seam or fallback is admitted. The smallest gate for this
-decision-only update is the complete existing documentation gate; the prior
-36-case pass is prior-head evidence. Converter, site-event/rate admission,
-observer/CLI/chart adoption and parent closure remain pending.
+The actual direct time segment covers native TDB JD −3100015.5..8000016.5;
+it has 1,387,504 eight-day records and degree-10 polynomials. All 1,387,503
+joins were evaluated from both adjoining coefficient sets: maximum offset jump
+8.44703606649351e−19 s, maximum rate jump 1.5616863601811328e−25 s/s.
+The 4,097-point whole-overlap comparison with DE440t spans
+−251.7787827575695..+371.7583856080296 ns; daily 1950–2050 samples span
+−15.103186111530086..+40.64268513002869 ns. These are measured representation
+continuity and sampled cross-model differences, not independent interpolation
+or physical error bounds, nor a demonstration of remote model equivalence.
+
+**Order and acceptance:** acquisition and initial inspection observations are
+complete; user acceptance, independent same-resource/reference interpolation
+evidence and explicit DE431-time/DE441-state compatibility qualification remain
+pending. Check existing independent readers before proposing a separately
+selected oracle installation. The 2026-11-05 primary-source discovery found
+`ascii/de431/` and its README explicitly excluding TT−TDB; the mentioned
+`ascii/de431t/` returned HTTP 404. No `testpo.431t` URL is assumed and no
+published DE431t scalar check set is established. The historical coefficient
+concern remains unresolved; continuity alone cannot settle it.
+
+Keep DE440t as the modern reference and existing DE441 geometric pins unchanged.
+No automatic seam/fallback, custom DE441 time integration, certified numerical
+admission, converter, site-event/rate capability, observer/CLI/chart adoption or
+parent K4b.08 closure is established. Contacting JPL is not a prerequisite.
+The coordinate guide remains current. The smallest gate for this documentation
+receipt is the complete existing documentation suite; actual science results
+above must not be rerun merely to document them.
 
 ### K4b.08 selected DE440t resource qualification
 
