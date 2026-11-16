@@ -1,6 +1,6 @@
 # Wenu service kernel and loadable astronomical packages
 
-**Plan revision:** 149, 2026-11-05. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 remains unmerged. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with acquisition, segment inspection, all-record continuity and sampled DE440t overlap reported passed at `e9ac9d4f` under K4b.08. Independent sampled reader evaluation also passed at `da7a6ce1`. The mixed-model assessment records common scale conventions but no quantified compatibility bound; source-fit/physical accuracy and user acceptance remain unresolved. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
+**Plan revision:** 150, 2026-11-16. **Status:** K4b.06 is closed with explicit deferrals. Accepted K4b.07 slices include persistence, nearby queries, saved consumers, exact-event Earth/Sun companions and CLI1; its parent remains open. K4b.08.R1/R2/R3 definition and orientation implementation are accepted/merged through #370/main `cd5c9b76`. The observer contract/time guide is merged through #371 and the external-data ledger through #372, main `7f0f7486`; clean Mac synchronization and local/remote branch cleanup are confirmed. The TT–TDB review is accepted/merged through #373/main `81314326`, with clean synchronized Mac and branch/cache cleanup confirmed. The DE440t resource/reader checks and 36-case Mac documentation gate passed at `fb3d2c2c`; PR #374 was accepted and merged at `cc918d4f`. On 2026-11-04 Fernando selected DE431t as the long-span TT−TDB resource, with acquisition, segment inspection, all-record continuity and sampled DE440t overlap reported passed at `e9ac9d4f` under K4b.08. Independent sampled reader evaluation also passed at `da7a6ce1`. The mixed-model assessment records common scale conventions but no quantified compatibility bound; source-fit/physical accuracy remain unresolved. The resource and assessment were accepted and merged through #376 at `8474e2a1`. The selected next item is the geocentric TT↔TDB contract definition under K4b.08. Fixed WGS84 site semantics and an ephemeris-based TT–TDB primary route with explicitly CLI-requestable equality/full-ERFA alternatives are agreed. The IAU/GR post-Newtonian spatial convention is also agreed. Consistent site-velocity definition, all three outputs (geometric, vacuum apparent and refracted) and initial SOFA/ERFA refraction are selected. Concrete time/resource/rate/correction/atmosphere design, runtime/CLI qualification and chart integration remain pending.
 
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -96,21 +96,17 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `cd5c9b76c6fc25df6adb26b2a086aabf44e5e581`,
-confirmed clean/synchronized on the Mac on 2026-11-03. PR #370 is accepted/merged
-with task-branch cleanup confirmed. The
-[accepted R3 receipt](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result)
-records focused Mac passes, the original failed long run and successful corrected
-three-event continuation at `9e319feb`. Do not relabel it as a fresh complete
-pytest rerun or rerun the expensive integrations for a documentation change.
-R1/R2 and R3 definition retain their accepted narrower receipts.
+**Current accepted base:** main `8474e2a183c4983c0fb54adfb16e2698f5625f68`.
+PRs #374 and #376 are accepted and merged. The
+[PR #376 handover](https://github.com/fselman/wenu/pull/376#issue-2698022485)
+records the final documentation gate (36 passed), branch cleanup and retained
+evidence. Fernando reconfirmed clean synchronized Mac main on 2026-11-16.
+The active Mac checkout is `/Users/fselman/Developer/wenu`.
 
-Fernando selected the Earth-bound observer contract definition with “Proceed”
-on 2026-11-03, covering site, time, compatible state composition, output/correction
-semantics and uncertainty reporting. This is a bounded documentation slice under
-existing K4b.08; runtime and chart/CLI/worker adoption require later selection.
-The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
-checkout is retired.
+K4b.08.R1/R2/R3 retain their accepted evidence, including the
+[three-event R3 continuation](kernel_migration_audit_v1.md#accepted-nominal-earth-orientation-result).
+The accepted Earth-bound observer site/event/output contract supplies the
+observer context for the selected geocentric time definition.
 The following K3/K4a receipts
 remain historical acceptance evidence rather than the current checkout.
 K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
@@ -129,7 +125,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.06 closed with deferrals; accepted K4b.07 slices include CLI1. R1/R2/R3 definition and orientation implementation accepted/merged through #370/main cd5c9b76, with retained focused/three-event evidence and disclosed cost. Parents K4b.07/K4b.08 remain open |
-| Next bounded submilestone | Complete documentation acceptance/review of selected K4b.08 DE440t resource qualification. Actual Mac acquisition/reader comparison passed at 473e66c6: 421 JPL scalar points, retained resource/hash/coverage. No subsequent converter, SDK, observer or long-span implementation selected |
+| Next bounded submilestone | K4b.08 geocentric TT↔TDB contract definition, approved 2026-11-16. Review the specification and pass the complete documentation gate before considering implementation |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -1403,6 +1399,24 @@ This is not a fresh complete slow pytest rerun, uniform interval error bound
 or physical-accuracy qualification. Clean synchronized Mac and branch cleanup
 are confirmed. Site/observer/correction/chart capabilities remain separate.
 
+### K4b.08 selected geocentric TT–TDB contract definition
+
+Fernando approved this documentation scope with “Apruebo” on 2026-11-16 after
+confirming clean synchronized Mac main `8474e2a1`. The existing K4b.08 ID
+applies. The prerequisites are the accepted observer contract and the accepted
+DE431t and DE440t resource qualifications through #374/#376.
+
+Define explicit resource identity, split-date input/output, forward and inverse
+conversion, coverage/joins/gaps and unique-root handling. Define what is needed
+for finite numerical admission against the stored polynomials and preserve the
+unknown original-fit, physical and mixed-model errors. The
+[geocentric contract](research/tt_tdb_realization_design_v1.md#geocentric-tttdb-converter-contract)
+records the specification and the evidence required before any runtime
+admission. Its acceptance gate is review plus the complete existing
+documentation suite. The selection covers documentation only. Runtime,
+site-event and public rate capability, model switching, observer/CLI/chart
+integration, and parent K4b.08 closure require later acceptance.
+
 ### K4b.08 selected DE431t long-span time resource
 
 **Execution agreement, 2026-11-05:** after guarded confirmation of clean,
@@ -1533,9 +1547,9 @@ a zero-error admission or proof of fidelity to the original integration.
 sampled overlap and independent reader observations are complete. The
 [compatibility assessment](research/tt_tdb_realization_design_v1.md#de431-time-with-de441-states-compatibility-assessment)
 finds common published time-scale conventions but no established uniform
-mixed-model error bound. The bounded resource/assessment deliverable is for
-user review after its final documentation gate; it does not select a converter
-or admit certified ancient/future observer accuracy. Source-fit precision and
+mixed-model error bound. The bounded resource/assessment deliverable was accepted and merged through
+#376 after the final documentation gate (36 passed at `aaa2f1d4`). This receipt
+establishes the resource qualification only. Source-fit precision and
 the historical coefficient concern remain unresolved. No new oracle
 installation or long integration is activated.
 
@@ -1602,7 +1616,7 @@ native TDB JD 2287184.5..2688976.5. jplephem 2.24/NumPy 1.26.3 reproduced all
 `/Users/fselman/Developer/wenu-data/operations/de440t-acquisition-v1-589yt12a/run-provenance.json`
 and the [ledger companions](data/external_catalogue_ledger_v1.md#selected-de440t-time-resource-acquisition).
 The complete Mac documentation gate passed 36 cases in 5.25 s at
-`fb3d2c2c`; PR #374 remains unmerged. Retain
+`fb3d2c2c`; PR #374 was accepted and merged at `cc918d4f`. Retain
 `~/Software/build/wenu/test/de440t-resource-docs-v1-j4i0i2xj/run-provenance.json`.
 Subsequent decision-only edits need the documentation gate, without new resource
 transfer or repetition of the accepted scalar comparison.
@@ -3040,6 +3054,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 150: geocentric TT↔TDB contract definition | Fernando’s “Apruebo” on 2026-11-16 after confirming clean synchronized main 8474e2a1 | Documentation under existing K4b.08: split dates, resource identity, inverse domain and error admission. Reconcile #374/#376 receipts. No runtime authority |
 | Revision 145: record observed DE440t acquisition/reader result | Fernando’s reported successful Mac run at 473e66c6 on 2026-11-04 | Record actual persistent bytes/hash/time coverage, reader identity and all 421 JPL scalar checks. Final documentation gate/review pending; no converter, total error certificate or broader time domain |
 | Revision 144: select DE440t resource qualification | Fernando’s “Proceed” on 2026-11-04 after the explicit resource proposal and clean synchronized main 81314326 | Authorize one persistent acquisition with primary metadata/reference checks and ledger/docs acceptance; no converter, SDK/dependency/default, observer or remote time coverage change |
 | Revision 143: selected TT–TDB design review | Fernando’s “Proceed” on 2026-11-04 after the bounded proposal and clean synchronized main 7f0f7486/cleanup receipt | Documentation/resource assessment only; concrete prepared-geocentric candidate and independent gate proposed, long-span/site/error admissions unresolved. No runtime, acquisition, SDK change or long integration |
