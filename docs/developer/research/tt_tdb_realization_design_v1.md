@@ -1,6 +1,6 @@
 # TT–TDB realization: resource assessment and implementation proposal
 
-Version 1 · 2026-11-04 · K4b.08 documentation review; proposals, not runtime
+Version 1 · 2026-11-16 · K4b.08 resource assessment and geocentric contract definition
 
 ## Authority and result
 
@@ -11,9 +11,10 @@ The [observer contract](earth_bound_observer_contract_v1.md) owns agreed site,
 time, GR, velocity and output requirements. This review specifies a concrete
 candidate and its blockers; it does not select an implementation or acquisition.
 
-**Recommendation for review:** first qualify a prepared geocentric DE440 time
-series as a small independent time-service slice, with explicitly selected
-equality and full-ERFA comparison policies. Keep site-event linking separately
+**Original recommendation (2026-11-04):** first qualify a prepared geocentric DE440t
+series as a small independent time-service slice. The subsequent resource
+qualifications and selected geocentric contract below supersede that sequencing
+proposal. Keep site-event linking separately
 identified within the same observer design. Long-span primary conversion still
 needs an admitted time resource or a separately selected DE441-based time
 integration. A modern slice alone cannot deliver the ancient observer.
@@ -187,8 +188,9 @@ coverage and retained receipts belong to the external ledger. At `da7a6ce1`,
 Fernando also reported exact CSPICE/jplephem agreement at 274 native events
 and a passed analytic synthetic value/rate/fault control. This establishes
 sampled independent reader evaluation, not source-fit/physical accuracy. The
-mixed-model assessment below records the limits; quantified compatibility and
-user acceptance remain unresolved. DE440t remains the modern reference. This selects
+mixed-model assessment below records the limits; quantified compatibility
+remains unresolved. The resource qualification and assessment were accepted
+and merged through #376. DE440t remains the modern reference. This selects
 the resource, not a certified interval/error, automatic seam, converter or site
 transformation. See the
 [roadmap decision](../kernel_roadmap_v0.9.5.md#k4b08-selected-de431t-long-span-time-resource).
@@ -265,11 +267,118 @@ error-schema change or implementation milestone is activated. Bounded resource
 inspection and this assessment are ready for review after the documentation
 gate; parent K4b.08 remains open.
 
+## Geocentric TT–TDB converter contract
+
+**Selected for definition on 2026-11-16 under K4b.08.** This section defines
+the geocentric conversion contract for review. The resource qualifications in
+PRs #374 and #376 are prerequisites. Implementation and numerical admission
+require separate acceptance.
+
+### Resource, event and result
+
+- Each conversion uses one explicitly selected, immutable prepared time
+  resource. The long-span selection is DE431t; DE440t is the modern
+  reference. Bind the selection to the ledger's exact payload SHA-256,
+  direct type-2 segment (centre 1000000000, target 1000000001, frame 1),
+  record layout and verified native TDB coverage. A missing file, mismatched
+  identity/layout, unavailable bound or out-of-domain event produces a
+  refusal. Model selection happens before conversion and has no automatic
+  fallback, seam or extrapolation.
+- Accept one finite event tagged TT or TDB with Wenu's canonical split JD.
+  Return the corresponding event in the other scale, in the same split
+  representation. Carry model/resource identity, segment and record
+  identity (or an unambiguous equivalent), direction, and a finite numerical
+  error bound in seconds. Keep the original input unchanged. Epoch
+  differences, residuals and normalization use the split parts throughout.
+- Let `t` be TDB in seconds relative to the same split reference epoch,
+  and let `D(t)` be the selected record's geocentric TT−TDB in seconds.
+  Define `F(t) = t + D(t)` in the same relative units. TDB→TT evaluates
+  `F`; TT→TDB finds the unique admitted `t` satisfying `F(t) = TT`.
+  A TT label may seed a solver after bracketing, but every polynomial
+  evaluation uses a TDB argument inside its owning record.
+
+### Coverage, joins and inversion
+
+1. Certify the native record partition before admitting conversion. At an
+   interior shared TDB boundary the later record owns the event. Each record
+   includes its left endpoint and excludes a right endpoint shared with its
+   successor. Include a verified terminal endpoint when it has exactly one
+   owner. Precedence at a shared endpoint is distinct from positive-width
+   native overlaps, which this contract refuses. A native gap remains outside
+   the admitted native domain.
+2. For each admitted record interval, establish a positive lower bound
+   `m` on `dF/dt = 1 + dD/dt`. Map each interval into TT with its own
+   one-sided endpoint values and inclusion rules. Do not assume adjacent
+   images meet. A forward jump can leave a TT gap; a backward jump can
+   create multiple inverse candidates. Even a small measured join jump
+   does not justify welding the images or treating the resource as globally
+   monotone. Preserve the TT images as a union; the outer mapped endpoints
+   alone do not define inverse validity.
+3. For TT input, certify membership in exactly one record image across the
+   declared inverse domain before returning a root. Refuse a TT gap, multiple
+   candidates or unresolved membership/uniqueness when endpoint error
+   enclosures overlap the query. Exact endpoint reasoning may resolve
+   equality and ownership. A record's exclusive endpoint may be used as a
+   one-sided mathematical limit for bracketing purposes, never as a returned
+   root for that record. No nearest-record choice or endpoint clamping.
+4. Solve inside the certified record with a bounded bracketed method;
+   a Newton step is admissible only when safeguarded within the bracket.
+   Verify the final encoded split TDB lies in the owning interval and meets
+   the certified error budget. Refuse invalid brackets, nonfinite evaluation,
+   inability to encode an in-domain result within tolerance, or failure to
+   converge. An inverse trial outside the admitted record is never evaluated
+   against that record's polynomial.
+
+### Error admission and SDK boundary
+
+The numerical reference is the exact mathematical map defined by the
+identified binary coefficients, declared record-time normalization and
+boundary ownership. A forward bound includes argument formation, polynomial
+evaluation, offset addition and output rounding; propagate argument error
+through the polynomial using a bound over the admitted argument interval.
+For an inverse result `t_hat`, evaluate the residual at the final encoded
+output. If its computed magnitude is `r` and all residual-computation error
+is bounded by `e`, the mean-value theorem gives
+`|t_hat - t_root| <= (r + e)/m` on the certified monotone record.
+An enclosing bracket can also bound the error if its endpoints and the
+returned representation are accounted for. Use an outward-rounded upper
+bound in the receipt. A residual tolerance alone, sampled independent-reader
+agreement, repeatability and round trips do not establish a uniform bound.
+
+For any later SDK adapter, bind each direction separately. The existing
+[TimeService](../../../packages/wenu_kernel/src/wenu_kernel/time.py) expects
+one adapter per directed pair and source-scale coverage for both admission
+and model dependencies. Any TT descriptor must therefore be a documented
+source-scale projection of the same pinned native TDB resource, preserving
+the TDB metadata in provenance. A descriptor span can only describe
+conservative outer coverage; inside it the adapter must still enforce actual
+record membership and uniqueness. Populate the admission maximum and the
+per-result bound only with finite justified values. Resource identity and
+preparation belong before service composition, with no automatic acquisition
+or policy substitution during conversion.
+
+Original-fit error, physical accuracy and compatibility with DE441 states
+remain unknown. None enters the SDK numerical-error field. This definition
+admits no numerical threshold or production interval; even the proposed 1 ns
+diagnostic is not an adopted budget. A polynomial derivative used internally
+to prove invertibility does not admit a public rate or a displaced-site event.
+
+### Acceptance
+
+The present gate is review of this contract and the complete documentation
+suite. A later implementation proposal must identify admitted resources and
+intervals, prove error bounds for its evaluator and solver, and test both
+directions against labelled analytic controls plus independent same-resource
+evaluation. Include shared endpoints, both jump signs, native and mapped
+gaps, overlapping TT images, unresolved endpoint membership, sign/units
+faults and cancellation in split dates. The existing sampled resource
+receipts are inputs to that work. The site term, public rate, model seams,
+observer/CLI/chart integration and runtime changes remain separate.
+
 ## Proposed implementation gate and open decisions
 
-Before runtime, agree actual resources/hashes, evaluator/lifecycle, finite source
-and target coverage, numerical certification and whether the first slice is
-geocentric only. Proposed deterministic geocentric comparison events are TDB
+Before runtime, agree evaluator/lifecycle, finite source and target admission
+intervals and numerical certification under the geocentric contract above. Proposed deterministic geocentric comparison events are TDB
 split dates `(2451545, 0.0)`, `(2451545, 0.25)` and `(2460000, 0.125)`, plus
 actual segment/resource boundaries and deliberately inadmissible events. These
 are a candidate gate, not observations or executed numerical results.
