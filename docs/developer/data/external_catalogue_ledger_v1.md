@@ -113,7 +113,9 @@ Fernando reported acquisition, inspection, continuity and sampled overlap passed
 at guarded clean/upstream-equal `e9ac9d4f375ad7ee84700246fd0f1e24640b7866`.
 Independent sampled CSPICE/jplephem evaluation subsequently passed at
 `da7a6ce1`; source-fit/physical accuracy, quantified DE431-time/DE441-state
-compatibility and user acceptance remain unresolved. No time converter or runtime default changed.
+compatibility remain unresolved. Fernando accepted the bounded resource
+qualification and assessment through #376, merged at `8474e2a1` after the
+final 36-case documentation gate. No time converter or runtime default changed.
 
 | Verified field | Observed value |
 |---|---|
